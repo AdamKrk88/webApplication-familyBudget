@@ -1,0 +1,21 @@
+body
+{
+margin: 0;
+background-image: url("images/golden-white-marble-textured-design-resource.jpg");
+font-family: 'Lato', sans-serif;
+font-size: 30px;
+font-weight: 700;
+}
+
+#webSideHeader
+{
+	background-color: #fffae6;
+	line-height: 64px;
+	padding: 5px 0;
+}
+
+#textStyle
+{
+	float: left;
+	padding: 0 15px;
+}
