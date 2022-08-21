@@ -26,7 +26,7 @@ font-weight: 700;
 {
 	margin-left: auto;
 	margin-right: auto;
-	width: 684px;
+	width: 690px;
 	padding: 5px;
 }
 
@@ -60,6 +60,7 @@ a:link
 {
 	color: #000000;
 	text-decoration: none;
+	outline: none;
 }
 
 a:visited
@@ -82,9 +83,66 @@ a:hover
 
 #entries
 {
-	margin-top: 15px;
-	padding: 5px;
+	margin-top: 10px;
+	padding: 10px; 
 	background-color: #f2f2f2;
+	width: 390px;
+	margin-right: auto;
+	margin-left: auto; 
+}
+
+.entry
+{
+	margin-top: 15px;
+}
+
+input[type=text],
+input[type=password]
+{
+	display:block;
+	width: 380px;
+	padding: 5px;
+	outline: none;
+	border: 1px solid #8c8c8c;
+	color: #333333;
+	font-weight: 700;
+	border-radius: 5px;
+}
+
+input[type=submit]
+{
+	width: 390px;
+	padding: 10px;
+	margin-top: 25px;
+	font-weight: 700;
+	background-color: #d9d9d9;
+	border: none;
+	outline: none;	
+	border-radius: 5px;
+}
+
+input[type=text]:focus,
+input[type=password]:focus
+{
+	border: 2px solid #8c8c8c;
+}
+
+input[type=submit]:focus,
+input[type=submit]:hover
+{
+	-webkit-box-shadow: 0px 0px 4px 1px rgba(51,51,51,1);
+	-moz-box-shadow: 0px 0px 4px 1px rgba(51,51,51,1);
+	box-shadow: 0px 0px 4px 1px rgba(51,51,51,1);
+	
+}
+
+label.labelText
+{
+	display:block;
+	font-size: 15px;
+	font-weight: 900;
+	color: #333333;
+	margin-bottom: 3px;
 }
 /*
 #login
