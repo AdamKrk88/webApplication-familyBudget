@@ -36,7 +36,6 @@ font-weight: 700;
 	text-align: center;
 }
 
-
 h1
 {
 	margin: 0 0 15px 0;
@@ -144,15 +143,14 @@ label.labelText
 	color: #333333;
 	margin-bottom: 3px;
 }
-/*
-#login
-{
-	width: 692px;
-	margin-left: auto;
-	margin-right: auto;
-	margin-top: 30px;
-	background-color:#f9f9f9;
-	border: 4px solid #fffae6;
-}
 
-*/
+#footer
+{
+	text-align: center;
+	font-weight: 700;
+	font-size: 15px;
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	height: 30px;
+}
