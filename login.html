@@ -10,6 +10,9 @@
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+	<!--[if lt IE 9]>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+	<![endif]-->
 </head>
 
 <body>	
@@ -29,18 +32,18 @@
 						<p><span style="color: #333333;">Please fill the form below to log in. If you don't have account in our service, you can create it by clicking below and follow instruction on registration side</span></p>
 					</div>
 				</header>
-				<form action="" method="post">
+				<form action="login.php" method="post">
 					<div id="entries">
 						<h2>Log in </h2>
 						<p><span style="color: #ffb380;">Do not have an account?</span> Create one <a href="#">here </a></p>
 						<div id="underline"></div>
 						<div class="entry">
-							<label class="labelText" for="name">Name or email adress</label>
-							<input id="name" type="text" name="name" />
+							<label class="labelText" for="name">Name or email address</label>
+							<input id="name" type="text" name="name" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
 						</div>
 						<div class="entry">
 							<label class="labelText" for="password">Password</label>
-							<input id="password" type="password" name="password" />
+							<input id="password" type="password" name="password" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
 						</div>
 						<div class="entry">
 							<input type="submit" value="Log in" />
@@ -51,7 +54,11 @@
 		</article>
 	</main>
 	<footer>
-		 <div id="footer"> All rights reserved &copy; 2022 Thank you for your visit </div> 
+		 <div id="footer"> 
+			<a href="https://www.flaticon.com/free-icons/money" title="money icons" class="iconAttribution" target="_blank">Money icons created by Freepik - Flaticon</a>.  
+			<a href="https://pl.freepik.com/search?format=search&query=marmur&type=photo" class="iconAttribution" target="_blank">Marmur image created by rawpixel.com - pl.freepik.com</a>
+			<span style="display: block;">All rights reserved &copy; 2022. Thank you for your visit </span>    
+		</div> 
 	</footer>
 </body>
 </html>
