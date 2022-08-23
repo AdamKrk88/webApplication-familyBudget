@@ -24,30 +24,27 @@
 		</div>	
  	</header>
 	<main>
-		<article>			
-			<div id="container">
+		<article>						
+			<div id="registerEntries">
 				<header>
-					<div id="login">
-						<h1>Welcome to Budget Manager</h1>
-						<p><span style="color: #333333;">Please fill the form below to log in. If you don't have account in our service, you can create it by clicking below and follow instruction on registration side</span></p>
-					</div>
+					<h2> Register </h2>
 				</header>
-				<form action="login.php" method="post">
-					<div id="entries">
-						<h2>Log in </h2>
-						<p><span style="color: #ffb380;">Do not have an account?</span> Create one <a href="registration.html">here </a></p>
-						<div id="underline"></div>
-						<div class="entry">
-							<label class="labelText" for="name">Name or email address</label>
-							<input id="name" type="text" name="name" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
-						</div>
-						<div class="entry">
-							<label class="labelText" for="password">Password</label>
-							<input id="password" type="password" name="password" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
-						</div>
-						<div class="entry">
-							<input type="submit" value="Log in" />
-						</div>
+				<div class="underline"></div>
+				<form action="register.php" method="post" />
+					<div class="entry">
+						<label class="labelText" for="name">Name</label>
+						<input id="name" type="text" name="name" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" /> 
+					</div>
+					<div class="entry">
+						<label class="labelText" for="email">Email address</label>
+						<input id="email" type="email" name="email" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" /> 
+					</div>
+					<div class="entry">
+						<label class="labelText" for="password">Password</label>
+						<input id="password" type="password" name="password" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" /> 
+					</div>
+					<div class="entry">
+						<input type="submit" value="Register" /> 
 					</div>
 				</form>
 			</div>			

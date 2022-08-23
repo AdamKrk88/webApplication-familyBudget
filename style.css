@@ -81,7 +81,7 @@ a.iconAttribution:hover
 	font-weight: 900;
 }
 
-#underline
+.underline
 {
 	margin-top: 10px;
 	border-bottom: 3px solid #8c8c8c;
@@ -97,13 +97,27 @@ a.iconAttribution:hover
 	margin-left: auto; 
 }
 
+#registerEntries
+{
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	-webkit-transform: translate(-50%, -50%); /* Ch <36, Saf 5.1+, iOS < 9.2, An =<4.4.4 */
+    -ms-transform: translate(-50%, -50%); /* IE 9 */
+     transform: translate(-50%, -50%);
+	background-color: #f2f2f2;
+	width: 390px;
+	padding: 10px; 
+}
+
 .entry
 {
 	margin-top: 15px;
 }
 
 input[type=text],
-input[type=password]
+input[type=password],
+input[type=email]
 {
 	display:block;
 	width: 380px;
@@ -128,7 +142,8 @@ input[type=submit]
 }
 
 input[type=text]:focus,
-input[type=password]:focus
+input[type=password]:focus,
+input[type=email]:focus
 {
 	border: 2px solid #8c8c8c;
 }
