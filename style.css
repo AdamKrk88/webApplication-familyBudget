@@ -22,6 +22,14 @@ font-weight: 700;
 	text-transform: uppercase;
 }
 
+#menu
+{
+	width: 700px;
+	float: right;
+
+}
+
+
 #container
 {
 	margin-left: auto;
