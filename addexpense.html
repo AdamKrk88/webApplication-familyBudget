@@ -23,7 +23,57 @@
 			<div style="clear: both;"></div>
 		</div>	
  	</header>
-	
+	<main>
+		<article>
+			<div id="entries" style="width: 690px;">
+				<header>
+					<h2>Add expense</h2>
+				</header>
+				<div class="underline"></div>
+				<form>
+					<div id="addExpenseHeader">
+					<h3>Provide amount, date and payment</h3>
+					</div>
+					<div id="cost">
+						<div class="entry"><label class="labelText">Amount<input type="number" name="amount" step="0.01" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" /></label></div>
+						<div class="entry"><label class="labelText">Date<input type="date" name="date" min="2000-01-01" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" /></label></div>
+					</div>
+					<div id="payment">
+							<fieldset>
+								<legend>Payment</legend>
+								<div class="entry"><label class="labelText"><input type="radio" value="1" name="payment" checked/>Cash</label></div>
+								<div class="entry"><label class="labelText"><input type="radio" value="2" name="payment" />Debit card</label></div>
+								<div class="entry"><label class="labelText"><input type="radio" value="3" name="payment" />Credit card</label></div>
+							</fieldset>
+					</div>
+			
+					<div style="clear: both;"></div>
+					<div class="underline"></div>
+					<div class="entry"><label class="labelText"><input type="radio" value="1" name="category" />Food</label></div>
+					<div class="entry"><label class="labelText"><input type="radio" value="2" name="category" />Home</label></div>
+					<div class="entry"><label class="labelText"><input type="radio" value="3" name="category" />Transport</label></div>
+					<div class="entry"><label class="labelText"><input type="radio" value="4" name="category" />Telecommunications</label></div>
+					<div class="entry"><label class="labelText"><input type="radio" value="5" name="category" />Healthcare</label></div>
+					<div class="entry"><label class="labelText"><input type="radio" value="6" name="category" />Clothes</label></div>
+					<div class="entry"><label class="labelText"><input type="radio" value="7" name="category" />Hygiene</label></div>
+					<div class="entry"><label class="labelText"><input type="radio" value="8" name="category" />Children</label></div>
+					<div class="entry"><label class="labelText"><input type="radio" value="9" name="category" />Entertainment</label></div>
+					<div class="entry"><label class="labelText"><input type="radio" value="10" name="category" />Trip</label></div>
+					<div class="entry"><label class="labelText"><input type="radio" value="11" name="category" />Training</label></div>
+					<div class="entry"><label class="labelText"><input type="radio" value="12" name="category" />Book</label></div>
+					<div class="entry"><label class="labelText"><input type="radio" value="13" name="category" />Savings</label></div>
+					<div class="entry"><label class="labelText"><input type="radio" value="14" name="category" />Retirement savings</label></div>
+					<div class="entry"><label class="labelText"><input type="radio" value="15" name="category" />Debt repayment</label></div>
+					<div class="entry"><label class="labelText"><input type="radio" value="16" name="category" />Donation</label></div>
+					<div class="entry"><label class="labelText"><input type="radio" value="17" name="category" />Others</label></div>
+					<div class="underline"></div>
+					<div class="entry"><label>Comment (optional)<input type="text" name="comment" /></label></div>
+					<div class="entry"><input type="submit" value="Add" /></div>
+					<a href="#">Cancel</a>
+				</form>
+			</div>
+		</article>
+	</main>
 	<footer>
 		 <div id="footer"> 
 			<a href="https://www.flaticon.com/free-icons/money" title="money icons" class="iconAttribution" target="_blank">Money icons created by Freepik - Flaticon</a>.  
