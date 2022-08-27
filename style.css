@@ -89,14 +89,6 @@ h2
 	font-size: 30px;
 }
 
-h3
-{
-	margin:0;
-	font-weight: 900;
-	font-size: 20px;
-	color: #333333;
-}
-
 p
 {
 	font-size: 18px;
@@ -152,6 +144,7 @@ a.iconAttribution:hover
 .underline
 {
 	margin-top: 10px;
+	margin-bottom: 10px;
 	border-bottom: 3px solid #8c8c8c;
 }
 
@@ -183,36 +176,62 @@ a.iconAttribution:hover
 	margin-top: 15px; 
 }
 
+#radioInputForOthers
+{
+	margin-top: 15px;
+	padding: 0 5px;
+}
+
 #cost
 {
 	float: left;
-	width: 180px;
-	padding: 0 0 0 50px;
+	width: 117px;
+	padding: 0 100px;
 }
 
 #payment
 {
 	float: left;
-	width: 190px;
+	width: 140px;
 	margin-top: 15px;
-	padding: 0 20px;
+	padding: 0 5px;
 }
 
 #addExpenseHeader
 {
 	float: left;
-	width: 230px;
+	width: 233px;
 	margin-top: 10px;
+	min-height: 30px;
+	padding: 45px 0;
 	text-align: center;
-	padding: 30px 0 30px 0;
+}
+
+#comment
+{
+	margin-top: 25px;
+	padding: 0 10px;
+}
+
+.categorySelection
+{
+	float: left;
+	width: 172px;
+	padding: 0 5px;
+}
+
+div.categorySelection:nth-last-child(3)
+{
+	float: left;
+	width: 140px;
+	padding: 0 5px;
 }
 
 fieldset
 {
-	width: 110px;
+	min-width: 110px;
 	border: none;
-	padding-top: 0;
-	padding-bottom:0;
+	padding: 0;
 }
 
 legend
@@ -226,7 +245,7 @@ input[type=text],
 input[type=password],
 input[type=email]
 {
-	display:block;
+	display: block;
 	width: 380px;
 	padding: 5px;
 	outline: none;
@@ -294,11 +313,19 @@ input[type=number]
 
 label.labelText
 {
-	display:block;
+	display:block; 
 	font-size: 15px;
 	font-weight: 900;
 	color: #333333;
 	margin-bottom: 3px;
+}
+
+label.labelTextForRadio
+{
+	display:block;
+	font-size: 13px;
+	font-weight: 900;
+	color: #333333;
 }
 
 #footer
