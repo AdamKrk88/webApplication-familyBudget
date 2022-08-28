@@ -141,6 +141,31 @@ a.iconAttribution:hover
 	font-weight: 900;
 }
 
+a#cancelButtonLink
+{
+	display: block;
+	float: left;
+	width: 300px;
+	padding: 10px;
+	margin-top: 15px;
+	font-size: 13px;
+	font-weight: 700;
+	background-color: #d9d9d9;
+	margin-left: 50px;
+	text-align: center;
+	border-radius: 5px;
+	color: #000000;
+	height: 16px;
+}
+
+a#cancelButtonLink:hover,
+a#cancelButtonLink:focus
+{
+	-webkit-box-shadow: 0px 0px 4px 1px rgba(51,51,51,1);
+	-moz-box-shadow: 0px 0px 4px 1px rgba(51,51,51,1);
+	box-shadow: 0px 0px 4px 1px rgba(51,51,51,1);
+}
+
 .underline
 {
 	margin-top: 10px;
@@ -173,13 +198,15 @@ a.iconAttribution:hover
 
 .entry
 {
-	margin-top: 15px; 
+	margin-top: 15px;  
 }
 
 #radioInputForOthers
 {
+	float: right;
 	margin-top: 15px;
 	padding: 0 5px;
+	width: 140px;
 }
 
 #cost
@@ -220,7 +247,7 @@ a.iconAttribution:hover
 	padding: 0 5px;
 }
 
-div.categorySelection:nth-last-child(3)
+div.categorySelection:nth-last-child(4)
 {
 	float: left;
 	width: 140px;
@@ -253,6 +280,7 @@ input[type=email]
 	color: #333333;
 	font-weight: 700;
 	border-radius: 5px;
+	font-size: 13px;
 }
 
 input[type=submit]
@@ -265,6 +293,22 @@ input[type=submit]
 	border: none;
 	outline: none;	
 	border-radius: 5px;
+	font-size: 13px;
+}
+
+input[type=submit]#submitButtonInExpense
+{
+	width: 320px;
+	height: 36px;
+	padding: 10px;
+	margin-top: 0;
+	font-weight: 700;
+	background-color: #d9d9d9;
+	border: none;
+	outline: none;	
+	border-radius: 5px;
+	font-size: 13px;
+	vertical-align: top;
 }
 
 input[type=text]:focus,

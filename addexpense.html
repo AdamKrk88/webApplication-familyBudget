@@ -37,14 +37,13 @@
 						<div class="entry"><label class="labelText">Date<input type="date" name="date" min="2000-01-01" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" /></label></div>
 					</div>
 					<div id="payment">
-							<fieldset>
-								<legend>Payment</legend>
-								<div class="entry"><label class="labelTextForRadio"><input type="radio" value="1" name="payment" checked/>Cash</label></div>
-								<div class="entry"><label class="labelTextForRadio"><input type="radio" value="2" name="payment" />Debit card</label></div>
-								<div class="entry"><label class="labelTextForRadio"><input type="radio" value="3" name="payment" />Credit card</label></div>
-							</fieldset>
+						<fieldset>
+							<legend>Payment</legend>
+							<div class="entry"><label class="labelTextForRadio"><input type="radio" value="1" name="payment" checked/>Cash</label></div>
+							<div class="entry"><label class="labelTextForRadio"><input type="radio" value="2" name="payment" />Debit card</label></div>
+							<div class="entry"><label class="labelTextForRadio"><input type="radio" value="3" name="payment" />Credit card</label></div>
+						</fieldset>
 					</div>
-			
 					<div style="clear: both;"></div>
 					<div class="underline"></div>
 					<fieldset>
@@ -74,12 +73,14 @@
 							<div class="entry"><label class="labelTextForRadio"><input type="radio" value="16" name="category" />Donation</label></div>
 						</div>
 						<div style="clear: both;"></div>
-						<div id="radioInputForOthers"><label class="labelTextForRadio"><input type="radio" value="17" name="category" />Others</label></div>									
+						<div id="radioInputForOthers"><label class="labelTextForRadio"><input type="radio" value="17" name="category" />Others</label></div>	
+						<div style="clear: both;"></div>						
 					</fieldset>
 					<div id="comment"><label class="labelText">Comment (optional)<input type="text" name="comment" style="display: inline-block; margin-left: 10px; width: 519px;" /></label></div>
 					<div class="underline"></div>
-					<div class="entry"><input type="submit" value="Add" style="width: 320px; margin-top: 5px;"/></div>
-					<a href="#">Cancel</a>
+					<div class="entry" style="float: left;"><input type="submit" value="Add" id="submitButtonInExpense" /></div>  
+					<a href="menu.html" id="cancelButtonLink">Cancel</a>
+					<div style="clear: both;"></div>
 				</form>
 			</div>
 		</article>
