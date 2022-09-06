@@ -39,8 +39,8 @@
  	</header>
 	
 	<main>
-		<div id="incomesExpenses">
-			<article>
+		<article>
+			<div id="incomesExpenses">
 				<div id="expenses">
 					<h3>Expenses</h3>
 					<div id="resultsExpenses">
@@ -185,8 +185,6 @@
 						<div style="clear: both;"></div>
 					</div>
 				</div>	
-			</article>
-			<article>
 				<div id="incomes">
 					<h3>Incomes</h3>
 					<div id="resultsIncomes">
@@ -216,19 +214,19 @@
 							<div class="piechart" id="incomeChart"></div>
 							<div id="legendIncomes">
 								<div class="alignToTheLeft">
-									<div id="color-red" class="entry-color"></div>  
+									<div style="background-color: red;" class="entry-color"></div>  
 									<div class="entry-text">Salary</div>  
 								</div>
 								<div class="alignToTheLeft">
-									<div id="color-orange" class="entry-color"></div>  
+									<div  style="background-color: orange;" class="entry-color"></div>  
 									<div class="entry-text">Interest rates on deposits</div>  
 								</div>
 								<div class="alignToTheLeft">
-									<div id="color-yellow" class="entry-color"></div>  
+									<div  style="background-color: yellow;" class="entry-color"></div>  
 									<div class="entry-text">Sale on Allegro</div>  
 								</div>
 								<div class="alignToTheLeft">
-									<div id="color-green" class="entry-color"></div>  
+									<div  style="background-color: green;" class="entry-color"></div>  
 									<div class="entry-text">Others</div>  
 								</div>
 							</div>
@@ -237,8 +235,19 @@
 						<div style="clear: both;"></div>
 					</div>
 				</div>
-			</article>
-		</div>	
+			</div>
+			<section>
+				<div id="finalBalanceBlock">
+					<h3>Balance</h3>
+					<div id="balanceInformation">
+						<p id="finalBalanceAmount">2600</p>
+						<div class="underline"></div>
+						<p id="finalBalanceComment">Congratulations. You are focused on efficiency in financial management</p>
+					</div>
+				</div>
+				<div style="clear: both;"></div>
+			</section>
+		</article>	
 	</main>
 	
 	<footer>
