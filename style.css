@@ -43,6 +43,69 @@ body
 	background-color: #fffdf9;
 }
 
+#menuPeriod
+{
+	float: right;
+	font-size: 17px;
+	margin-right: 10px;
+}
+
+ul
+{
+	padding: 0;
+	margin: 0;
+	list-style-type: none;
+	height: 64px;
+	z-index: 100;
+}
+
+ul > li
+{
+	width: 130px;
+	text-align: center;
+	height: 64px;
+	line-height: 64px; 
+ 	border-left: 2px solid #ffd5a2; 
+	border-right: 2px solid#ffd5a2; 
+}
+
+ul > li:hover
+{
+	background-color: #fffdf9;
+	border-left: 2px solid #ffb380; 
+	border-right: 2px solid #ffb380;  
+}
+
+ul > li > ul
+{
+	display: none;   
+}
+
+ul > li > ul > li
+{
+	border-bottom: 2px solid #ffd5a2; 
+	color: #555555;
+	z-index: 100;
+	height: 64px;
+	background-color: #fffae6;
+	border-left: none;
+	border-right: none; 
+	position: relative; 
+}
+
+ul > li > ul > li:hover
+{
+	color: #000000; 
+	border-bottom: 2px solid #ffb380; 
+	border-left: none;
+	border-right: none;  
+}
+
+ul > li:hover > ul
+{
+	display: block; 
+}
+
 #container
 {
 	margin-left: auto;
@@ -55,6 +118,105 @@ body
 {
 	padding: 5px;
 	text-align: center;
+}
+
+#incomesExpenses
+{
+	width: 950px;
+	position: relative;  
+	text-align: center;
+	float: left;
+}
+
+#expenses
+{
+	margin-left: 20px;
+	font-size: 15px;
+}
+
+#incomes
+{
+	width: 930px;
+	margin-left: 20px;
+	font-size: 15px;
+	position: absolute;
+	top: 120%;
+}
+
+#finalBalanceBlock
+{
+	float: right;
+	background-color: #f2f2f2;
+	width: 350px;
+	text-align: center;
+	margin-right: 10px;
+}
+
+#balanceInformation
+{
+	padding: 2px;
+}
+
+#resultsIncomes
+{
+	padding: 5px 0;
+	background-color: #f2f2f2;
+}
+
+#resultsExpenses
+{
+	padding: 5px 0;
+	background-color: #f2f2f2;
+}
+
+#tableExpenses
+{
+	float: left; 
+	background-color: #f2f2f2;
+	width: 420px;
+}
+
+#tableIncomes
+{
+	float: left; 
+	margin-left: 140px;
+	width: 190px;
+	margin-top: 25px;
+}
+
+div#tableExpenses table
+{
+	border-spacing: 0;
+	width: 420px;
+}
+
+div#tableIncomes table
+{
+	border-spacing: 0;
+	width: 190px;
+}
+
+thead th
+{
+	padding: 3px;
+}
+
+tbody th
+{
+	font-size: 13px;
+	padding: 4px 3px 4px 3px;
+}
+
+tbody th:nth-child(3)
+{
+	padding-left: 60px;
+}
+
+td
+{
+	padding-left: 10px;
+	text-align: left;
+	font-size: 13px;
 }
 
 #introduction
@@ -89,10 +251,32 @@ h2
 	font-size: 30px;
 }
 
+h3
+{
+	margin: 0;
+	padding: 2px;
+	font-weight: 900;
+	font-size: 17px;
+	background-color: #bfbfbf;
+}
+
 p
 {
 	font-size: 18px;
 	margin: 0;
+}
+
+p#finalBalanceAmount
+{
+	font-size: 15px;
+	padding: 3px 0;
+}
+
+p#finalBalanceComment
+{
+	font-size: 15px;
+	text-align: center;
+	color:  #ffa366;
 }
 
 a
@@ -381,4 +565,171 @@ label.labelTextForRadio
 	bottom: 0;
 	width: 100%;
 	height: 30px;
+}
+/* Legend for pie chart */
+
+
+.piechart
+{
+	float: left;
+	border-radius: 50%;
+	height: 150px;
+	width: 150px;
+	margin-left: 40px;
+}
+
+#expenseChart
+{
+	background-image: conic-gradient(red 21deg, orange 21deg 42deg, yellow 42deg 63deg, 
+     green 63deg 84deg, blue 84deg 105deg, purple 105deg, maroon 105deg 126deg, lime 126deg 147deg, navy 147deg 168deg, aqua 168deg 189deg, teal 189deg 210deg, olive 210deg 231deg, fuchsia 231deg 252deg, chocolate 252deg 273deg, coral 273deg 294deg, firebrick 294deg 315deg, lightpink 315deg 337deg, steelblue 337deg);
+}
+
+#incomeChart
+{
+	background-image: conic-gradient(red 90deg, orange 90deg 180deg, yellow 180deg 270deg, 
+     green 270deg);
+}
+
+#legendLeftSide 
+{
+	float: left;
+	margin-right: 15px;
+}
+
+#legendRightSide
+{
+	float: left;
+}
+
+#legendExpense
+{
+	float: left;
+	margin-left: 15px;
+	padding: 3px;
+}
+
+.entry-color 
+{
+	display: inline-block;
+    height: 10px;
+    width: 10px;
+}
+
+.entry-text 
+{
+	display: inline-block;
+	font-size: 13px;
+	
+}
+
+.alignToTheLeft
+{
+	text-align: justify;
+}
+
+#legendIncomes
+{
+	float: left;
+	margin-left: 15px;
+	margin-top: 30px;
+	padding: 3px;
+}
+
+#graphicalResultsExpenses
+{
+	background-color: #f2f2f2;
+	margin-top: 25px;
+	float: left;
+}
+
+#graphicalResultsIncomes
+{
+	background-color: #f2f2f2;
+	float: left;
+	margin-left: 90px;
+}
+
+#color-red 
+{
+  background-color: red;
+}
+
+#color-orange
+{
+  background-color: orange;
+}
+
+#color-yellow 
+{
+  background-color: yellow;
+}
+
+#color-green
+{
+  background-color: green;
+}
+
+#color-blue 
+{
+  background-color: blue;
+}
+
+#color-maroon 
+{
+  background-color: maroon;
+}
+
+#color-lime 
+{
+  background-color: lime;
+}
+
+#color-navy 
+{
+  background-color: navy;
+}
+
+#color-aqua 
+{
+  background-color: aqua;
+}
+
+#color-teal  
+{
+  background-color: teal ;
+}
+
+#color-olive 
+{
+  background-color: olive;
+}
+
+#color-fuchsia 
+{
+  background-color: fuchsia;
+}
+
+#color-chocolate 
+{
+  background-color: chocolate;
+}
+
+#color-coral 
+{
+  background-color: coral;
+}
+
+#color-firebrick 
+{
+  background-color: firebrick;
+}
+
+#color-lightpink 
+{
+  background-color: lightpink;
+}
+
+#color-steelblue
+{
+  background-color: steelblue;
 }
