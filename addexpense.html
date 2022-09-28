@@ -37,12 +37,12 @@
 						<div class="entry"><label class="labelText">Date<input type="date" name="date" min="2000-01-01" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" /></label></div>
 					</div>
 					<div id="payment">
-						<fieldset>
-							<legend>Payment</legend>
-							<div class="entry"><label class="labelTextForRadio"><input type="radio" value="1" name="payment" checked/>Cash</label></div>
-							<div class="entry"><label class="labelTextForRadio"><input type="radio" value="2" name="payment" />Debit card</label></div>
-							<div class="entry"><label class="labelTextForRadio"><input type="radio" value="3" name="payment" />Credit card</label></div>
-						</fieldset>
+						<label  class="labelTextForList" for="paymentOptions">Payment</label>  
+						<select id="paymentOptions" name="payment">
+							<option value="1">Cash</option>
+							<option value="2">Debit card</option>
+							<option value="3" selected>Credit card</option>
+						</select>
 					</div>
 					<div style="clear: both;"></div>
 					<div class="underline"></div>

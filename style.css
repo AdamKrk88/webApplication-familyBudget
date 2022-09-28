@@ -406,6 +406,7 @@ a#cancelButtonLink:focus
 	width: 140px;
 	margin-top: 15px;
 	padding: 0 5px;
+	font-size: 15px;	
 }
 
 #addExpenseHeader
@@ -480,6 +481,20 @@ input[type=submit]
 	font-size: 13px;
 }
 
+select
+{
+	width: 117px;
+	padding: 5px 5px 5px 5px;
+	outline: none;
+	border: 1px solid #8c8c8c;
+	color: #333333;
+	font-weight: 700;
+	border-radius: 5px;
+	font-size: 13px;
+	height: 27px; 
+	margin-top: 1px;
+}
+
 input[type=submit]#submitButtonInExpense
 {
 	width: 320px;
@@ -499,7 +514,8 @@ input[type=text]:focus,
 input[type=password]:focus,
 input[type=email]:focus,
 input[type=number]:focus,
-input[type=date]:focus
+input[type=date]:focus,
+select:focus
 {
 	border: 2px solid #8c8c8c;
 }
@@ -524,6 +540,7 @@ input[type=date]
 	font-weight: 700;
 	border-radius: 5px;
 	text-align: center;
+	margin-top: 1px;
 }
 
 input[type=number]
@@ -537,11 +554,13 @@ input[type=number]
 	font-weight: 700;
 	border-radius: 5px;
 	text-align: center;
+	font-size: 13px;
+	margin-top: 1px;
 }
 
 label.labelText
 {
-	display:block; 
+	display: block; 
 	font-size: 15px;
 	font-weight: 900;
 	color: #333333;
@@ -550,8 +569,14 @@ label.labelText
 
 label.labelTextForRadio
 {
-	display:block;
+	display: block;
 	font-size: 13px;
+	font-weight: 900;
+	color: #333333;
+}
+
+label.labelTextForList
+{
 	font-weight: 900;
 	color: #333333;
 }
