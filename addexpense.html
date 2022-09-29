@@ -25,7 +25,7 @@
  	</header>
 	<main>
 		<article>
-			<div id="entries" style="width: 700px;">
+			<div class="entriesExpenseIncome">
 				<header>
 					<div id="addExpenseHeader">
 						<h2>Add expense</h2>
@@ -37,45 +37,37 @@
 						<div class="entry"><label class="labelText">Date<input type="date" name="date" min="2000-01-01" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" /></label></div>
 					</div>
 					<div id="payment">
-						<fieldset>
-							<legend>Payment</legend>
-							<div class="entry"><label class="labelTextForRadio"><input type="radio" value="1" name="payment" checked/>Cash</label></div>
-							<div class="entry"><label class="labelTextForRadio"><input type="radio" value="2" name="payment" />Debit card</label></div>
-							<div class="entry"><label class="labelTextForRadio"><input type="radio" value="3" name="payment" />Credit card</label></div>
-						</fieldset>
+						<label  id="labelTextAboveForList" for="paymentOptions">Payment</label>  
+						<select id="paymentOptions" name="payment">
+							<option value="1">Cash</option>
+							<option value="2">Debit card</option>
+							<option value="3" selected>Credit card</option>
+						</select>
 					</div>
 					<div style="clear: both;"></div>
 					<div class="underline"></div>
-					<fieldset>
-						<legend>Category</legend>
-						<div class="categorySelection">
-							<div class="entry"><label class="labelTextForRadio"><input type="radio" value="1" name="category" checked />Food</label></div>
-							<div class="entry"><label class="labelTextForRadio"><input type="radio" value="2" name="category" />Home</label></div>
-							<div class="entry"><label class="labelTextForRadio"><input type="radio" value="3" name="category" />Transport</label></div>
-							<div class="entry"><label class="labelTextForRadio"><input type="radio" value="4" name="category" />Telecommunications</label></div>
-						</div>
-						<div class="categorySelection">
-							<div class="entry"><label class="labelTextForRadio"><input type="radio" value="5" name="category" />Healthcare</label></div>
-							<div class="entry"><label class="labelTextForRadio"><input type="radio" value="6" name="category" />Clothes</label></div>
-							<div class="entry"><label class="labelTextForRadio"><input type="radio" value="7" name="category" />Hygiene</label></div>
-							<div class="entry"><label class="labelTextForRadio"><input type="radio" value="8" name="category" />Children</label></div>
-						</div>
-						<div class="categorySelection">
-							<div class="entry"><label class="labelTextForRadio"><input type="radio" value="9" name="category" />Entertainment</label></div>
-							<div class="entry"><label class="labelTextForRadio"><input type="radio" value="10" name="category" />Trip</label></div>
-							<div class="entry"><label class="labelTextForRadio"><input type="radio" value="11" name="category" />Training</label></div>
-							<div class="entry"><label class="labelTextForRadio"><input type="radio" value="12" name="category" />Book</label></div>
-						</div>
-						<div class="categorySelection">
-							<div class="entry"><label class="labelTextForRadio"><input type="radio" value="13" name="category" />Savings</label></div>
-							<div class="entry"><label class="labelTextForRadio"><input type="radio" value="14" name="category" />Retirement savings</label></div>
-							<div class="entry"><label class="labelTextForRadio"><input type="radio" value="15" name="category" />Debt repayment</label></div>
-							<div class="entry"><label class="labelTextForRadio"><input type="radio" value="16" name="category" />Donation</label></div>
-						</div>
-						<div style="clear: both;"></div>
-						<div id="radioInputForOthers"><label class="labelTextForRadio"><input type="radio" value="17" name="category" />Others</label></div>	
-						<div style="clear: both;"></div>						
-					</fieldset>
+					<div id="expenseCategory">
+						<label  id="labelTextNextToList" for="categoryOptions">Category</label>  
+						<select id="categoryOptions" name="category">
+							<option value="1" selected>Food</option>
+							<option value="2">Home</option>
+							<option value="3">Transport</option>
+							<option value="4">Telecommunications</option>
+							<option value="5">Healthcare</option>
+							<option value="6">Clothes</option>
+							<option value="7">Hygiene</option>
+							<option value="8">Children</option>
+							<option value="9">Entertainment</option>
+							<option value="10">Trip</option>
+							<option value="11">Training</option>
+							<option value="12">Book</option>
+							<option value="13">Savings</option>
+							<option value="14">Retirement savings</option>
+							<option value="15">Debt repayment</option>
+							<option value="16">Donation</option>
+							<option value="17">Others</option>
+						</select>
+					</div>
 					<div id="comment"><label class="labelText">Comment (optional)<input type="text" name="comment" style="display: inline-block; margin-left: 10px; width: 519px;" /></label></div>
 					<div class="underline"></div>
 					<div class="entry" style="float: left;"><input type="submit" value="Add" id="submitButtonInExpense" /></div>  
