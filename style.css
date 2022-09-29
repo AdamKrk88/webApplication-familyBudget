@@ -367,6 +367,19 @@ a#cancelButtonLink:focus
 	margin-left: auto; 
 }
 
+.entriesExpenseIncome
+{
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	-webkit-transform: translate(-50%, -50%); /* Ch <36, Saf 5.1+, iOS < 9.2, An =<4.4.4 */
+    -ms-transform: translate(-50%, -50%); /* IE 9 */
+     transform: translate(-50%, -50%);
+	 padding: 10px; 
+	background-color: #f2f2f2;
+	width: 700px;
+}
+
 #registerEntries
 {
 	position: absolute;
@@ -407,6 +420,16 @@ a#cancelButtonLink:focus
 	margin-top: 15px;
 	padding: 0 5px;
 	font-size: 15px;	
+}
+
+#expenseCategory
+{
+	width: 237px;
+	margin-top: 15px;
+	padding: 0 5px;
+	font-size: 15px;	
+	margin-left: auto;
+	margin-right: auto;
 }
 
 #addExpenseHeader
@@ -481,7 +504,7 @@ input[type=submit]
 	font-size: 13px;
 }
 
-select
+select#paymentOptions
 {
 	width: 117px;
 	padding: 5px 5px 5px 5px;
@@ -494,6 +517,22 @@ select
 	height: 27px; 
 	margin-top: 1px;
 }
+
+select#categoryOptions
+{
+	width: 160px;
+	padding: 5px 0px 5px 0px;
+	outline: none;
+	border: 1px solid #8c8c8c;
+	color: #333333;
+	font-weight: 700;
+	border-radius: 5px;
+	font-size: 13px;
+	height: 30px; 
+	text-align: center;
+	margin: 0;
+}
+
 
 input[type=submit]#submitButtonInExpense
 {
@@ -515,7 +554,8 @@ input[type=password]:focus,
 input[type=email]:focus,
 input[type=number]:focus,
 input[type=date]:focus,
-select:focus
+select#paymentOptions:focus,
+select#categoryOptions:focus
 {
 	border: 2px solid #8c8c8c;
 }
@@ -575,10 +615,17 @@ label.labelTextForRadio
 	color: #333333;
 }
 
-label.labelTextForList
+label#labelTextAboveForList
 {
 	font-weight: 900;
 	color: #333333;
+}
+
+label#labelTextNextToList
+{
+	font-weight: 900;
+	color: #333333;
+	margin-right: 7px;
 }
 
 #footer
