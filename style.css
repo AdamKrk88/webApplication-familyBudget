@@ -1,6 +1,7 @@
 body
 {
 	margin: 0;
+	padding: 0;
 	background-image: url("images/golden-white-marble-textured-design-resource.jpg");
 	font-family: 'Lato', sans-serif;
 	font-size: 30px;
@@ -12,6 +13,11 @@ body
 	background-color: #fffae6;
 	padding: 5px 0;
 	margin-bottom: 30px;
+}
+
+.navbar-brand
+{
+	font-size: 30px;
 }
 
 #textStyle
@@ -50,24 +56,68 @@ body
 	margin-right: 10px;
 }
 
-ul
+.navbar
 {
 	padding: 0;
-	margin: 0;
-	list-style-type: none;
-	height: 64px;
-	z-index: 100;
 }
 
+.navbar .navbar-brand:focus
+{
+	outline: none;
+}
+
+.navbar .navbar-nav .nav-item:not(:last-child) .nav-link 
+{
+    border-right: 2px solid #ffb380;
+}
+
+.navbar .navbar-nav .nav-link:hover
+{
+    background-color: #fffdf9;
+	color: #ff6600;
+}
+
+.navbar .navbar-nav .nav-link 
+{
+    color: #000000;
+	height: 55px;
+	line-height: 34px;
+	cursor: pointer;
+}
+
+.navbar-toggler
+{
+	border: none;
+}
+
+.navbar-toggler:focus
+{
+	box-shadow: none;
+}
+
+.navbar-toggler .navbar-toggler-icon 
+{
+	background-image: none;
+	height: auto;
+}
+
+.navbar-toggler:hover .navbar-toggler-icon,
+.navbar-toggler:focus .navbar-toggler-icon  
+{
+	color: #000000;
+}
+
+ul
+{
+	font-size: 17px;
+}
+
+/*
 ul > li
 {
-	width: 130px;
-	text-align: center;
-	height: 64px;
-	line-height: 64px; 
- 	border-left: 2px solid #ffd5a2; 
-	border-right: 2px solid#ffd5a2; 
+
 }
+
 
 ul > li:hover
 {
@@ -105,7 +155,7 @@ ul > li:hover > ul
 {
 	display: block; 
 }
-
+*/
 #container
 {
 	margin-left: auto;
@@ -278,7 +328,7 @@ p#finalBalanceComment
 	text-align: center;
 	color:  #ffa366;
 }
-
+/*
 a
 {
 	color: #000000;
@@ -290,15 +340,21 @@ a:hover
 {
 	color: #ff6600;
 }
-
+*/
+/*
 a.menuLink
 {
 	color: #000000;
 	text-decoration: none;
 	outline: none;
-	display: block;
-	float: left;
+
 	border-right: 2px solid #ffb380;
+	
+	
+	min-width: 50px;
+	padding: 10px;
+	line-height: 34px;
+	font-size: 17px;
 }
 
 a.menuLink:last-child
@@ -350,6 +406,7 @@ a#cancelButtonLink:focus
 	box-shadow: 0px 0px 4px 1px rgba(51,51,51,1);
 }
 
+*/
 .underline
 {
 	margin-top: 10px;
@@ -804,4 +861,17 @@ label#labelTextNextToList
 #color-steelblue
 {
   background-color: steelblue;
+}
+
+#navbar-color
+{
+	background-color: #fffae6;
+}
+
+@media (max-width: 991px)
+{
+	.navbar .navbar-nav .nav-item:not(:last-child) .nav-link 
+	{
+    border-right: none;
+	}
 }
