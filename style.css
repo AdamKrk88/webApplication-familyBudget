@@ -118,6 +118,21 @@ body
 	background-color: #f2f2f2;
 }
 
+.font-color-black
+{
+	color: #000000;
+}
+
+.h-85
+{
+	height: 85% !important;
+}
+
+.height-no-navbar
+{
+	height: calc(100vh - 74px) !important;
+}
+
 ul
 {
 	font-size: 17px;
@@ -177,7 +192,6 @@ ul > li:hover > ul
 	padding: 5px;
 }
 */
-
 
 #login
 {
@@ -302,11 +316,12 @@ td
 	 font-style: italic;
 	 background-color: #f2f2f2; */
 }
-
+/*
 h1
 {
 	color: #000000;
 }
+*/
 
 h2
 {
@@ -380,21 +395,26 @@ a.menuLink:hover
 {
 	color: #ff6600;
 }
+*/
 
-a.iconAttribution
+a.footer-link
 {
-	color: #000000;
 	text-decoration: none;
 	outline: none;
-	display: inline-block;
 }
 
-a.iconAttribution:hover
+a.footer-link:hover
 {
 	color: #404040;
-	font-weight: 900;
+	/*font-weight: 900; */
 }
 
+footer
+{
+	font-size: 0.9rem;
+}
+
+/*
 a#cancelButtonLink
 {
 	display: block;
@@ -421,6 +441,7 @@ a#cancelButtonLink:focus
 }
 
 */
+
 .underline
 {
 	margin-top: 10px;
@@ -899,6 +920,11 @@ label#labelTextNextToList
 	{
 		font-size: 36px;
 	}
+	
+	footer
+	{
+		font-size: 0.85rem;
+	}
 }
 
 @media (max-width: 767px)
@@ -907,7 +933,24 @@ label#labelTextNextToList
 	{
 		font-size: 33px;
 	}
+	
+	footer
+	{	
+		font-size: 0.8rem;
+	}
+}
 
+@media (max-width: 575px)
+{
+	.font-size-mainmenu
+	{
+		font-size: 30px;
+	}
+	
+	footer
+	{	
+		font-size: 0.75rem;
+	}
 }
 
 
