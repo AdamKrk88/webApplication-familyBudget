@@ -1,17 +1,29 @@
+html
+{
+	height: 100%
+}
+
 body
 {
 	margin: 0;
+	padding: 0; 
 	background-image: url("images/golden-white-marble-textured-design-resource.jpg");
 	font-family: 'Lato', sans-serif;
 	font-size: 30px;
 	font-weight: 700;
+	height: 100%;
 }
-
+/*
 #webSideHeader
 {
 	background-color: #fffae6;
 	padding: 5px 0;
 	margin-bottom: 30px;
+}
+*/
+.navbar-brand
+{
+	font-size: 30px;
 }
 
 #textStyle
@@ -50,24 +62,88 @@ body
 	margin-right: 10px;
 }
 
-ul
+.navbar
 {
 	padding: 0;
-	margin: 0;
-	list-style-type: none;
-	height: 64px;
-	z-index: 100;
 }
 
+.navbar .navbar-brand:focus
+{
+	outline: none;
+}
+
+.navbar .navbar-nav .nav-item:not(:last-child) .nav-link 
+{
+    border-right: 2px solid #ffb380;
+}
+
+.navbar .navbar-nav .nav-link:hover
+{
+    background-color: #fffdf9;
+	color: #ff6600;
+}
+
+.navbar .navbar-nav .nav-link 
+{
+    color: #000000;
+	height: 55px;
+	line-height: 34px;
+	cursor: pointer;
+}
+
+.navbar-toggler
+{
+	border: none;
+}
+
+.navbar-toggler:focus
+{
+	box-shadow: none;
+}
+
+.navbar-toggler .navbar-toggler-icon 
+{
+	background-image: none;
+	height: auto;
+}
+
+.navbar-toggler:hover .navbar-toggler-icon,
+.navbar-toggler:focus .navbar-toggler-icon  
+{
+	color: #000000;
+}
+
+.bg-light-grey
+{
+	background-color: #f2f2f2;
+}
+
+.font-color-black
+{
+	color: #000000;
+}
+
+.h-85
+{
+	height: 85% !important;
+}
+
+.height-no-navbar
+{
+	height: calc(100vh - 74px) !important;
+}
+
+ul
+{
+	font-size: 17px;
+}
+
+/*
 ul > li
 {
-	width: 130px;
-	text-align: center;
-	height: 64px;
-	line-height: 64px; 
- 	border-left: 2px solid #ffd5a2; 
-	border-right: 2px solid#ffd5a2; 
+
 }
+
 
 ul > li:hover
 {
@@ -105,7 +181,9 @@ ul > li:hover > ul
 {
 	display: block; 
 }
+*/
 
+/*
 #container
 {
 	margin-left: auto;
@@ -113,6 +191,7 @@ ul > li:hover > ul
 	width: 690px;
 	padding: 5px;
 }
+*/
 
 #login
 {
@@ -221,28 +300,28 @@ td
 
 #introduction
 {
-	margin-left: auto;
+	/* margin-left: auto;
 	margin-right: auto;
-	width: 790px;
+	width: 790px; 
 	padding: 20px 5px 0 5px;
 	text-align: center;
 	line-height: 300%;
 	position: absolute;
 	top: 50%;
 	left: 50%;
-	-webkit-transform: translate(-50%, -50%); /* Ch <36, Saf 5.1+, iOS < 9.2, An =<4.4.4 */
-    -ms-transform: translate(-50%, -50%); /* IE 9 */
+	-webkit-transform: translate(-50%, -50%);  Ch <36, Saf 5.1+, iOS < 9.2, An =<4.4.4 
+    -ms-transform: translate(-50%, -50%);  IE 9 
      transform: translate(-50%, -50%);
 	 letter-spacing: 2px;
 	 font-style: italic;
-	 background-color: #f2f2f2;
+	 background-color: #f2f2f2; */
 }
-
+/*
 h1
 {
-	margin: 0 0 15px 0;
-	font-weight: 900;
+	color: #000000;
 }
+*/
 
 h2
 {
@@ -278,7 +357,7 @@ p#finalBalanceComment
 	text-align: center;
 	color:  #ffa366;
 }
-
+/*
 a
 {
 	color: #000000;
@@ -290,15 +369,21 @@ a:hover
 {
 	color: #ff6600;
 }
-
+*/
+/*
 a.menuLink
 {
 	color: #000000;
 	text-decoration: none;
 	outline: none;
-	display: block;
-	float: left;
+
 	border-right: 2px solid #ffb380;
+	
+	
+	min-width: 50px;
+	padding: 10px;
+	line-height: 34px;
+	font-size: 17px;
 }
 
 a.menuLink:last-child
@@ -310,21 +395,26 @@ a.menuLink:hover
 {
 	color: #ff6600;
 }
+*/
 
-a.iconAttribution
+a.footer-link
 {
-	color: #000000;
 	text-decoration: none;
 	outline: none;
-	display: inline-block;
 }
 
-a.iconAttribution:hover
+a.footer-link:hover
 {
 	color: #404040;
-	font-weight: 900;
+	/*font-weight: 900; */
 }
 
+footer
+{
+	font-size: 0.9rem;
+}
+
+/*
 a#cancelButtonLink
 {
 	display: block;
@@ -349,6 +439,8 @@ a#cancelButtonLink:focus
 	-moz-box-shadow: 0px 0px 4px 1px rgba(51,51,51,1);
 	box-shadow: 0px 0px 4px 1px rgba(51,51,51,1);
 }
+
+*/
 
 .underline
 {
@@ -805,3 +897,60 @@ label#labelTextNextToList
 {
   background-color: steelblue;
 }
+
+#navbar-light-yellow
+{
+	background-color: #fffae6;
+}
+
+.font-size-mainmenu
+{
+	font-size: 45px;
+}
+
+
+@media (max-width: 991px)
+{
+	.navbar .navbar-nav .nav-item:not(:last-child) .nav-link 
+	{
+		border-right: none;
+	}
+	
+	.font-size-mainmenu
+	{
+		font-size: 36px;
+	}
+	
+	footer
+	{
+		font-size: 0.85rem;
+	}
+}
+
+@media (max-width: 767px)
+{
+	.font-size-mainmenu
+	{
+		font-size: 33px;
+	}
+	
+	footer
+	{	
+		font-size: 0.8rem;
+	}
+}
+
+@media (max-width: 575px)
+{
+	.font-size-mainmenu
+	{
+		font-size: 30px;
+	}
+	
+	footer
+	{	
+		font-size: 0.75rem;
+	}
+}
+
+
