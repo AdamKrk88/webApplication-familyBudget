@@ -27,23 +27,59 @@
 
 	
 	
-	<div class="container height-no-navbar">
+	<div class="container">
 		<div class="row">
 			<main>
 				<article>		
-					<header>
-						<div class="col-6">
-			<!--				<h1 class="fw-bolder font-black-color">Welcome to Budget Manager</h1>
-							<p>Please fill the form below to log in. If you don't have account in our service, you can create it by clicking below and follow instruction on registration side</p>   -->
+					<header>     
+						<div class="col-8 offset-2 mt-4-dot-5">
+							<h1 class="fw-bolder font-color-black font-size-45px text-center">Welcome to Budget Manager</h1>
+							<p class="text-center font-color-grey">Please fill the form below to log in. If you don't have account in our service, you can create it by clicking below and follow instruction on registration side</p>   
 						</div>
-					</header>
-					<div class="col-4">
-					
+					</header> 
+					<div class="col-5 bg-light-grey mx-auto p-2 mt-2">
+						<h2 class="font-color-black">Log in</h2>
+						<p class="font-color-black"><span class="font-light-orange">Do not have an account?</span> Create one <a class="font-color-black link-registration" href="#">here </a></p>
+						<form class="lh-1" action="index.php" method="post">
+							<label class="form-label font-color-grey font-size-15px fw-bolder mb-1" for="name">Name or email address</label>
+							<input class="form-control form-control-sm fw-bold font-color-grey" type="text" name="name" id="name" title="Please fill out this field" aria-label="Name or email address input for login" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
+							<label class="form-label font-color-grey font-size-15px fw-bolder mb-1" for="password">Password</label>
+							<input class="form-control form-control-sm fw-bold font-color-grey" type="password" name="password" id="password" title="Please fill out this field" aria-label="Password input for login" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
+							<div class="d-grid mt-5">
+								<button class="btn button-grey-color fw-bold" type="submit" aria-label="Log in">Log in</button>
+							</div>
+						</form>
 					</div>
 				</article>
 			</main>
 		</div>
 	</div>	
+					
+		
+					
+							
+						<!--	
+						<div class="entry">
+							<label class="labelText" for="name">Name or email address</label>
+							<input id="name" type="text" name="name" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
+						</div>
+						<div class="entry">
+							<label class="labelText" for="password">Password</label>
+							<input id="password" type="password" name="password" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
+						</div>
+						<div class="entry">
+							<input type="submit" value="Log in" />
+						</div>
+						-->
+			<!--			
+				<form action="login.php" method="post">
+				</form>
+					</div>
+				</article>  
+			</main>  
+		</div>
+	</div>	
+	-->
 <!--	
 					<div id="login">
 						<h1>Welcome to Budget Manager</h1>
