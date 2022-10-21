@@ -2,10 +2,12 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1"> 
 	<title>Budget Manager</title>
 	<meta name="description" content="Monitor your incomes and expenses - manage your budget and save money" />
 	<meta name="keywords" content="money, budget, income, expense" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">   
 	<link rel="stylesheet" href="style.css" type="text/css" />
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,7 +17,32 @@
 	<![endif]-->
 </head>
 
-<body>	
+<body>
+	<header>	
+		<nav class="navbar navbar-expand-lg navbar-light-yellow">
+			<a class="navbar-brand" href="#"><img class="me-1 ms-1 d-inline-block align-middle" src="images/gold-ingots.png" alt="Gold bar" /><span class="text-uppercase font-weight-bold align-middle"> Budget Manager</span></a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainmenu" aria-controls="mainmenu" aria-expanded="false" aria-label="Button to open main menu options">
+				<span class="navbar-toggler-icon">
+					<i class="icon-menu"></i>
+				</span>
+			</button>
+			<div class="collapse navbar-collapse" id="mainmenu">
+				<ul class="navbar-nav ms-auto">
+					<li class="nav-item text-center"><a class="nav-link" href="#">Add income</a></li>
+					<li class="nav-item text-center"><a class="nav-link active" href="#" aria-current="page">Add expense</a></li>
+					<li class="nav-item text-center"><a class="nav-link" href="#">Review balance</a></li>
+					<li class="nav-item text-center"><a class="nav-link" href="#">Settings</a></li>
+					<li class="nav-item text-center"><a class="nav-link" href="#">Log out</a></li>
+				</ul>
+			</div>
+		</nav>		
+ 	</header>
+
+
+
+
+
+<!--	
 	<header>	
 		<div id="webSideHeader">
 			<img src="images/gold-ingots.png" alt="Gold bar" style="float: left;" />  
@@ -84,5 +111,10 @@
 			<span style="display: block;">All rights reserved &copy; 2022. Thank you for your visit </span>    
 		</div> 
 	</footer>
+	-->
+	
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js" integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous"></script>   
+	
 </body>
 </html>
