@@ -124,6 +124,11 @@ body
 	background-color: #f2f2f2;
 }
 
+.bg-dark-grey
+{
+	background-color: #bfbfbf;
+}
+
 .font-color-black
 {
 	color: #000000;
@@ -157,6 +162,16 @@ body
 .w-85
 {
 	width: 85% !important;
+}
+
+.w-40
+{
+	width: 40% !important;
+}
+
+.w-60
+{
+	width: 60% !important;
 }
 
 .mt-4-dot-5
@@ -280,6 +295,18 @@ ul > li:hover > ul
 	margin-right: 10px;
 }
 
+tbody th
+{
+	text-align: center;
+}
+
+.table>:not(caption)>*>*
+{
+	padding: 0.4rem 0.5rem;
+}
+
+
+/*
 #balanceInformation
 {
 	padding: 2px;
@@ -324,6 +351,7 @@ div#tableIncomes table
 	width: 190px;
 }
 
+
 thead th
 {
 	padding: 3px;
@@ -346,7 +374,7 @@ td
 	text-align: left;
 	font-size: 13px;
 }
-
+*/
 #introduction
 {
 	/* margin-left: auto;
@@ -365,6 +393,8 @@ td
 	 font-style: italic;
 	 background-color: #f2f2f2; */
 }
+
+
 /*
 h1
 {
@@ -378,7 +408,7 @@ h2
 	margin:0 0 5px 0;   
 }
 */
-
+/*
 h3
 {
 	margin: 0;
@@ -387,7 +417,7 @@ h3
 	font-size: 17px;
 	background-color: #bfbfbf;
 }
-
+*/
 p
 {
 	font-size: 18px;
@@ -822,12 +852,11 @@ label#labelTextNextToList
 
 .piechart
 {
-	float: left;
 	border-radius: 50%;
 	height: 150px;
 	width: 150px;
-	margin-left: 40px;
 }
+
 
 #expenseChart
 {
@@ -835,6 +864,7 @@ label#labelTextNextToList
      green 63deg 84deg, blue 84deg 105deg, purple 105deg, maroon 105deg 126deg, lime 126deg 147deg, navy 147deg 168deg, aqua 168deg 189deg, teal 189deg 210deg, olive 210deg 231deg, fuchsia 231deg 252deg, chocolate 252deg 273deg, coral 273deg 294deg, firebrick 294deg 315deg, lightpink 315deg 337deg, steelblue 337deg);
 }
 
+/*
 #incomeChart
 {
 	background-image: conic-gradient(red 90deg, orange 90deg 180deg, yellow 180deg 270deg, 
@@ -858,6 +888,10 @@ label#labelTextNextToList
 	margin-left: 15px;
 	padding: 3px;
 }
+*/
+
+
+
 
 .entry-color 
 {
@@ -869,8 +903,6 @@ label#labelTextNextToList
 .entry-text 
 {
 	display: inline-block;
-	font-size: 13px;
-	
 }
 
 .alignToTheLeft
@@ -1000,6 +1032,16 @@ label#labelTextNextToList
 	font-size: 15px;
 }
 
+.font-size-scaled-from-13px
+{
+	font-size: 13px;
+}
+
+.font-size-scaled-from-18px
+{
+	font-size: 18px;
+}
+
 .font-size-scaled-from-45px
 {
 	font-size: 2.8rem;
@@ -1010,7 +1052,25 @@ label#labelTextNextToList
 	font-size: 30px;
 }
 
-
+@media (max-width: 1199px)
+{
+	.font-size-scaled-from-13px
+	{
+		font-size: 12px;
+	}
+	
+	.piechart
+	{	
+		height: 110px;
+		width: 110px;
+	}
+	
+	.entry-color 
+{
+    height: 7px;
+    width: 7px;
+}
+}
 
 @media (max-width: 991px)
 {
@@ -1027,6 +1087,11 @@ label#labelTextNextToList
 	.font-size-scaled-from-30px
 	{
 		font-size: 27px;
+	}
+	
+	.font-size-scaled-from-18px
+	{
+	font-size: 16px;
 	}
 	
 	.font-size-scaled-from-15px
@@ -1055,6 +1120,11 @@ label#labelTextNextToList
 	.font-size-scaled-from-30px
 	{
 		font-size: 23px;
+	}
+	
+	.font-size-scaled-from-18px
+	{
+	font-size: 14px;
 	}
 	
 	.font-size-scaled-from-15px
