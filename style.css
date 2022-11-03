@@ -149,6 +149,7 @@ body
 	color: #ff6600;
 }
 
+
 .button-grey-color
 {
 	background-color: #d9d9d9;
@@ -418,6 +419,7 @@ h3
 	background-color: #bfbfbf;
 }
 */
+/*
 p
 {
 	font-size: 18px;
@@ -436,6 +438,7 @@ p#finalBalanceComment
 	text-align: center;
 	color:  #ffa366;
 }
+*/
 /*
 a
 {
@@ -1054,6 +1057,11 @@ label#labelTextNextToList
 
 @media (max-width: 1199px)
 {
+	.font-size-scaled-from-15px
+	{
+		font-size: 14px;
+	}
+	
 	.font-size-scaled-from-13px
 	{
 		font-size: 12px;
