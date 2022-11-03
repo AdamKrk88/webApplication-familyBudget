@@ -213,17 +213,55 @@
 							</div>
 						</div>
 					</div>
-					<div class="col-lg-3 col-md-4 col-12 offset-md-2 offset-lg-1 mt-4-dot-5 order-1 order-md-2">
+					<div class="col-lg-4 col-md-5 col-12 offset-md-1 offset-lg-0 mt-4-dot-5 order-1 order-md-2">
 						<div class="row g-0 bg-light-grey">
-							<div class="col-12 bg-dark-grey">
-								<h3 class="font-color-black fw-bolder font-size-scaled-from-18px text-center mb-0 py-1">Balance</h3>
+							<div class="col-7">
+								<form class="lh-1 d-flex flex-column align-items-center" action="#" method="post">
+									<label  class="form-label font-color-black font-size-scaled-from-18px fw-bolder bg-dark-grey w-100 text-center py-1" for="periodForBalanceSummary">Period</label>  
+									<select class="form-select form-select-sm w-auto fw-bold font-color-grey text-center" id="periodForBalanceSummary" name="period" aria-label="Period for balance review">
+										<option value="1" selected>Current month</option>
+										<option value="2">Previous month</option>
+										<option value="3">Current year</option>
+										<option value="4">Your choice</option>
+									</select>
+								</form>
+								<div class="modal fade" id="boxToProvidePeriodForBalanceSummary" tabindex="-1" aria-labelledby="dateRange" aria-hidden="true">
+									<div class="modal-dialog">
+										<div class="modal-content">
+											<div class="modal-header">
+												<h5 class="modal-title font-size-scaled-from-18px fw-bold" id="dateRange">Provide date range for balance review</h5>
+												<button type="button" class="btn-close  font-size-scaled-from-15px" data-bs-dismiss="modal" aria-label="Close"></button>
+											</div>
+											<div class="modal-body">
+												<form>
+													<label class="form-label font-color-grey font-size-scaled-from-15px fw-bolder mb-0 d-block text-center" for="startDate">From</label>
+													<input class="form-control form-control-sm fw-bold font-color-grey text-center" type="date" name="startDate" id="startDate" min="2000-01-01" title="Please fill out this field" aria-label="Start date for balance review period" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
+													<label class="form-label font-color-grey font-size-scaled-from-15px fw-bolder mb-0 d-block text-center mt-4" for="endDate">To</label>
+													<input class="form-control form-control-sm fw-bold font-color-grey text-center" type="date" name="endDate" id="endDate" min="2000-01-01" title="Please fill out this field" aria-label="End date for balance review period" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
+												</form>
+											</div>
+											<div class="modal-footer">
+												<button type="button" class="btn button-grey-color fw-bold font-size-scaled-from-15px" data-bs-dismiss="modal" aria-label="Close">Close</button>
+												<button type="button" class="btn button-grey-color fw-bold font-size-scaled-from-15px" aria-label="Save date range">Save the period</button>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								
+								
+								
+								
 							</div>
-							<div class="col-12 text-center">
-								<p class="font-size-scaled-from-15px mb-0">2600</p>
-								<div class="underline"></div>
+							<div class="col-5">
+								<div class="d-flex h-100 flex-column">
+									<h3 class="lh-1 font-color-black fw-bolder font-size-scaled-from-18px bg-dark-grey w-100 text-center mt-0 py-1 form-label">Balance</h3>
+									<p class="font-size-scaled-from-15px bg-light-grey m-auto">2600</p>
+								</div>
 							</div>
-							<div class="col-12 text-center font-light-orange">
-								<p class="font-size-scaled-from-15px mb-0">Congratulations. You are focused on efficiency in financial management</p>
+							<div class="col-12 text-center font-light-stronger-orange">
+								<div class="underline py-1"></div>
+								<p class="font-size-scaled-from-15px mb-0 mt-1">Congratulations. You are focused on efficiency in financial management</p>
 							</div>
 						</div>																								
 					</div>		
@@ -527,6 +565,19 @@ options: {
 </script>
 -->
 
+
+	
+	<script src="https://code.jquery.com/jquery-3.6.1.slim.min.js" integrity="sha256-w8CvhFs7iHNVUtnSP0YKEg00p9Ih13rlL9zGqvLdePA=" crossorigin="anonymous"></script>
+	<script>
+	$(document).ready(function(){ //Make script DOM ready
+		$('#periodForBalanceSummary').change(function() { //jQuery Change Function
+			var opval = $(this).val(); //Get value from select element
+			if(opval=="4"){ //Compare it and if true
+				$('#boxToProvidePeriodForBalanceSummary').modal("show"); //Open Modal
+			}
+		});
+	});
+	</script>
 	
 	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js" integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous"></script>   
