@@ -423,13 +423,13 @@ h3
 	background-color: #bfbfbf;
 }
 */
-/*
+
 p
 {
 	font-size: 18px;
-	margin: 0;
 }
 
+/*
 p#finalBalanceAmount
 {
 	font-size: 15px;
@@ -497,7 +497,7 @@ a.footer-link:hover
 
 footer
 {
-	font-size: 0.9rem;
+	font-size: 0.8rem;
 }
 
 /*
@@ -843,7 +843,7 @@ label#labelTextNextToList
 	color: #333333;
 	margin-right: 7px;
 }
-
+/*
 #footer
 {
 	text-align: center;
@@ -854,6 +854,8 @@ label#labelTextNextToList
 	width: 100%;
 	height: 30px;
 }
+*/
+
 /* Legend for pie chart */
 
 
@@ -871,13 +873,13 @@ label#labelTextNextToList
      green 63deg 84deg, blue 84deg 105deg, purple 105deg, maroon 105deg 126deg, lime 126deg 147deg, navy 147deg 168deg, aqua 168deg 189deg, teal 189deg 210deg, olive 210deg 231deg, fuchsia 231deg 252deg, chocolate 252deg 273deg, coral 273deg 294deg, firebrick 294deg 315deg, lightpink 315deg 337deg, steelblue 337deg);
 }
 
-/*
+
 #incomeChart
 {
 	background-image: conic-gradient(red 90deg, orange 90deg 180deg, yellow 180deg 270deg, 
      green 270deg);
 }
-
+/*
 #legendLeftSide 
 {
 	float: left;
@@ -1078,10 +1080,21 @@ label#labelTextNextToList
 	}
 	
 	.entry-color 
-{
+	{
     height: 7px;
     width: 7px;
-}
+	}
+	
+		footer
+	{
+		font-size: 0.72rem;
+	}
+	
+	p
+	{
+		font-size: 17px;
+	}
+	
 }
 
 @media (max-width: 991px)
@@ -1113,12 +1126,17 @@ label#labelTextNextToList
 	
 	footer
 	{
-		font-size: 0.82rem;
+		font-size: 0.69rem;
 	}
 	
 	p
 	{
 	font-size: 16px;
+	}
+	
+		.footer-position
+	{
+		margin-top: 0.7em;
 	}
 }
 
@@ -1144,6 +1162,11 @@ label#labelTextNextToList
 		font-size: 12px;
 	}
 	
+	.font-size-scaled-from-13px
+	{
+		font-size: 11px;
+	}
+	
 	.form-control-sm,
 	.form-select-sm
 	{
@@ -1152,7 +1175,7 @@ label#labelTextNextToList
 	
 	footer
 	{	
-		font-size: 0.78rem;
+		font-size: 0.67rem;
 	}
 	
 	p
@@ -1175,7 +1198,7 @@ label#labelTextNextToList
 		
 	footer
 	{	
-		font-size: 0.75rem;
+		font-size: 0.65rem;
 	}
 	
 	p
@@ -1184,4 +1207,17 @@ label#labelTextNextToList
 	}
 }
 
+@media (min-width: 992px)
+{
+	.height-no-navbar-lg-xl
+	{
+		height: calc(100vh - 74px) !important;
+	}
+	
+	.footer-position
+	{
+		position: absolute;
+		bottom: 0;
+	}
 
+}
