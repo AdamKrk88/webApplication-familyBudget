@@ -222,7 +222,7 @@
 										<option value="4">Your choice</option>
 									</select>
 								</form>
-								<div class="modal fade" id="boxToProvidePeriodForBalanceSummary" tabindex="-1" aria-labelledby="dateRange" aria-hidden="true">
+								<div class="modal fade" id="boxToProvidePeriodForBalanceSummary" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="dateRange" aria-hidden="true">
 									<div class="modal-dialog">
 										<div class="modal-content">
 											<div class="modal-header">
@@ -334,13 +334,33 @@
 	
 	<script src="https://code.jquery.com/jquery-3.6.1.slim.min.js" integrity="sha256-w8CvhFs7iHNVUtnSP0YKEg00p9Ih13rlL9zGqvLdePA=" crossorigin="anonymous"></script>
 	<script>
-	$(document).ready(function(){ //Make script DOM ready
-		$('#periodForBalanceSummary').change(function() { //jQuery Change Function
-			var optionValue = $(this).val(); //Get value from select element
-			if(optionValue=="4"){ //Compare it and if true
-				$('#boxToProvidePeriodForBalanceSummary').modal("show"); //Open Modal
+	var optionValuePrevious = 1;
+	
+	function getCurrentOption() {
+		var optionValueCurrent = $(this).val();
+		if (optionValueCurrent != 4) {
+			optionValuePrevious = optionValueCurrent;
+		}
+	}
+		
+	$(document).ready(function(){
+		$('#periodForBalanceSummary').click(getCurrentOption);
+	
+		$('#periodForBalanceSummary').change(function() { 
+			var optionValueNew = $(this).val(); 
+			if(optionValueNew=="4"){ 
+				$('#boxToProvidePeriodForBalanceSummary').modal("show"); 
 			}
 		});
+		
+		$("#closeModalSymbol").click(function() {
+			$('#periodForBalanceSummary').val(optionValuePrevious);
+		});
+		
+		$("#closeModalButton").click(function() {
+			$('#periodForBalanceSummary').val(optionValuePrevious);
+		});
+		
 	});
 	</script>
 	
@@ -366,6 +386,7 @@
 	}
 	
 	function clearModalBoxToDefault() {
+		$("#startDate").removeAttr("style");
 		$("#endDate").removeAttr("style");
 		$("#errorMessage").html("");	
 		$("#endDate").val("");
@@ -378,16 +399,24 @@
 		return currentDateAsInteger;	
 	}	
 	
-	function checkDateInModal() {
-		var startDate = new Date($("#startDate").val());
-		var endDate = new Date($("#endDate").val());
-		var startDateAsInteger = convertDateFromInputToNumber(startDate);
-		var endDateAsInteger = convertDateFromInputToNumber(endDate);
-		var currentDateAsInteger = returnCurrentDateAsNumber();
-		var backgroundColorForEndDateInput = $("#endDate").css("background-color");
-		var backgroundColorForStartDateInput = $("#startDate").css("background-color");
+	function checkDateInModal() {	
+		var startDateValue =$("#startDate").val();
+		var endDateValue = $("#endDate").val();
+		if (startDateValue != "" && endDateValue != "") {
+			var startDate = new Date($("#startDate").val());
+			var endDate = new Date($("#endDate").val());
+			var startDateAsInteger = convertDateFromInputToNumber(startDate);
+			var endDateAsInteger = convertDateFromInputToNumber(endDate);
+			var currentDateAsInteger = returnCurrentDateAsNumber();
+			var backgroundColorForEndDateInput = $("#endDate").css("background-color");
+			var backgroundColorForStartDateInput = $("#startDate").css("background-color");
+		}
 	
-		if (startDateAsInteger > currentDateAsInteger && endDateAsInteger > currentDateAsInteger ) {
+		if (startDateValue == "" || endDateValue == "") {
+			$("#errorMessage").addClass("font-red").removeClass("font-green").html("Provide dates");
+		}
+		
+		else if (startDateAsInteger > currentDateAsInteger && endDateAsInteger > currentDateAsInteger ) {
 			$("#startDate").css("background-color","#ff8080");
 			$("#endDate").css("background-color","#ff8080");
 			$("#errorMessage").addClass("font-red").removeClass("font-green").html("Both dates greater than current date");
@@ -406,8 +435,8 @@
 		}
 		
 		else if (endDateAsInteger < startDateAsInteger) {
-			$("#endDate").css("background-color","#ff8080");
-			$("#startDate").removeAttr("style");
+			$("#startDate").css("background-color","#ff8080");
+			$("#endDate").removeAttr("style");
 			$("#errorMessage").addClass("font-red").removeClass("font-green").html("Start date greater than end date");	
 		}
 		
@@ -427,7 +456,6 @@
 	$("#submitModalButton").click(checkDateInModal);
 	$("#boxToProvidePeriodForBalanceSummary").on("hidden.bs.modal",clearModalBoxToDefault);
 	</script>
-	
 	
 	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js" integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous"></script>   
