@@ -227,7 +227,7 @@
 										<div class="modal-content">
 											<div class="modal-header">
 												<h5 class="modal-title font-size-scaled-from-18px fw-bold" id="dateRange">Provide date range for balance review</h5>
-												<button type="button" class="btn-close  font-size-scaled-from-15px" data-bs-dismiss="modal" aria-label="Close"></button>
+												<button type="button" id="closeModalSymbol" class="btn-close  font-size-scaled-from-15px" data-bs-dismiss="modal" aria-label="Close"></button>
 											</div>
 											<div class="modal-body">
 												<form>
@@ -239,8 +239,8 @@
 											</div>
 											<div class="modal-footer">
 												<span id="errorMessage" class="flex-fill text-center fw-bold font-size-scaled-from-15px font-red"></span>
-												<button type="button" class="btn button-grey-color fw-bold font-size-scaled-from-15px" data-bs-dismiss="modal" aria-label="Close">Close</button>
-												<button type="button" id="submit" class="btn button-grey-color fw-bold font-size-scaled-from-15px" aria-label="Save date range">Save the period</button>
+												<button type="button" id="closeModalButton" class="btn button-grey-color fw-bold font-size-scaled-from-15px" data-bs-dismiss="modal" aria-label="Close">Close</button>
+												<button type="button" id="submitModalButton" class="btn button-grey-color fw-bold font-size-scaled-from-15px" aria-label="Save date range">Save the period</button>
 											</div>
 										</div>
 									</div>
@@ -336,8 +336,8 @@
 	<script>
 	$(document).ready(function(){ //Make script DOM ready
 		$('#periodForBalanceSummary').change(function() { //jQuery Change Function
-			var opval = $(this).val(); //Get value from select element
-			if(opval=="4"){ //Compare it and if true
+			var optionValue = $(this).val(); //Get value from select element
+			if(optionValue=="4"){ //Compare it and if true
 				$('#boxToProvidePeriodForBalanceSummary').modal("show"); //Open Modal
 			}
 		});
@@ -345,7 +345,7 @@
 	</script>
 	
 	<script>
-	function addZeroToMonthIfNecessaryAndConvertToString(number) {
+	function addZeroToDayOrMonthIfNecessaryAndConvertToString(number) {
 		if (number < 10) {
 			number = "0" + number;
 		}
@@ -356,37 +356,13 @@
 	}
 	
 	function convertDateFromInputToNumber(dateObject) {		
-		var day = dateObject.getDate().toString();
+		var dayNumber = dateObject.getDate();
+		var day = addZeroToDayOrMonthIfNecessaryAndConvertToString(dayNumber);
 		var monthNumber = dateObject.getMonth() + 1;
-		var month = addZeroToMonthIfNecessaryAndConvertToString(monthNumber);
+		var month = addZeroToDayOrMonthIfNecessaryAndConvertToString(monthNumber);
 		var year = dateObject.getFullYear().toString();
 		var dateAsString = year + month + day;
 		return parseInt(dateAsString);
-	}
-	
-	function checkDateInModal() {
-		var startDate = new Date($("#startDate").val());
-		var endDate = new Date($("#endDate").val());
-		var startDateAsInteger = convertDateFromInputToNumber(startDate);
-		var endDateAsInteger = convertDateFromInputToNumber(endDate);
-		var backgroundColorForEndDateInput = $("#endDate").css("background-color");
-	//	alert(startDateAsInteger);
-//		alert(endDateAsInteger);
-		
-		if (endDateAsInteger < startDateAsInteger) {
-			$("#endDate").css("background-color","#ff8080");
-			$("#errorMessage").addClass("font-red").removeClass("font-green").html("Start date grater than end date");	
-		}
-		else if (endDateAsInteger >= startDateAsInteger && backgroundColorForEndDateInput == "rgb(255, 255, 255)") {
-			$("#endDate").removeAttr("style");
-			$("#errorMessage").html("");	
-		}
-		else if (endDateAsInteger >= startDateAsInteger && backgroundColorForEndDateInput == "rgb(255, 128, 128)") {
-			$("#endDate").removeAttr("style");
-			$("#errorMessage").addClass("font-green").removeClass("font-red");
-			$("#errorMessage").html("Now it is correct");		
-		}
-	//	alert(backgroundColorForEndDateInput);
 	}
 	
 	function clearModalBoxToDefault() {
@@ -394,19 +370,64 @@
 		$("#errorMessage").html("");	
 		$("#endDate").val("");
 		$("#startDate").val("");
+	}	
+	
+	function returnCurrentDateAsNumber() {
+		var currentDateObject=new Date();
+		var currentDateAsInteger = convertDateFromInputToNumber(currentDateObject);
+		return currentDateAsInteger;	
+	}	
+	
+	function checkDateInModal() {
+		var startDate = new Date($("#startDate").val());
+		var endDate = new Date($("#endDate").val());
+		var startDateAsInteger = convertDateFromInputToNumber(startDate);
+		var endDateAsInteger = convertDateFromInputToNumber(endDate);
+		var currentDateAsInteger = returnCurrentDateAsNumber();
+		var backgroundColorForEndDateInput = $("#endDate").css("background-color");
+		var backgroundColorForStartDateInput = $("#startDate").css("background-color");
+	
+		if (startDateAsInteger > currentDateAsInteger && endDateAsInteger > currentDateAsInteger ) {
+			$("#startDate").css("background-color","#ff8080");
+			$("#endDate").css("background-color","#ff8080");
+			$("#errorMessage").addClass("font-red").removeClass("font-green").html("Both dates greater than current date");
+		}
+		
+		else if (startDateAsInteger > currentDateAsInteger) {
+			$("#startDate").css("background-color","#ff8080");
+			$("#endDate").removeAttr("style");
+			$("#errorMessage").addClass("font-red").removeClass("font-green").html("Start date greater than current date");
+		}
+		
+		else if (endDateAsInteger > currentDateAsInteger) {
+			$("#endDate").css("background-color","#ff8080");
+			$("#startDate").removeAttr("style");
+			$("#errorMessage").addClass("font-red").removeClass("font-green").html("End date greater than current date");
+		}
+		
+		else if (endDateAsInteger < startDateAsInteger) {
+			$("#endDate").css("background-color","#ff8080");
+			$("#startDate").removeAttr("style");
+			$("#errorMessage").addClass("font-red").removeClass("font-green").html("Start date greater than end date");	
+		}
+		
+		else if (endDateAsInteger >= startDateAsInteger && backgroundColorForEndDateInput == "rgb(255, 255, 255)" && backgroundColorForStartDateInput == "rgb(255, 255, 255)") {
+			$("#errorMessage").html("");	
+		}
+		
+		else if (endDateAsInteger >= startDateAsInteger && (backgroundColorForEndDateInput == "rgb(255, 128, 128)" || backgroundColorForStartDateInput == "rgb(255, 128, 128)")) {
+			$("#startDate").removeAttr("style");
+			$("#endDate").removeAttr("style");
+			$("#errorMessage").addClass("font-green").removeClass("font-red");
+			$("#errorMessage").html("Now it is correct");		
+		}
 	}
 	
-	$("#submit").click(checkDateInModal);
-	$("#boxToProvidePeriodForBalanceSummary").on("hidden.bs.modal",clearModalBoxToDefault);
 	
-
-/*	$("#submit").click(function() { 
-		var nr = addZeroToMonthIfNecessary(10);
-		alert(nr);
-		}
-		);	
-	*/		
+	$("#submitModalButton").click(checkDateInModal);
+	$("#boxToProvidePeriodForBalanceSummary").on("hidden.bs.modal",clearModalBoxToDefault);
 	</script>
+	
 	
 	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js" integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous"></script>   
