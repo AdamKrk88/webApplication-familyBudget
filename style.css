@@ -146,6 +146,16 @@ body
 	color: #ffa366;
 }
 
+.font-red
+{
+	color: #ff0000;
+}
+
+.font-green
+{
+	color: #00e600;
+}
+
 .button-grey-color
 {
 	background-color: #d9d9d9;

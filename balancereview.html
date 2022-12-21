@@ -234,12 +234,13 @@
 													<label class="form-label font-color-grey font-size-scaled-from-15px fw-bolder mb-0 d-block text-center" for="startDate">From</label>
 													<input class="form-control form-control-sm fw-bold font-color-grey text-center" type="date" name="startDate" id="startDate" min="2000-01-01" title="Please fill out this field" aria-label="Start date for balance review period" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
 													<label class="form-label font-color-grey font-size-scaled-from-15px fw-bolder mb-0 d-block text-center mt-4" for="endDate">To</label>
-													<input class="form-control form-control-sm fw-bold font-color-grey text-center" type="date" name="endDate" id="endDate" min="2000-01-01" title="Please fill out this field" aria-label="End date for balance review period" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
+													<input class="form-control form-control-sm fw-bold font-color-grey text-center" type="date" name="endDate" id="endDate" min="2000-01-01" title="Please fill out this field" aria-label="End date for balance review period" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')"/>
 												</form>
 											</div>
 											<div class="modal-footer">
+												<span id="errorMessage" class="flex-fill text-center fw-bold font-size-scaled-from-15px font-red"></span>
 												<button type="button" class="btn button-grey-color fw-bold font-size-scaled-from-15px" data-bs-dismiss="modal" aria-label="Close">Close</button>
-												<button type="button" class="btn button-grey-color fw-bold font-size-scaled-from-15px" aria-label="Save date range">Save the period</button>
+												<button type="button" id="submit" class="btn button-grey-color fw-bold font-size-scaled-from-15px" aria-label="Save date range">Save the period</button>
 											</div>
 										</div>
 									</div>
@@ -341,6 +342,70 @@
 			}
 		});
 	});
+	</script>
+	
+	<script>
+	function addZeroToMonthIfNecessaryAndConvertToString(number) {
+		if (number < 10) {
+			number = "0" + number;
+		}
+		else {
+			number = number.toString();
+		}
+		return number
+	}
+	
+	function convertDateFromInputToNumber(dateObject) {		
+		var day = dateObject.getDate().toString();
+		var monthNumber = dateObject.getMonth() + 1;
+		var month = addZeroToMonthIfNecessaryAndConvertToString(monthNumber);
+		var year = dateObject.getFullYear().toString();
+		var dateAsString = year + month + day;
+		return parseInt(dateAsString);
+	}
+	
+	function checkDateInModal() {
+		var startDate = new Date($("#startDate").val());
+		var endDate = new Date($("#endDate").val());
+		var startDateAsInteger = convertDateFromInputToNumber(startDate);
+		var endDateAsInteger = convertDateFromInputToNumber(endDate);
+		var backgroundColorForEndDateInput = $("#endDate").css("background-color");
+	//	alert(startDateAsInteger);
+//		alert(endDateAsInteger);
+		
+		if (endDateAsInteger < startDateAsInteger) {
+			$("#endDate").css("background-color","#ff8080");
+			$("#errorMessage").addClass("font-red").removeClass("font-green").html("Start date grater than end date");	
+		}
+		else if (endDateAsInteger >= startDateAsInteger && backgroundColorForEndDateInput == "rgb(255, 255, 255)") {
+			$("#endDate").removeAttr("style");
+			$("#errorMessage").html("");	
+		}
+		else if (endDateAsInteger >= startDateAsInteger && backgroundColorForEndDateInput == "rgb(255, 128, 128)") {
+			$("#endDate").removeAttr("style");
+			$("#errorMessage").addClass("font-green").removeClass("font-red");
+			$("#errorMessage").html("Now it is correct");		
+		}
+	//	alert(backgroundColorForEndDateInput);
+	}
+	
+	function clearModalBoxToDefault() {
+		$("#endDate").removeAttr("style");
+		$("#errorMessage").html("");	
+		$("#endDate").val("");
+		$("#startDate").val("");
+	}
+	
+	$("#submit").click(checkDateInModal);
+	$("#boxToProvidePeriodForBalanceSummary").on("hidden.bs.modal",clearModalBoxToDefault);
+	
+
+/*	$("#submit").click(function() { 
+		var nr = addZeroToMonthIfNecessary(10);
+		alert(nr);
+		}
+		);	
+	*/		
 	</script>
 	
 	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
