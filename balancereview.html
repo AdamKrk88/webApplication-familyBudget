@@ -222,24 +222,25 @@
 										<option value="4">Your choice</option>
 									</select>
 								</form>
-								<div class="modal fade" id="boxToProvidePeriodForBalanceSummary" tabindex="-1" aria-labelledby="dateRange" aria-hidden="true">
+								<div class="modal fade" id="boxToProvidePeriodForBalanceSummary" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="dateRange" aria-hidden="true">
 									<div class="modal-dialog">
 										<div class="modal-content">
 											<div class="modal-header">
 												<h5 class="modal-title font-size-scaled-from-18px fw-bold" id="dateRange">Provide date range for balance review</h5>
-												<button type="button" class="btn-close  font-size-scaled-from-15px" data-bs-dismiss="modal" aria-label="Close"></button>
+												<button type="button" id="closeModalSymbol" class="btn-close  font-size-scaled-from-15px" data-bs-dismiss="modal" aria-label="Close"></button>
 											</div>
 											<div class="modal-body">
 												<form>
 													<label class="form-label font-color-grey font-size-scaled-from-15px fw-bolder mb-0 d-block text-center" for="startDate">From</label>
 													<input class="form-control form-control-sm fw-bold font-color-grey text-center" type="date" name="startDate" id="startDate" min="2000-01-01" title="Please fill out this field" aria-label="Start date for balance review period" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
 													<label class="form-label font-color-grey font-size-scaled-from-15px fw-bolder mb-0 d-block text-center mt-4" for="endDate">To</label>
-													<input class="form-control form-control-sm fw-bold font-color-grey text-center" type="date" name="endDate" id="endDate" min="2000-01-01" title="Please fill out this field" aria-label="End date for balance review period" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
+													<input class="form-control form-control-sm fw-bold font-color-grey text-center" type="date" name="endDate" id="endDate" min="2000-01-01" title="Please fill out this field" aria-label="End date for balance review period" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')"/>
 												</form>
 											</div>
 											<div class="modal-footer">
-												<button type="button" class="btn button-grey-color fw-bold font-size-scaled-from-15px" data-bs-dismiss="modal" aria-label="Close">Close</button>
-												<button type="button" class="btn button-grey-color fw-bold font-size-scaled-from-15px" aria-label="Save date range">Save the period</button>
+												<span id="errorMessage" class="flex-fill text-center fw-bold font-size-scaled-from-15px font-red"></span>
+												<button type="button" id="closeModalButton" class="btn button-grey-color fw-bold font-size-scaled-from-15px" data-bs-dismiss="modal" aria-label="Close">Close</button>
+												<button type="button" id="submitModalButton" class="btn button-grey-color fw-bold font-size-scaled-from-15px" aria-label="Save date range">Save the period</button>
 											</div>
 										</div>
 									</div>
@@ -333,14 +334,127 @@
 	
 	<script src="https://code.jquery.com/jquery-3.6.1.slim.min.js" integrity="sha256-w8CvhFs7iHNVUtnSP0YKEg00p9Ih13rlL9zGqvLdePA=" crossorigin="anonymous"></script>
 	<script>
-	$(document).ready(function(){ //Make script DOM ready
-		$('#periodForBalanceSummary').change(function() { //jQuery Change Function
-			var opval = $(this).val(); //Get value from select element
-			if(opval=="4"){ //Compare it and if true
-				$('#boxToProvidePeriodForBalanceSummary').modal("show"); //Open Modal
+	var optionValuePrevious = 1;
+	
+	function getCurrentOption() {
+		var optionValueCurrent = $(this).val();
+		if (optionValueCurrent != 4) {
+			optionValuePrevious = optionValueCurrent;
+		}
+	}
+		
+	$(document).ready(function(){
+		$('#periodForBalanceSummary').click(getCurrentOption);
+	
+		$('#periodForBalanceSummary').change(function() { 
+			var optionValueNew = $(this).val(); 
+			if(optionValueNew=="4"){ 
+				$('#boxToProvidePeriodForBalanceSummary').modal("show"); 
 			}
 		});
+		
+		$("#closeModalSymbol").click(function() {
+			$('#periodForBalanceSummary').val(optionValuePrevious);
+		});
+		
+		$("#closeModalButton").click(function() {
+			$('#periodForBalanceSummary').val(optionValuePrevious);
+		});
+		
 	});
+	</script>
+	
+	<script>
+	function addZeroToDayOrMonthIfNecessaryAndConvertToString(number) {
+		if (number < 10) {
+			number = "0" + number;
+		}
+		else {
+			number = number.toString();
+		}
+		return number
+	}
+	
+	function convertDateFromInputToNumber(dateObject) {		
+		var dayNumber = dateObject.getDate();
+		var day = addZeroToDayOrMonthIfNecessaryAndConvertToString(dayNumber);
+		var monthNumber = dateObject.getMonth() + 1;
+		var month = addZeroToDayOrMonthIfNecessaryAndConvertToString(monthNumber);
+		var year = dateObject.getFullYear().toString();
+		var dateAsString = year + month + day;
+		return parseInt(dateAsString);
+	}
+	
+	function clearModalBoxToDefault() {
+		$("#startDate").removeAttr("style");
+		$("#endDate").removeAttr("style");
+		$("#errorMessage").html("");	
+		$("#endDate").val("");
+		$("#startDate").val("");
+	}	
+	
+	function returnCurrentDateAsNumber() {
+		var currentDateObject=new Date();
+		var currentDateAsInteger = convertDateFromInputToNumber(currentDateObject);
+		return currentDateAsInteger;	
+	}	
+	
+	function checkDateInModal() {	
+		var startDateValue =$("#startDate").val();
+		var endDateValue = $("#endDate").val();
+		if (startDateValue != "" && endDateValue != "") {
+			var startDate = new Date($("#startDate").val());
+			var endDate = new Date($("#endDate").val());
+			var startDateAsInteger = convertDateFromInputToNumber(startDate);
+			var endDateAsInteger = convertDateFromInputToNumber(endDate);
+			var currentDateAsInteger = returnCurrentDateAsNumber();
+			var backgroundColorForEndDateInput = $("#endDate").css("background-color");
+			var backgroundColorForStartDateInput = $("#startDate").css("background-color");
+		}
+	
+		if (startDateValue == "" || endDateValue == "") {
+			$("#errorMessage").addClass("font-red").removeClass("font-green").html("Provide dates");
+		}
+		
+		else if (startDateAsInteger > currentDateAsInteger && endDateAsInteger > currentDateAsInteger ) {
+			$("#startDate").css("background-color","#ff8080");
+			$("#endDate").css("background-color","#ff8080");
+			$("#errorMessage").addClass("font-red").removeClass("font-green").html("Both dates greater than current date");
+		}
+		
+		else if (startDateAsInteger > currentDateAsInteger) {
+			$("#startDate").css("background-color","#ff8080");
+			$("#endDate").removeAttr("style");
+			$("#errorMessage").addClass("font-red").removeClass("font-green").html("Start date greater than current date");
+		}
+		
+		else if (endDateAsInteger > currentDateAsInteger) {
+			$("#endDate").css("background-color","#ff8080");
+			$("#startDate").removeAttr("style");
+			$("#errorMessage").addClass("font-red").removeClass("font-green").html("End date greater than current date");
+		}
+		
+		else if (endDateAsInteger < startDateAsInteger) {
+			$("#startDate").css("background-color","#ff8080");
+			$("#endDate").removeAttr("style");
+			$("#errorMessage").addClass("font-red").removeClass("font-green").html("Start date greater than end date");	
+		}
+		
+		else if (endDateAsInteger >= startDateAsInteger && backgroundColorForEndDateInput == "rgb(255, 255, 255)" && backgroundColorForStartDateInput == "rgb(255, 255, 255)") {
+			$("#errorMessage").html("");	
+		}
+		
+		else if (endDateAsInteger >= startDateAsInteger && (backgroundColorForEndDateInput == "rgb(255, 128, 128)" || backgroundColorForStartDateInput == "rgb(255, 128, 128)")) {
+			$("#startDate").removeAttr("style");
+			$("#endDate").removeAttr("style");
+			$("#errorMessage").addClass("font-green").removeClass("font-red");
+			$("#errorMessage").html("Now it is correct");		
+		}
+	}
+	
+	
+	$("#submitModalButton").click(checkDateInModal);
+	$("#boxToProvidePeriodForBalanceSummary").on("hidden.bs.modal",clearModalBoxToDefault);
 	</script>
 	
 	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
