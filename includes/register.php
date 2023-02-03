@@ -1,5 +1,6 @@
 <?php
 require 'autoloader.php';
+session_start();
 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -16,7 +17,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	//	$connection = $database->getConnectionToDatabase();
 	//	$user->checkIfUserExistInDatabase($connection);
 		$user->insertUserIntoDatabase($connection);
-		Url::redirect('../login.html');
+		session_regenerate_id(true);
+		$_SESSION['is_redirect_after_registration'] = true;
+		Url::redirect('../login.php');
 	}
 }
 
