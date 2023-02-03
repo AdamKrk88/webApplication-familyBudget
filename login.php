@@ -1,28 +1,10 @@
-<!DOCTYPE HTML>
-<html lang="en">
-<head>
-	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1"> 
-	<title>Budget Manager</title>
-	<meta name="description" content="Monitor your incomes and expenses - manage your budget and save money" />
-	<meta name="keywords" content="money, budget, income, expense" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">   
-	<link rel="stylesheet" href="style.css" type="text/css" />
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
-	<!--[if lt IE 9]>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
-	<![endif]-->
-</head>
+<?php
+session_start();
+require 'includes/autoloader.php';
 
-<body>	
-	<header class="d-flex navbar-light-yellow">	
-		<div class="header-login">
-			<img class="me-1 ms-1 d-inline-block align-middle" src="images/gold-ingots.png" alt="Gold bar" /><span class="text-uppercase font-weight-bold align-middle"> Budget Manager</span>
-		</div>
-	</header>
+require 'includes/head.php'; 
+require 'includes/headerLoginRegister.php'; ?>
+
 
 	<div class="container">
 		<div class="row">
@@ -31,12 +13,18 @@
 					<header>     
 						<div class="col-lg-8 col-md-10 offset-lg-2 offset-md-1 mt-4-dot-5">
 							<h1 class="fw-bolder font-color-black font-size-scaled-from-45px text-center">Welcome to Budget Manager</h1>
-							<p class="text-center font-color-grey">Please fill the form below to log in. If you don't have account in our service, you can create it by clicking below and follow instruction on registration side</p>   
+							<?php if (!isset($_SESSION['is_redirect_after_registration'])): ?>
+							<p class="text-center font-color-grey">Please fill the form below to log in. If you don't have account in our service, you can create it by clicking below and follow instruction on registration side</p> 
+							<?php elseif (isset($_SESSION['is_redirect_after_registration']) && $_SESSION['is_redirect_after_registration']): ?>
+							<p class="text-center font-orange">Your registration is successful. You can log in</p> 	
+							<?php endif; ?>  
 						</div>
 					</header> 
 					<div class="col-lg-5 col-md-6 col-sm-7 bg-light-grey mx-auto p-2 mt-2">
 						<h2 class="font-color-black fw-bolder font-size-scaled-from-30px mb-1">Log in</h2>
-						<p class="font-color-black"><span class="font-light-orange">Do not have an account?</span> Create one <a class="font-color-black link-registration" href="#">here </a></p>
+						<?php if (!isset($_SESSION['is_redirect_after_registration'])): ?>
+						<p class="font-color-black"><span class="font-light-orange">Do not have an account?</span> Create one <a class="font-color-black link-registration" href="registration.php">here </a></p>
+						<?php endif; ?>  
 						<form class="lh-1" action="index.php" method="post">
 							<label class="form-label font-color-grey font-size-scaled-from-15px fw-bolder mb-1" for="name">Name or email address</label>
 							<input class="form-control form-control-sm fw-bold font-color-grey" type="text" name="name" id="name" title="Please fill out this field" aria-label="Name or email address input for login" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
@@ -56,7 +44,13 @@
 			</footer>
 		</div>
 	</div>	
-					
+	
+	<?php
+	if (isset($_SESSION['is_redirect_after_registration']) && $_SESSION['is_redirect_after_registration']) {
+	Authorization::destroySessionCompletely();
+	}
+	?>
+
 	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js" integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous"></script>   
 
