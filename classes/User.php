@@ -61,6 +61,7 @@
         }
         elseif ($this->email != '') {
             $this->email = $this->test_input($this->email);
+            $this->email = filter_var($this->email, FILTER_SANITIZE_EMAIL);
             if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
             $this->errors[] = "Invalid email format";
             }
@@ -87,12 +88,44 @@
         return false;
     }
 
+    public function validateLogin($nameOrEmail) {
+        if ($nameOrEmail == '') {
+            $this->errors[] = 'Name or email is required';
+        }
+        
+        if ($this->password == '') {
+            $this->errors[] = 'Password is required';
+        }
+
+        if (empty($this->errors)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function identifyUserInDatabase($dbConnection, $nameOrEmail) {
+        $sql = "SELECT *
+                FROM user
+                WHERE name = :name OR email = :email";
+        $stmt = $dbConnection->prepare($sql);
+        $stmt->bindValue(':name', $nameOrEmail, PDO::PARAM_STR);
+        $stmt->bindValue(':email', $nameOrEmail, PDO::PARAM_STR);
+        $stmt->execute();
+    //    $stmt->setFetchMode(PDO::FETCH_CLASS,'User');
+        if ($userDataInArray = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            return password_verify($this->password,$userDataInArray["password"]);
+        }
+        return false;
+    }
+
+
     public function insertUserIntoDatabase($dbConnection) {
-        $sql = "INSERT INTO user (name, email_address, password)
-                VALUES (:name, :email_address, :password)";
+        $sql = "INSERT INTO user (name, email, password)
+                VALUES (:name, :email, :password)";
         $stmt = $dbConnection->prepare($sql);
         $stmt->bindValue(':name', $this->name, PDO::PARAM_STR);
-        $stmt->bindValue(':email_address', $this->email, PDO::PARAM_STR);
+        $stmt->bindValue(':email', $this->email, PDO::PARAM_STR);
         $stmt->bindValue(':password', $this->password, PDO::PARAM_STR);
         $stmt->execute();
     }

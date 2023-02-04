@@ -2,6 +2,32 @@
 session_start();
 require 'includes/autoloader.php';
 
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+	$user = new User();
+	$nameOrEmail = $_POST['nameOrEmail'];
+    $user->password = $_POST['password'];
+	$database = new Database(DB_HOST,DB_NAME,DB_USER,DB_PASS);
+	$connection = $database->getConnectionToDatabase();
+	$_SESSION['userLogged'] = false;
+	
+	if ($user->validateLogin($nameOrEmail)) {
+		$nameOrEmail = $user->test_input($nameOrEmail);
+		if ($user->identifyUserInDatabase($connection, $nameOrEmail)) {
+			session_regenerate_id(true);
+			$_SESSION['userLogged'] = true;
+			Url::redirect('index.html');
+		};
+	//	$database = new Database(DB_HOST,DB_NAME,DB_USER,DB_PASS);
+	//	$connection = $database->getConnectionToDatabase();
+	//	$user->checkIfUserExistInDatabase($connection);
+	//	$user->insertUserIntoDatabase($connection);
+	//	session_regenerate_id(true);
+//		$_SESSION['is_redirect_after_registration'] = true;
+//		Url::redirect('../login.php');
+	}
+}
+
+
 require 'includes/head.php'; 
 require 'includes/headerLoginRegister.php'; ?>
 
@@ -13,10 +39,12 @@ require 'includes/headerLoginRegister.php'; ?>
 					<header>     
 						<div class="col-lg-8 col-md-10 offset-lg-2 offset-md-1 mt-4-dot-5">
 							<h1 class="fw-bolder font-color-black font-size-scaled-from-45px text-center">Welcome to Budget Manager</h1>
-							<?php if (!isset($_SESSION['is_redirect_after_registration'])): ?>
+							<?php if (!isset($_SESSION['is_redirect_after_registration']) && !isset($_SESSION['userLogged'])): ?>
 							<p class="text-center font-color-grey">Please fill the form below to log in. If you don't have account in our service, you can create it by clicking below and follow instruction on registration side</p> 
-							<?php elseif (isset($_SESSION['is_redirect_after_registration']) && $_SESSION['is_redirect_after_registration']): ?>
+							<?php elseif (isset($_SESSION['is_redirect_after_registration'])): ?>
 							<p class="text-center font-orange">Your registration is successful. You can log in</p> 	
+							<?php elseif (isset($_SESSION['userLogged'])): ?>	
+							<p class="text-center font-orange">Login data incorrect. Please try again</p>								
 							<?php endif; ?>  
 						</div>
 					</header> 
@@ -25,9 +53,9 @@ require 'includes/headerLoginRegister.php'; ?>
 						<?php if (!isset($_SESSION['is_redirect_after_registration'])): ?>
 						<p class="font-color-black"><span class="font-light-orange">Do not have an account?</span> Create one <a class="font-color-black link-registration" href="registration.php">here </a></p>
 						<?php endif; ?>  
-						<form class="lh-1" action="index.php" method="post">
-							<label class="form-label font-color-grey font-size-scaled-from-15px fw-bolder mb-1" for="name">Name or email address</label>
-							<input class="form-control form-control-sm fw-bold font-color-grey" type="text" name="name" id="name" title="Please fill out this field" aria-label="Name or email address input for login" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
+						<form class="lh-1" method="post">
+							<label class="form-label font-color-grey font-size-scaled-from-15px fw-bolder mb-1" for="nameOrEmail">Name or email address</label>
+							<input class="form-control form-control-sm fw-bold font-color-grey" type="text" name="nameOrEmail" id="nameOrEmail" title="Please fill out this field" aria-label="Name or email address input for login" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
 							<label class="form-label font-color-grey font-size-scaled-from-15px fw-bolder mb-1" for="password">Password</label>
 							<input class="form-control form-control-sm fw-bold font-color-grey" type="password" name="password" id="password" title="Please fill out this field" aria-label="Password input for login" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
 							<div class="d-grid mt-5">
@@ -46,7 +74,8 @@ require 'includes/headerLoginRegister.php'; ?>
 	</div>	
 	
 	<?php
-	if (isset($_SESSION['is_redirect_after_registration']) && $_SESSION['is_redirect_after_registration']) {
+	
+	if (isset($_SESSION['is_redirect_after_registration']) || isset($_SESSION['userLogged'])) {
 	Authorization::destroySessionCompletely();
 	}
 	?>
