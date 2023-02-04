@@ -2,6 +2,12 @@
 session_start();
 require 'includes/autoloader.php';
 
+if (isset($_SESSION['userLogged'])) {
+	if($_SESSION['userLogged']) {
+		Authorization::destroySessionCompletely();
+	}
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$user = new User();
 	$nameOrEmail = $_POST['nameOrEmail'];
@@ -15,15 +21,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		if ($user->identifyUserInDatabase($connection, $nameOrEmail)) {
 			session_regenerate_id(true);
 			$_SESSION['userLogged'] = true;
-			Url::redirect('index.html');
+			Url::redirect('index.php');
 		};
-	//	$database = new Database(DB_HOST,DB_NAME,DB_USER,DB_PASS);
-	//	$connection = $database->getConnectionToDatabase();
-	//	$user->checkIfUserExistInDatabase($connection);
-	//	$user->insertUserIntoDatabase($connection);
-	//	session_regenerate_id(true);
-//		$_SESSION['is_redirect_after_registration'] = true;
-//		Url::redirect('../login.php');
 	}
 }
 
