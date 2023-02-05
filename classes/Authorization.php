@@ -31,4 +31,9 @@ class Authorization {
 
     }
 
+    public static function checkAuthorization() {
+        if (!isset($_SESSION['userLogged'])) {
+            Url::redirect('noauthorization.php');
+        }
+    }
 }
