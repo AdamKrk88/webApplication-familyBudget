@@ -36,5 +36,4 @@ class Authorization {
             Url::redirect('noauthorization.php');
         }
     }
-
 }
