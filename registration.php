@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$user->password = password_hash($user->password, PASSWORD_DEFAULT);
 		$connection = new Database(DB_HOST,DB_NAME,DB_USER,DB_PASS);
 		$user->insertUserIntoDatabase($connection);
-		Url::redirect('login.html'); 
+		Url::redirect('index.html'); 
 	}
 
 	
