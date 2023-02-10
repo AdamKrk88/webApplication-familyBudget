@@ -68,7 +68,7 @@ body
 
 .navbar .navbar-brand:focus
 {
-	outline: none;
+	outline: none; 
 }
 
 .navbar .navbar-nav .nav-item:not(:last-child) .nav-link 

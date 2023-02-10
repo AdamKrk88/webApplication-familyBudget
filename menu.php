@@ -17,7 +17,7 @@ require 'includes/head.php';
 			</button>
 			<div class="collapse navbar-collapse" id="mainmenu">
 				<ul class="navbar-nav ms-auto">
-					<li class="nav-item text-center"><a class="nav-link" href="addincome.html">Add income</a></li>
+					<li class="nav-item text-center"><a class="nav-link" href="addincome.php">Add income</a></li>
 					<li class="nav-item text-center"><a class="nav-link" href="addexpense.html">Add expense</a></li>
 					<li class="nav-item text-center"><a class="nav-link" href="balancereview.html">Review balance</a></li>
 					<li class="nav-item text-center"><a class="nav-link" href="#">Settings</a></li>
