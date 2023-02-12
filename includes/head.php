@@ -7,7 +7,7 @@
 	<meta name="description" content="Monitor your incomes and expenses - manage your budget and save money" />
 	<meta name="keywords" content="money, budget, income, expense" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">   
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous"> 	
 	<link rel="stylesheet" href="../css/style.css" type="text/css" />
 	<link rel="stylesheet" href="../css/fontello.css" type="text/css" />
 	<link rel="preconnect" href="https://fonts.googleapis.com">

@@ -32,8 +32,11 @@ require 'includes/head.php';
 		<div class="container height-no-navbar">
 			<article class="h-100">
 				<div class ="row g-0 h-85 align-items-center justify-content-center">
-					<div class="col-lg-8  col-md-10 col-sm-12 bg-light-grey">
+					<div class="col-lg-8  col-md-10 col-sm-12 bg-light-grey position-relative">  
 						<div class="row">
+							<div class="col-12 position-absolute top-0 start-50 p-0 text-center translate-middle" id="incomeRegisterConfirmation">
+								<p class="font-color-grey mb-5"></p>
+							</div>
 							<div class="col-md-6 align-self-center pt-1 pt-md-0 pt-md-2">
 								<header>
 									<h2 class="font-color-black fw-bolder font-size-scaled-from-30px me-0 my-0 ms-4 text-md-start text-center">Add income</h2>
@@ -73,14 +76,14 @@ require 'includes/head.php';
 								</form>
 								<div class="underline"></div>
 								<div class="d-flex flex-column">
-								<div class="btn-customized-group px-2" role="group">
-									<button class="w-50 btn button-grey-color fw-bold font-size-scaled-from-15px mt-2 me-1" id="buttonToSubmitForm" type="submit" aria-label="Add income">Add</button>
-									<a class="w-50 btn button-grey-color fw-bold font-size-scaled-from-15px mt-2 ms-1" href="index.html">Cancel</a>
-								</div>
+									<div class="btn-customized-group px-2" role="group">
+										<button class="w-50 btn button-grey-color fw-bold font-size-scaled-from-15px mt-2 me-1" id="buttonToSubmitForm" type="submit" aria-label="Add income">Add</button>
+										<a class="w-50 btn button-grey-color fw-bold font-size-scaled-from-15px mt-2 ms-1" href="index.html">Cancel</a>
+									</div>
 								</div>								
 							</div>
 						</div>
-					</div>	
+					</div>				
 				</div>	
 			</article>
 		</div>
@@ -110,6 +113,21 @@ require 'includes/head.php';
 	
 		amountInput.attr('min','0.01');
 		dateInput.attr('min','2020-01-01');
+
+/*		inputBox.addEventListener("input", function() {
+  this.value = this.value.replace(/[e\+\-]/gi, "");
+});  */
+
+	amountInput.get(0).oninput = function() {
+		this.value = this.value.replace(/[e\+\-]/gi, "");
+	}; 
+
+
+		amountInput.keypress(function(e) {
+			if (e.which < 48 || e.which > 57) {
+			e.preventDefault();
+			}
+		});
 		
 //		$("").on("invalid", function(event) {
  //   console.log(event.type);
@@ -147,6 +165,10 @@ require 'includes/head.php';
 
 				}); 
 */
+
+
+
+
 		$('#buttonToSubmitForm').click(function() {
 			amountInput.get(0).required = false;
 			dateInput.get(0).required = false;
@@ -154,6 +176,7 @@ require 'includes/head.php';
 			$('#logoForPage').focus();
 			
 			if(amountInput.val() =='') {
+			$('#incomeRegisterConfirmation > p').html('');
 			amountInput.get(0).required = true;
 			amountInput.get(0).oninput = function() {this.setCustomValidity('');};
 			amountInput.get(0).oninvalid = function() {this.setCustomValidity('Please fill out this field');};
@@ -161,12 +184,14 @@ require 'includes/head.php';
 			isRequiredFieldsBlank = true;
 			}
 			else if(dateInput.val() =='') {
+			$('#incomeRegisterConfirmation > p').html('');
 			dateInput.get(0).required = true;
 			dateInput.get(0).oninput = function() {this.setCustomValidity('');};
 			dateInput.get(0).oninvalid = function() {this.setCustomValidity('Please fill out this field');};
 			dateInput.get(0).reportValidity();
 			isRequiredFieldsBlank = true;
 			}
+			
 		//	const validityState = $('#amount').get(0).validity;
 		
 //if (validityState.valueMissing) {
@@ -205,7 +230,7 @@ require 'includes/head.php';
 		
 
 		//	$('#amount').get(0).setCustomValidity('Invalid');
-			
+		
 		if (!isRequiredFieldsBlank) {
 			$.ajax({
 				type: "POST",
@@ -216,10 +241,13 @@ require 'includes/head.php';
 					type: "POST",
 					url: "/includes/insertIncomePartTwo.php",
 					data: $('#secondForm').serialize(),
-				});
+					success: function() {
+						$('#incomeRegisterConfirmation > p').html('Income is registered successfully. Click <a href=\"addincome.php\" class=\"font-color-grey link-registration-income-expense\">here</a> to insert next one');
+						$('#buttonToSubmitForm').prop('disabled', true);
+					}});
 			});
 		}  
-		});
+		});   
 	});
 
 	</script>

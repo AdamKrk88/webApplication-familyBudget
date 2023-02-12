@@ -49,7 +49,7 @@ require 'includes/headerLoginRegister.php'; ?>
 					<div class="col-lg-5 col-md-6 col-sm-7 bg-light-grey mx-auto p-2 mt-2">
 						<h2 class="font-color-black fw-bolder font-size-scaled-from-30px mb-1">Log in</h2>
 						<?php if (!isset($_SESSION['is_redirect_after_registration'])): ?>
-						<p class="font-color-black"><span class="font-light-orange">Do not have an account?</span> Create one <a class="font-color-black link-registration" href="registration.php">here </a></p>
+						<p class="font-color-black"><span class="font-light-orange">Do not have an account?</span> Create one <a class="font-color-black link-registration-income-expense" href="registration.php">here </a></p>
 						<?php endif; ?>
 						<form class="lh-1" method="post">
 							<label class="form-label font-color-grey font-size-scaled-from-15px fw-bolder mb-1" for="nameOrEmail">Name or email address</label>
