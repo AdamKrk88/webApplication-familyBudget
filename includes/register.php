@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$user->insertUserIntoDatabase($connection);
 		session_regenerate_id(true);
 		$_SESSION['is_redirect_after_registration'] = true;
-		Url::redirect('../login.php');
+		Url::redirect('../index.php');
 	}
 }
 

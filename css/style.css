@@ -12,6 +12,7 @@ body
 	font-size: 30px;
 	font-weight: 700;
 	height: 100%;
+	user-select: none;
 }
 
 .navbar-brand
@@ -68,7 +69,7 @@ body
 
 .navbar .navbar-brand:focus
 {
-	outline: none;
+	outline: none; 
 }
 
 .navbar .navbar-nav .nav-item:not(:last-child) .nav-link 
@@ -196,13 +197,13 @@ ul
 	font-size: 17px;
 }
 
-a.link-registration
+a.link-registration-income-expense
 {
-	text-decoration: none;
+	text-decoration: none !important;
 	outline: none;	
 }
 
-a.link-registration:hover
+a.link-registration-income-expense:hover
 {
 	color: #ff6600;
 }

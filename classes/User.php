@@ -36,13 +36,13 @@
      */
     public $errors = [];
  
-    public function test_input($data) {
+   /* public function test_input($data) {
         $data = trim($data);
         $data = stripslashes($data);
         $data = htmlspecialchars($data);
         return $data;
       }
-
+*/
 
 
 
@@ -51,7 +51,7 @@
             $this->errors[] = 'Name is required';
         }
         elseif ($this->name != '') {
-            $this->name = $this->test_input($this->name);
+            $this->name = Validation::test_input($this->name);
             if (!preg_match("/^[a-zA-Z-' ]*$/",$this->name)) {
             $this->errors[] = "Only letters and white space allowed";
         }
@@ -60,7 +60,7 @@
             $this->errors[] = 'Email is required';
         }
         elseif ($this->email != '') {
-            $this->email = $this->test_input($this->email);
+            $this->email = Validation::test_input($this->email);
             $this->email = filter_var($this->email, FILTER_SANITIZE_EMAIL);
             if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
             $this->errors[] = "Invalid email format";
@@ -114,7 +114,9 @@
         $stmt->execute();
     //    $stmt->setFetchMode(PDO::FETCH_CLASS,'User');
         if ($userDataInArray = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            return password_verify($this->password,$userDataInArray["password"]);
+            if(password_verify($this->password,$userDataInArray["password"])) {
+                return $userDataInArray;
+            }
         }
         return false;
     }
