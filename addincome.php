@@ -3,8 +3,32 @@ require 'includes/autoloader.php';
 session_start();
 //Authorization::checkAuthorization();
 
-require 'includes/head.php'; 
+//require 'includes/head.php'; 
 ?>
+
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<noscript>
+  		<meta http-equiv="refresh" content="0;url=noscript.php" />
+	</noscript>
+	<meta name="viewport" content="width=device-width, initial-scale=1"> 
+	<title>Budget Manager</title>
+	<meta name="description" content="Monitor your incomes and expenses - manage your budget and save money" />
+	<meta name="keywords" content="money, budget, income, expense" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous"> 	
+	<link rel="stylesheet" href="../css/style.css" type="text/css" />
+	<link rel="stylesheet" href="../css/fontello.css" type="text/css" />
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+	<!--[if lt IE 9]>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+	<![endif]-->
+</head>
+
 
 <body>
 	<header>	
@@ -61,10 +85,10 @@ require 'includes/head.php';
 									<div class="text-center">
 										<label  class="form-label font-color-grey font-size-scaled-from-15px fw-bolder mb-1 me-2" for="categoryOptions">Category</label>  
 										<select class="form-select form-select-sm w-auto d-inline-block fw-bold font-color-grey text-center" id="categoryOptions" name="category" aria-label="Category options for income">
-											<option value="1" selected>Salary</option>
-											<option value="2">Interest income</option>
-											<option value="3">Sale on Allegro</option>
-											<option value="4">Others</option>
+											<option value="Salary" selected>Salary</option>
+											<option value="Interest income">Interest income</option>
+											<option value="Sale on Allegro">Sale on Allegro</option>
+											<option value="Others">Others</option>
 										</select>
 									</div>
 									<div class="d-inline-flex p-2 align-items-center">
@@ -102,10 +126,9 @@ require 'includes/head.php';
 <!--	<script src="https://code.jquery.com/jquery-3.6.1.slim.min.js" integrity="sha256-w8CvhFs7iHNVUtnSP0YKEg00p9Ih13rlL9zGqvLdePA=" crossorigin="anonymous"></script>   -->
 	<script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script> 
 	<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+	
 	<script>
 
-
-	
 	$(document).ready(function() {
 		const amountInput = $('#amount');
 		const dateInput = $('#date');
@@ -113,61 +136,22 @@ require 'includes/head.php';
 	
 		amountInput.attr('min','0.01');
 		dateInput.attr('min','2020-01-01');
+		dateInput.attr('max','2099-12-31');
 
-/*		inputBox.addEventListener("input", function() {
-  this.value = this.value.replace(/[e\+\-]/gi, "");
-});  */
-
-	amountInput.get(0).oninput = function() {
-		this.value = this.value.replace(/[e\+\-]/gi, "");
-	}; 
-
+		amountInput.get(0).oninput = function() {
+			this.value = this.value.replace(/[e\+\-]/gi, "");
+		}; 
 
 		amountInput.keypress(function(e) {
 			if (e.which < 48 || e.which > 57) {
-			e.preventDefault();
+				e.preventDefault();
 			}
 		});
+
+		dateInput.keypress(function(e) {
+			e.preventDefault();
+		});
 		
-//		$("").on("invalid", function(event) {
- //   console.log(event.type);
- /*	
- $('#firstForm').on("invalid", function() {
-    this.setCustomValidity("Please enter a valid input");
-});
-*/
-
-//$('#amount').get(0).oninvalid = function(){alert("tralala");}
-  /* const validityState = $('#amount').get(0).validity;
-
-  if (validityState.valueMissing) {
-    $('#amount').get(0).setCustomValidity('You gotta fill this out, yo!');
-  } 
-
-  $('#amount').get(0).reportValidity();
-
-*/
-
- 	/*
- 	$('#firstForm').validate({
-					rules:{
-						amount:{
-							required: true,
-						},
-					},
-					messages:{
-						amount:{
-							required: "Tralala",
-						},
-					},
-
-		
-
-				}); 
-*/
-
-
-
 
 		$('#buttonToSubmitForm').click(function() {
 			amountInput.get(0).required = false;
@@ -175,83 +159,49 @@ require 'includes/head.php';
 			isRequiredFieldsBlank = false;
 			$('#logoForPage').focus();
 			
-			if(amountInput.val() =='') {
-			$('#incomeRegisterConfirmation > p').html('');
-			amountInput.get(0).required = true;
-			amountInput.get(0).oninput = function() {this.setCustomValidity('');};
-			amountInput.get(0).oninvalid = function() {this.setCustomValidity('Please fill out this field');};
-			amountInput.get(0).reportValidity();
-			isRequiredFieldsBlank = true;
+			if(amountInput.val() =='' || amountInput.val().length - 1 == 0) {
+				$('#incomeRegisterConfirmation > p').html('');
+				amountInput.get(0).required = true;
+				amountInput.get(0).oninput = function() {this.setCustomValidity('');};
+				amountInput.get(0).oninvalid = function() {this.setCustomValidity('Please fill out this field');};
+				amountInput.get(0).reportValidity();
+				isRequiredFieldsBlank = true;
 			}
-			else if(dateInput.val() =='') {
-			$('#incomeRegisterConfirmation > p').html('');
-			dateInput.get(0).required = true;
-			dateInput.get(0).oninput = function() {this.setCustomValidity('');};
-			dateInput.get(0).oninvalid = function() {this.setCustomValidity('Please fill out this field');};
-			dateInput.get(0).reportValidity();
-			isRequiredFieldsBlank = true;
+			else if(dateInput.val() =='' || dateInput.val().length == 0) {
+				$('#incomeRegisterConfirmation > p').html('');
+				dateInput.get(0).required = true;
+				dateInput.get(0).oninput = function() {this.setCustomValidity('');};
+				dateInput.get(0).oninvalid = function() {this.setCustomValidity('Please fill out this field');};
+				dateInput.get(0).reportValidity();
+				isRequiredFieldsBlank = true;
 			}
 			
-		//	const validityState = $('#amount').get(0).validity;
-		
-//if (validityState.valueMissing) {
-//  $('#amount').get(0).setCustomValidity('You gotta fill this out, yo!');
-//  $('#amount').get(0).oninput = function() {this.setCustomValidity('');};
- // $('#amount').get(0).oninvalid = function() {this.setCustomValidity('You gotta fill this out, yo!');};
- // $('#amount').get(0).reportValidity();
-//} 
-//$('#amount').get(0).reportValidity();
-	
-//$('#amount').get(0).reportValidity();
-	
-		//	e.preventDefault();
-   		//	$('#firstForm').submit();
-		
-		
-			//	e.preventDefault();
-		//	var forms = $('form');
-			
-    	//	forms.each(function() {
-				//alert('your message');
-	/*			$('#firstForm').validate({
-					rules:{
-						amount:{
-							required: true,
-						},
-					},
-					messages:{
-						amount:{
-							required: "Tralala",
-						},
-					},
-
-				});  */
-		//	});
-		
-
-		//	$('#amount').get(0).setCustomValidity('Invalid');
-		
-		if (!isRequiredFieldsBlank) {
-			$.ajax({
-				type: "POST",
-				url: "/includes/insertIncomePartOne.php",
-				data: $('#firstForm').serialize(),
-			}).done(function() {
+			if (!isRequiredFieldsBlank) {
 				$.ajax({
 					type: "POST",
-					url: "/includes/insertIncomePartTwo.php",
-					data: $('#secondForm').serialize(),
-					success: function() {
-						$('#incomeRegisterConfirmation > p').html('Income is registered successfully. Click <a href=\"addincome.php\" class=\"font-color-grey link-registration-income-expense\">here</a> to insert next one');
-						$('#buttonToSubmitForm').prop('disabled', true);
-					}});
-			});
-		}  
+					url: "/includes/insertIncomePartOne.php",
+					data: $('#firstForm').serialize(),
+				}).done(function() {
+					$.ajax({
+						type: "POST",
+						url: "/includes/insertIncomePartTwo.php",
+						data: $('#secondForm').serialize(),
+						success: function(errorMessage) {
+							if(!errorMessage) {
+								$('#incomeRegisterConfirmation > p').html('Income is registered successfully. Click <a href=\"addincome.php\" class=\"font-light-orange link-registration-income-expense\">here</a> to insert next one');
+								$('#buttonToSubmitForm').prop('disabled', true);
+							}
+							else {
+								var json = JSON.parse(errorMessage);
+								$('#incomeRegisterConfirmation > p').html(json);
+							}
+						}});
+					});
+			}  
 		});   
 	});
 
 	</script>
-
 
 	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js" integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous"></script>   

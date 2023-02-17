@@ -15,12 +15,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$database = new Database(DB_HOST,DB_NAME,DB_USER,DB_PASS);
 	$connection = $database->getConnectionToDatabase();
 	$_SESSION['userLogged'] = false;
-	
+
 	if ($user->validateLogin($nameOrEmail)) {
-		$nameOrEmail = $user->test_input($nameOrEmail);
-		if ($user->identifyUserInDatabase($connection, $nameOrEmail)) {
-			session_regenerate_id(true);
+		$nameOrEmail = Validation::test_input($nameOrEmail);
+		if ($validationResult = $user->identifyUserInDatabase($connection, $nameOrEmail)) {
+			$_SESSION['userId'] = $validationResult['id'];
 			$_SESSION['userLogged'] = true;
+			session_regenerate_id(true);
 			Url::redirect('menu.php');
 		};
 	}
