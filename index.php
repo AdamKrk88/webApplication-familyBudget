@@ -27,8 +27,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}
 }
 
-require 'includes/head.php'; 
-require 'includes/headerLoginRegister.php'; ?>
+require 'includes/headCharsetLang.php'; 
+require 'includes/headMetaTitleLink.php'; 
+require 'includes/headerLoginRegister.php'; 
+?>
 
 	<div class="container">
 		<div class="row">

@@ -3,37 +3,15 @@ require 'includes/autoloader.php';
 session_start();
 //Authorization::checkAuthorization();
 
-//require 'includes/head.php'; 
+require 'includes/headCharsetLang.php'; 
+require 'includes/noscriptTagInHead.php'; 
+require 'includes/headMetaTitleLink.php';
 ?>
-
-<!DOCTYPE HTML>
-<html lang="en">
-<head>
-	<meta charset="utf-8" />
-	<noscript>
-  		<meta http-equiv="refresh" content="0;url=noscript.php" />
-	</noscript>
-	<meta name="viewport" content="width=device-width, initial-scale=1"> 
-	<title>Budget Manager</title>
-	<meta name="description" content="Monitor your incomes and expenses - manage your budget and save money" />
-	<meta name="keywords" content="money, budget, income, expense" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous"> 	
-	<link rel="stylesheet" href="../css/style.css" type="text/css" />
-	<link rel="stylesheet" href="../css/fontello.css" type="text/css" />
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
-	<!--[if lt IE 9]>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
-	<![endif]-->
-</head>
-
 
 <body>
 	<header>	
 		<nav class="navbar navbar-expand-lg navbar-light-yellow">
-			<a class="navbar-brand" id="logoForPage" href="index.html"><img class="me-1 ms-1 d-inline-block align-middle" src="images/gold-ingots.png" alt="Gold bar" /><span class="text-uppercase font-weight-bold align-middle"> Budget Manager</span></a>
+			<a class="navbar-brand" id="logoForPage" href="menu.php"><img class="me-1 ms-1 d-inline-block align-middle" src="images/gold-ingots.png" alt="Gold bar" /><span class="text-uppercase font-weight-bold align-middle"> Budget Manager</span></a>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainmenu" aria-controls="mainmenu" aria-expanded="false" aria-label="Button to open main menu options">
 				<span class="navbar-toggler-icon">
 					<i class="icon-menu"></i>
@@ -42,7 +20,7 @@ session_start();
 			<div class="collapse navbar-collapse" id="mainmenu">
 				<ul class="navbar-nav ms-auto">
 					<li class="nav-item text-center"><a class="nav-link active" href="#" aria-current="page">Add income</a></li>
-					<li class="nav-item text-center"><a class="nav-link" href="addexpense.html">Add expense</a></li>
+					<li class="nav-item text-center"><a class="nav-link" href="addexpense.php">Add expense</a></li>
 					<li class="nav-item text-center"><a class="nav-link" href="balancereview.html">Review balance</a></li>
 					<li class="nav-item text-center"><a class="nav-link" href="#">Settings</a></li>
 					<li class="nav-item text-center"><a class="nav-link" href="includes/logout.php">Log out</a></li>
@@ -102,7 +80,7 @@ session_start();
 								<div class="d-flex flex-column">
 									<div class="btn-customized-group px-2" role="group">
 										<button class="w-50 btn button-grey-color fw-bold font-size-scaled-from-15px mt-2 me-1" id="buttonToSubmitForm" type="submit" aria-label="Add income">Add</button>
-										<a class="w-50 btn button-grey-color fw-bold font-size-scaled-from-15px mt-2 ms-1" href="index.html">Cancel</a>
+										<a class="w-50 btn button-grey-color fw-bold font-size-scaled-from-15px mt-2 ms-1" href="menu.php">Cancel</a>
 									</div>
 								</div>								
 							</div>
@@ -124,8 +102,7 @@ session_start();
 	</div>
 	
 <!--	<script src="https://code.jquery.com/jquery-3.6.1.slim.min.js" integrity="sha256-w8CvhFs7iHNVUtnSP0YKEg00p9Ih13rlL9zGqvLdePA=" crossorigin="anonymous"></script>   -->
-	<script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script> 
-	<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
 	
 	<script>
 

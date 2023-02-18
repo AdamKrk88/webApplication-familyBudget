@@ -2,8 +2,8 @@
 
 require 'includes/autoloader.php';
 
-
-require 'includes/head.php'; 
+require 'includes/headCharsetLang.php';  
+require 'includes/headMetaTitleLink.php';
 require 'includes/headerLoginRegister.php'; ?>
 
 
