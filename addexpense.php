@@ -1,7 +1,17 @@
 <?php
+session_start();
+require 'includes/autoloader.php';
+//Authorization::checkAuthorization();
+
+$database = new Database(DB_HOST,DB_NAME,DB_USER,DB_PASS);
+$connection = $database->getConnectionToDatabase();
+$categories = Expense::getCategories($connection, $_SESSION['userId']);
+$payments = Expense::getPayments($connection, $_SESSION['userId']);
+
 require 'includes/headCharsetLang.php'; 
 require 'includes/noscriptTagInHead.php'; 
 require 'includes/headMetaTitleLink.php';
+
 ?>
 
 <body>
@@ -49,12 +59,16 @@ require 'includes/headMetaTitleLink.php';
 										<input class="form-control form-control-sm fw-bold font-color-grey text-center" type="date" name="date" id="date" title="Please fill out this field" aria-label="Date of your expense registration" />
 									</div>
 									<div class="w-50 px-2">
+										<?php if(!empty($payments)): ?>
 										<label  class="form-label font-color-grey font-size-scaled-from-15px fw-bolder mb-1" for="paymentOptions">Payment</label>  
 										<select class="form-select form-select-sm fw-bold font-color-grey" id="paymentOptions" name="payment" aria-label="Payment options">
-											<option value="Cash">Cash</option>
-											<option value="Debit card">Debit card</option>
-											<option value="Credit card" selected>Credit card</option>
+											<?php foreach ($payments as $payment): ?>
+											<option value="<?= $payment['payment']; ?>"><?= $payment['payment']; ?></option>
+											<?php endforeach; ?>
 										</select>
+										<?php else: ?>
+										<p class="h-100 py-5 mt-3 text-center font-orange mb-0" id="no-payment-option">No payment option</p>
+										<?php endif; ?>
 									</div>
 								</form>   
 							</div>
@@ -63,26 +77,16 @@ require 'includes/headMetaTitleLink.php';
 								<div class="underline"></div>
 								<form class="lh-1 d-flex flex-column pt-2" action="" method="post" id="secondForm">
 									<div class="text-center">
+										<?php if(!empty($categories)): ?>
 										<label  class="form-label font-color-grey font-size-scaled-from-15px fw-bolder mb-1 me-2" for="categoryOptions">Category</label>  
 										<select class="form-select form-select-sm w-auto d-inline-block fw-bold font-color-grey text-center" id="categoryOptions" name="category" aria-label="Category options">
-											<option value="1" selected>Food</option>
-											<option value="2">Home</option>
-											<option value="3">Transport</option>
-											<option value="4">Telecommunications</option>
-											<option value="5">Healthcare</option>
-											<option value="6">Clothes</option>
-											<option value="7">Hygiene</option>
-											<option value="8">Children</option>
-											<option value="9">Entertainment</option>
-											<option value="10">Trip</option>
-											<option value="11">Training</option>
-											<option value="12">Book</option>
-											<option value="13">Savings</option>
-											<option value="14">Retirement savings</option>
-											<option value="15">Debt repayment</option>
-											<option value="16">Donation</option>
-											<option value="17">Others</option>
+											<?php foreach ($categories as $category): ?>																				
+											<option value="<?= $category['category']; ?>"><?= $category['category']; ?></option>
+											<?php endforeach; ?>										
 										</select>
+										<?php else: ?>
+										<p class="font-orange mb-0" id="no-categories">No categories available</p>
+										<?php endif; ?>
 									</div>
 									<div class="d-inline-flex p-2 align-items-center">
 										<label class="font-color-grey font-size-scaled-from-15px fw-bolder me-2 " for="comment">Comment (optional)</label>
@@ -128,6 +132,10 @@ require 'includes/headMetaTitleLink.php';
 		amountInput.attr('min','0.01');
 		dateInput.attr('min','2020-01-01');
 		dateInput.attr('max','2099-12-31');
+		
+		if ($('#no-categories').length > 0 || $('#no-payment-option').length > 0) {
+			$('#buttonToSubmitForm').prop('disabled', true);
+		}
 
 		amountInput.get(0).oninput = function() {
 			this.value = this.value.replace(/[e\+\-]/gi, "");

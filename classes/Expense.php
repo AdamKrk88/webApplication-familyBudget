@@ -38,4 +38,28 @@ class Expense {
         $stmt->execute();
     }
 
+    public static function getCategories($dbConnection, $user_id) {
+        $sql = "SELECT category_expense.*
+                FROM category_expense
+                WHERE user_id = :user_id";
+
+        $stmt = $dbConnection->prepare($sql);
+        $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public static function getPayments($dbConnection, $user_id) {
+        $sql = "SELECT payment_expense.*
+        FROM payment_expense
+        WHERE user_id = :user_id";
+
+        $stmt = $dbConnection->prepare($sql);
+        $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
 }

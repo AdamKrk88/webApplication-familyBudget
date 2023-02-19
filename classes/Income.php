@@ -35,4 +35,16 @@ class Income {
         $stmt->execute();
     }
 
+    public static function getCategories($dbConnection, $user_id) {
+        $sql = "SELECT category_income.*
+                FROM category_income
+                WHERE user_id = :user_id";
+
+        $stmt = $dbConnection->prepare($sql);
+        $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
 }

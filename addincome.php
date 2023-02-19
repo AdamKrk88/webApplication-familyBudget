@@ -3,6 +3,10 @@ require 'includes/autoloader.php';
 session_start();
 //Authorization::checkAuthorization();
 
+$database = new Database(DB_HOST,DB_NAME,DB_USER,DB_PASS);
+$connection = $database->getConnectionToDatabase();
+$categories = Income::getCategories($connection, $_SESSION['userId']);
+
 require 'includes/headCharsetLang.php'; 
 require 'includes/noscriptTagInHead.php'; 
 require 'includes/headMetaTitleLink.php';
@@ -61,13 +65,16 @@ require 'includes/headMetaTitleLink.php';
 								<div class="underline"></div>
 								<form class="lh-1 d-flex flex-column pt-2" action="" method="post" id="secondForm">
 									<div class="text-center">
+										<?php if(!empty($categories)): ?>
 										<label  class="form-label font-color-grey font-size-scaled-from-15px fw-bolder mb-1 me-2" for="categoryOptions">Category</label>  
-										<select class="form-select form-select-sm w-auto d-inline-block fw-bold font-color-grey text-center" id="categoryOptions" name="category" aria-label="Category options for income">
-											<option value="Salary" selected>Salary</option>
-											<option value="Interest income">Interest income</option>
-											<option value="Sale on Allegro">Sale on Allegro</option>
-											<option value="Others">Others</option>
+										<select class="form-select form-select-sm w-auto d-inline-block fw-bold font-color-grey text-center" id="categoryOptions" name="category" aria-label="Category options for income">	
+											<?php foreach ($categories as $category): ?>																				
+											<option value="<?= $category['category']; ?>"><?= $category['category']; ?></option>
+											<?php endforeach; ?>										
 										</select>
+										<?php else: ?>
+										<p class="font-orange mb-0" id="no-categories">No categories available</p>
+										<?php endif; ?>
 									</div>
 									<div class="d-inline-flex p-2 align-items-center">
 										<label class="font-color-grey font-size-scaled-from-15px fw-bolder me-2 " for="comment">Comment (optional)</label>
@@ -114,6 +121,10 @@ require 'includes/headMetaTitleLink.php';
 		amountInput.attr('min','0.01');
 		dateInput.attr('min','2020-01-01');
 		dateInput.attr('max','2099-12-31');
+
+		if ($('#no-categories').length > 0) {
+			$('#buttonToSubmitForm').prop('disabled', true);
+		}
 
 		amountInput.get(0).oninput = function() {
 			this.value = this.value.replace(/[e\+\-]/gi, "");
