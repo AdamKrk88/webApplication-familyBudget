@@ -1,22 +1,11 @@
-<!DOCTYPE HTML>
-<html lang="en">
-<head>
-	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1"> 
-	<title>Budget Manager</title>
-	<meta name="description" content="Monitor your incomes and expenses - manage your budget and save money" />
-	<meta name="keywords" content="money, budget, income, expense" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">   
-	<link rel="stylesheet" href="css/style.css" type="text/css" />
-	<link rel="stylesheet" href="css/fontello.css" type="text/css" />
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
-	<!--[if lt IE 9]>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
-	<![endif]-->
-</head>
+<?php
+//require 'includes/autoloader.php';
+//session_start();
+//Authorization::checkAuthorization();
+
+require 'includes/headCharsetLang.php';  
+require 'includes/headMetaTitleLink.php';
+?>
 
 <body>	
 	<header>	
@@ -29,11 +18,11 @@
 			</button>
 			<div class="collapse navbar-collapse" id="mainmenu">
 				<ul class="navbar-nav ms-auto">
-					<li class="nav-item text-center"><a class="nav-link" href="addincome.html">Add income</a></li>
-					<li class="nav-item text-center"><a class="nav-link" href="addexpense.html">Add expense</a></li>
+					<li class="nav-item text-center"><a class="nav-link" href="addincome.php">Add income</a></li>
+					<li class="nav-item text-center"><a class="nav-link" href="addexpense.php">Add expense</a></li>
 					<li class="nav-item text-center"><a class="nav-link active" href="#" aria-current="page">Review balance</a></li>
 					<li class="nav-item text-center"><a class="nav-link" href="#">Settings</a></li>
-					<li class="nav-item text-center"><a class="nav-link" href="login.html">Log out</a></li>
+					<li class="nav-item text-center"><a class="nav-link" href="includes/logout.php">Log out</a></li>
 				</ul>
 			</div>
 		</nav>		
@@ -42,7 +31,8 @@
 	<main>
 		<article>
 			<div class="container-fluid height-no-navbar-lg-xl">
-				<div class="row">	
+				<div class="row">
+					<!--
 					<div class="col-lg-8 col-md-6 col-12 mt-2 order-2 order-md-1">
 						<div class="row g-0 bg-light-grey">
 							<div class="col-12 bg-dark-grey">
@@ -54,7 +44,7 @@
 										<tbody>
 											<tr>
 												<th scope="row">Food</th>
-												<td>200</td>
+												<td>100000000</td>
 											</tr>
 											<tr>
 												<th scope="row">Transport</th>
@@ -210,12 +200,13 @@
 							</div>
 						</div>
 					</div>
-					<div class="col-lg-4 col-md-5 col-12 offset-md-1 offset-lg-0 mt-2 order-1 order-md-2">
+					-->
+					<div class="col-md-10 col-12 offset-md-1 mt-2">
 						<div class="row g-0 bg-light-grey">
-							<div class="col-7">
-								<form class="lh-1 d-flex flex-column align-items-center" action="#" method="post">
-									<label  class="form-label font-color-black font-size-scaled-from-18px fw-bolder bg-dark-grey w-100 text-center py-1" for="periodForBalanceSummary">Period</label>  
-									<select class="form-select form-select-sm w-auto fw-bold font-color-grey text-center" id="periodForBalanceSummary" name="period" aria-label="Period for balance review">
+							<div class="col-3">   
+								<form class="lh-1 d-flex flex-column" action="#" method="post">
+									<label  class="form-label font-color-black font-size-scaled-from-18px fw-bolder bg-dark-grey w-100 py-1 ps-2" for="periodForBalanceSummary">Period</label>  
+									<select class="form-select form-select-sm w-auto align-self-start fw-bold font-color-grey text-center ms-1" id="periodForBalanceSummary" name="period" aria-label="Period for balance review">
 										<option value="1" selected>Current month</option>
 										<option value="2">Previous month</option>
 										<option value="3">Current year</option>
@@ -245,12 +236,18 @@
 										</div>
 									</div>
 								</div>									
-							</div>
-							<div class="col-5">
-								<div class="d-flex h-100 flex-column">
-									<h3 class="lh-1 font-color-black fw-bolder font-size-scaled-from-18px bg-dark-grey w-100 text-center mt-0 py-1 form-label">Balance</h3>
-									<p class="font-size-scaled-from-15px bg-light-grey m-auto">2600</p>
-								</div>
+							</div> 
+							<div class="col-3 text-center" style="font-size: 1rem;">  
+								<h3 class="lh-1 font-color-black fw-bolder font-size-scaled-from-18px bg-dark-grey w-100 mt-0 py-1 form-label">Income</h3>
+								<p class="font-size-scaled-from-15px bg-light-grey mb-0 d-inline-block align-middle">Click here</p>
+							</div>   
+							<div class="col-3 text-center" style="font-size: 1rem;">  
+								<h3 class="lh-1 font-color-black fw-bolder font-size-scaled-from-18px bg-dark-grey w-100 mt-0 py-1 form-label">Expense</h3>
+								<p class="font-size-scaled-from-15px bg-light-grey mb-0 d-inline-block align-middle">Click here</p>
+							</div> 
+							<div class="col-3 text-end" style="font-size: 1rem;">
+								<h3 class="lh-1 font-color-black fw-bolder font-size-scaled-from-18px bg-dark-grey w-100 mt-0 py-1 pe-2 form-label">Balance</h3>
+								<p class="font-size-scaled-from-15px bg-light-grey mb-0 d-inline-block align-middle pe-2">10000000</p>
 							</div>
 							<div class="col-12 text-center font-light-stronger-orange">
 								<div class="underline py-1"></div>
@@ -259,6 +256,7 @@
 						</div>																								
 					</div>		
 	
+					<!--
 					<div class="col-lg-8 col-md-6 col-12 mt-lg-4 mt-2 order-3">
 						<div class="row g-0 bg-light-grey">
 							<div class="col-12 bg-dark-grey">
@@ -315,6 +313,7 @@
 							</div>
 						</div>
 					</div>																						
+					-->
 				</div>
 			</div>
 		</article>
