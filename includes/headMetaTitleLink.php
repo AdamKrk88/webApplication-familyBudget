@@ -1,7 +1,3 @@
-<!DOCTYPE HTML>
-<html lang="en">
-<head>
-	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1"> 
 	<title>Budget Manager</title>
 	<meta name="description" content="Monitor your incomes and expenses - manage your budget and save money" />

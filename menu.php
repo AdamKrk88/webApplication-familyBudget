@@ -3,7 +3,8 @@ require 'includes/autoloader.php';
 session_start();
 Authorization::checkAuthorization();
 
-require 'includes/head.php'; 
+require 'includes/headCharsetLang.php';  
+require 'includes/headMetaTitleLink.php';
 ?>
 
 <body>	
@@ -18,7 +19,7 @@ require 'includes/head.php';
 			<div class="collapse navbar-collapse" id="mainmenu">
 				<ul class="navbar-nav ms-auto">
 					<li class="nav-item text-center"><a class="nav-link" href="addincome.php">Add income</a></li>
-					<li class="nav-item text-center"><a class="nav-link" href="addexpense.html">Add expense</a></li>
+					<li class="nav-item text-center"><a class="nav-link" href="addexpense.php">Add expense</a></li>
 					<li class="nav-item text-center"><a class="nav-link" href="balancereview.html">Review balance</a></li>
 					<li class="nav-item text-center"><a class="nav-link" href="#">Settings</a></li>
 					<li class="nav-item text-center"><a class="nav-link" href="includes/logout.php">Log out</a></li>
