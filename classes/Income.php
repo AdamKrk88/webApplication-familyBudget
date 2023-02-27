@@ -47,4 +47,37 @@ class Income {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public static function getCategoryAndRelatedAmount($dbConnection, $user_id, $class, $method) {
+        $sql = "SELECT income.amount, income.date, income.category
+                FROM income
+                WHERE user_id = :user_id";
+
+        $stmt = $dbConnection->prepare($sql);
+        $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $categoryAndAmountsArray = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $categoryKeyTotalAmountValue = [];
+        $categoryTotalAmountValue = [];
+
+        foreach($categoryAndAmountsArray as $singleExpense) {
+    
+            if (call_user_func("$class::$method","{$singleExpense['date']}")) {
+                if(array_key_exists($singleExpense['category'], $categoryKeyTotalAmountValue)) {
+                    $categoryKeyTotalAmountValue[$singleExpense['category']] = round((double)$categoryKeyTotalAmountValue[$singleExpense['category']] + (double)$singleExpense['amount'],2);
+                }
+                else {
+                    $categoryKeyTotalAmountValue[$singleExpense['category']] = (double)$singleExpense['amount'];
+                }
+            }
+
+        }
+
+        foreach($categoryKeyTotalAmountValue as $key => $value) {
+            $categoryTotalAmountValue[] = array($key, $value);
+        }
+
+        return $categoryTotalAmountValue;
+    }
+
 }

@@ -1,7 +1,14 @@
 <?php
-//require 'includes/autoloader.php';
-//session_start();
+require 'includes/autoloader.php';
+session_start();
 //Authorization::checkAuthorization();
+//echo Date::isPreviousMonthDate();
+
+$database = new Database(DB_HOST,DB_NAME,DB_USER,DB_PASS);
+$connection = $database->getConnectionToDatabase();
+$categoryTotalAmountValue = Expense::getCategoryAndRelatedAmount($connection, $_SESSION['userId'], "Date", "isCurrentMonthDate");
+$numberOfCategoriesInFirstTable = floor(count($categoryTotalAmountValue) / 2) + count($categoryTotalAmountValue) % 2;
+$numberOfCategoriesInSecondTable = floor(count($categoryTotalAmountValue) / 2);
 
 require 'includes/headCharsetLang.php';  
 require 'includes/headMetaTitleLink.php';
@@ -30,177 +37,10 @@ require 'includes/headMetaTitleLink.php';
 	
 	<main>
 		<article>
+			
 			<div class="container-fluid height-no-navbar-lg-xl">
 				<div class="row">
-					<!--
-					<div class="col-lg-8 col-md-6 col-12 mt-2 order-2 order-md-1">
-						<div class="row g-0 bg-light-grey">
-							<div class="col-12 bg-dark-grey">
-								<h3 class="font-color-black fw-bolder font-size-scaled-from-18px text-center mb-0 py-1">Expenses</h3>
-							</div>
-							<div class="col-xl-5 col-lg-6 col-md-12 col-sm-7 col-12">
-								<div class="table-responsive d-flex align-items-start justify-content-between">
-									<table class="table table-borderless font-size-scaled-from-13px font-color-black lh-1 w-auto mb-0">							
-										<tbody>
-											<tr>
-												<th scope="row">Food</th>
-												<td>100000000</td>
-											</tr>
-											<tr>
-												<th scope="row">Transport</th>
-												<td>200</td>								
-											</tr>
-											<tr>
-												<th scope="row">Healthcare</th>
-												<td>200</td>						
-											</tr>
-											<tr>
-												<th scope="row">Hygiene</th>
-												<td>200</td>										
-											</tr>
-											<tr>
-												<th scope="row">Entertainment</th>
-												<td>200</td>												
-											</tr>
-											<tr>
-												<th scope="row">Training</th>
-												<td>200</td>											
-											</tr>
-											<tr>
-												<th scope="row">Savings</th>
-												<td>200</td>											
-											</tr>
-											<tr>
-												<th scope="row">Debt repayment</th>
-												<td>200</td>																			
-											</tr>
-										</tbody>	
-									</table>
-		
-									<table class="table table-borderless font-size-scaled-from-13px font-color-black lh-1 w-auto mb-0">				
-										<tbody>
-											<tr>
-												<th scope="row">Home</th>
-												<td>200</td>
-											</tr>
-											<tr>
-												<th scope="row">Telecommunications</th>
-												<td>200</td>
-											</tr>
-											<tr>
-												<th scope="row">Clothes</th>
-												<td>200</td>
-											</tr>
-											<tr>
-												<th scope="row">Children</th>
-												<td>200</td>
-											</tr>
-											<tr>
-												<th scope="row">Trip</th>
-												<td>200</td>
-											</tr>
-											<tr>
-												<th scope="row">Book</th>
-												<td>200</td>
-											</tr>
-											<tr>
-												<th scope="row">Retirement savings</th>
-												<td>200</td>
-											</tr>
-											<tr>
-												<th scope="row">Donation</th>
-												<td>200</td>	
-											</tr>
-											<tr>
-												<th scope="row">Others</th>
-												<td>200</td>	
-											</tr>
-										</tbody>
-									</table>
-								</div>
-							</div>
-							<div class="col-xl-7 col-lg-6 col-md-12 col-sm-5 col-12 pt-4 pb-3 py-lg-0 py-sm-0 pt-md-2 align-self-center">
-								<div class="row g-0 justify-content-xl-end justify-content-lg-between justify-content-md-center justify-content-sm-between  justify-content-center ">													
-									<div class="col-xl-4 col-lg-12 col-md-4 col-sm-12 col-4 p-lg-1 p-sm-1 p-md-0 me-lg-3 me-md-0 mb-sm-2">
-										<div class="piechart mx-auto" id="expenseChart"></div>	
-									</div>	
-									<div class="col-auto lh-1 align-self-center align-self-lg-start align-self-xl-center font-size-scaled-from-13px ps-lg-5 ps-xl-0 pe-xl-2 pe-lg-0 pe-md-2 pe-3 pe-sm-0 ps-sm-1 ps-md-0">
-										<div>
-											<div id="color-red" class="entry-color"></div>  
-											<div class="entry-text">Food</div>  
-										</div>
-										<div>
-											<div id="color-orange" class="entry-color"></div>  
-											<div class="entry-text">Transport</div>  
-										</div>
-										<div>
-											<div id="color-yellow" class="entry-color"></div>  
-											<div class="entry-text">Healthcare</div>  
-										</div>
-										<div>
-											<div id="color-green" class="entry-color"></div>  
-											<div class="entry-text">Hygiene</div>  
-										</div>
-										<div>
-											<div id="color-blue" class="entry-color"></div>  
-											<div class="entry-text">Entertainment</div>  
-										</div>
-										<div>
-											<div id="color-maroon" class="entry-color"></div>  
-											<div class="entry-text">Training</div>  
-										</div>
-										<div>
-											<div id="color-lime" class="entry-color"></div>  
-											<div class="entry-text">Savings</div>  
-										</div>
-										<div>
-											<div id="color-navy" class="entry-color"></div>  
-											<div class="entry-text">Debt repayment</div>  
-										</div>								
-									</div>
-									<div class="col-auto pe-1 pe-lg-3 offset-lg-1 offset-xl-0 lh-1 align-self-center align-self-xl-center font-size-scaled-from-13px align-self-lg-start">										
-										<div>
-											<div id="color-aqua" class="entry-color"></div>  
-											<div class="entry-text">Home</div>  
-										</div>
-										<div>
-											<div id="color-teal" class="entry-color"></div>  
-											<div class="entry-text">Telecommunications</div>  
-										</div>
-										<div>
-											<div id="color-olive" class="entry-color"></div>  
-											<div class="entry-text">Clothes</div>  
-										</div>
-										<div>
-											<div id="color-fuchsia" class="entry-color"></div>  
-											<div class="entry-text">Children</div>  
-										</div>
-										<div>
-											<div id="color-chocolate" class="entry-color"></div>  
-											<div class="entry-text">Trip</div>  
-										</div>
-										<div>
-											<div id="color-coral" class="entry-color"></div>  
-											<div class="entry-text">Book</div>  
-										</div>
-										<div>
-											<div id="color-firebrick" class="entry-color"></div>  
-											<div class="entry-text">Retirement savings</div>  
-										</div>
-										<div>
-											<div id="color-lightpink" class="entry-color"></div>  
-											<div class="entry-text">Donation</div>  
-										</div>
-										<div>
-											<div id="color-steelblue" class="entry-color"></div>  
-											<div class="entry-text">Others</div>  
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					-->
+
 					<div class="col-md-10 col-12 offset-md-1 mt-2">
 						<div class="row g-0 bg-light-grey">
 							<div class="col-3">   
@@ -239,83 +79,74 @@ require 'includes/headMetaTitleLink.php';
 							</div> 
 							<div class="col-3 text-center" style="font-size: 1rem;">  
 								<h3 class="lh-1 font-color-black fw-bolder font-size-scaled-from-18px bg-dark-grey w-100 mt-0 py-1 form-label">Income</h3>
-								<p class="font-size-scaled-from-15px bg-light-grey mb-0 d-inline-block align-middle">Click here</p>
+								<p class="font-size-scaled-from-15px bg-light-grey mb-0 d-inline-block align-middle" id="switcher-incomeLink-presentedInformation">Click <a class="font-light-stronger-orange link-registration-income-expense" id="linkToPresentIncomes" href="">here</a></p>
 							</div>   
 							<div class="col-3 text-center" style="font-size: 1rem;">  
 								<h3 class="lh-1 font-color-black fw-bolder font-size-scaled-from-18px bg-dark-grey w-100 mt-0 py-1 form-label">Expense</h3>
-								<p class="font-size-scaled-from-15px bg-light-grey mb-0 d-inline-block align-middle">Click here</p>
+								<p class="font-size-scaled-from-15px bg-light-grey mb-0 d-inline-block align-middle" id="switcher-expenseLink-presentedInformation">Presented</p>
 							</div> 
 							<div class="col-3 text-end" style="font-size: 1rem;">
 								<h3 class="lh-1 font-color-black fw-bolder font-size-scaled-from-18px bg-dark-grey w-100 mt-0 py-1 pe-2 form-label">Balance</h3>
 								<p class="font-size-scaled-from-15px bg-light-grey mb-0 d-inline-block align-middle pe-2">10000000</p>
 							</div>
-							<div class="col-12 text-center font-light-stronger-orange">
+							<div class="col-12 text-center font-orange">
 								<div class="underline py-1"></div>
 								<p class="font-size-scaled-from-15px mb-0 mt-1">Congratulations. You are focused on efficiency in financial management</p>
 							</div>
 						</div>																								
-					</div>		
-	
-					<!--
-					<div class="col-lg-8 col-md-6 col-12 mt-lg-4 mt-2 order-3">
+					</div>
+					
+					<div class="col-md-10 col-12 offset-md-1 mt-4">
 						<div class="row g-0 bg-light-grey">
 							<div class="col-12 bg-dark-grey">
-								<h3 class="font-color-black fw-bolder font-size-scaled-from-18px text-center mb-0 py-1">Incomes</h3>
+								<h3 class="font-color-black fw-bolder font-size-scaled-from-18px text-center mb-0 py-1" id="presented-table-name">Expenses</h3>
 							</div>
-							<div class="col-xl-5 col-lg-6 col-md-12 col-sm-7 col-12">
-								<div class="table-responsive h-100 d-flex align-items-center justify-content-center">
-									<table class="table table-borderless font-size-scaled-from-13px font-color-black lh-1 w-auto mb-0">							
+							<div class="col-12">
+								<?php if(!empty($categoryTotalAmountValue)): ?>
+								<div class="table-responsive d-flex align-items-start justify-content-between">	
+									<table class="table table-borderless font-size-scaled-from-15px font-color-black lh-1 w-auto mb-0">							
 										<tbody>
+											<?php for($i = 0; $i < count($categoryTotalAmountValue); $i += 2): ?>
 											<tr>
-												<th scope="row">Salary</th>
-												<td>200</td>
+												<th scope="row" id="th<?= $i; ?>"><?= $categoryTotalAmountValue[$i][0]; ?></th>
+												<td id="td<?= $i; ?>"><?= $categoryTotalAmountValue[$i][1]; ?></td>
 											</tr>
+											<?php endfor; ?>
+											<?php for($i = 2 * $numberOfCategoriesInFirstTable; $i < 18; $i += 2): ?>
 											<tr>
-												<th scope="row">Interest income</th>
-												<td>200</td>								
+												<th scope="row" class="p-0" id="th<?= $i; ?>"></th>
+												<td class="p-0" id="td<?= $i; ?>"></td>
 											</tr>
-											<tr>
-												<th scope="row">Sale on Allegro</th>
-												<td>200</td>						
-											</tr>
-											<tr>
-												<th scope="row">Others</th>
-												<td>200</td>										
-											</tr>
+											<?php endfor; ?>
 										</tbody>	
 									</table>
+		
+									<table class="table table-borderless font-size-scaled-from-15px font-color-black lh-1 w-auto mb-0">				
+										<tbody>
+											<?php for($i = 1; $i < count($categoryTotalAmountValue); $i += 2): ?>
+											<tr>
+												<th scope="row" id="th<?= $i; ?>"><?= $categoryTotalAmountValue[$i][0]; ?></th>
+												<td id="td<?= $i; ?>"><?= $categoryTotalAmountValue[$i][1]; ?></td>
+											</tr>
+											<?php endfor; ?>
+											<?php for($i = 2 * $numberOfCategoriesInSecondTable + 1; $i < 18; $i += 2): ?>
+											<tr>	
+												<th scope="row" class="p-0" id="th<?= $i; ?>"></th>
+												<td class="p-0" id="td<?= $i; ?>"></td>
+											</tr>
+											<?php endfor; ?>
+										</tbody>
+									</table>
 								</div>
-							</div>
-							<div class="col-xl-7 col-lg-6 col-md-12 col-sm-5 col-12 pt-4 pb-3 py-lg-0 py-sm-0 pt-md-2 align-self-center">
-								<div class="row g-0 justify-content-center ">													
-									<div class="col-xl-4 col-lg-12 col-md-4 col-sm-12 col-4 p-lg-1 p-sm-1 p-md-0 me-lg-3 me-md-0 mb-sm-2">
-										<div class="piechart mx-auto" id="incomeChart"></div>	
-									</div>	
-									<div class="col-auto lh-1 align-self-center align-self-lg-start align-self-xl-center font-size-scaled-from-13px ps-lg-5 ps-xl-0 pe-xl-2 pe-lg-0 pe-md-3 pe-3 pe-sm-0 ps-sm-2 ps-md-0">
-										<div>
-											<div id="color-red" class="entry-color"></div>  
-											<div class="entry-text">Salary</div>  
-										</div>
-										<div>
-											<div id="color-orange" class="entry-color"></div>  
-											<div class="entry-text">Interest income</div>  
-										</div>
-										<div>
-											<div id="color-yellow" class="entry-color"></div>  
-											<div class="entry-text">Sale on Allegro</div>  
-										</div>
-										<div>
-											<div id="color-green" class="entry-color"></div>  
-											<div class="entry-text">Others</div>  
-										</div>
-									</div>
-								</div>
+								<?php endif; ?>
 							</div>
 						</div>
-					</div>																						
-					-->
+					</div>
+	
+
 				</div>
 			</div>
+			
 		</article>
 	</main>
 	
@@ -329,9 +160,11 @@ require 'includes/headMetaTitleLink.php';
 		</div>
 	</div>
 
-
 	
-	<script src="https://code.jquery.com/jquery-3.6.1.slim.min.js" integrity="sha256-w8CvhFs7iHNVUtnSP0YKEg00p9Ih13rlL9zGqvLdePA=" crossorigin="anonymous"></script>
+
+<!--	<script src="https://code.jquery.com/jquery-3.6.1.slim.min.js" integrity="sha256-w8CvhFs7iHNVUtnSP0YKEg00p9Ih13rlL9zGqvLdePA=" crossorigin="anonymous"></script> -->
+	<script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+	
 	<script>
 	var optionValuePrevious = 1;
 	
@@ -341,8 +174,103 @@ require 'includes/headMetaTitleLink.php';
 			optionValuePrevious = optionValueCurrent;
 		}
 	}
+
+	function isElementEmpty(element) {
+      return !$.trim(element.html())
+  	}
+
+	function switchIncomeExpenseSummary(fileName) {
+	  	$.ajax({
+			url: "/includes/" + fileName + ".php",
+	//		dataType: "html",    
+			success: function(incomeOrExpenseData) {
+				var json = JSON.parse(incomeOrExpenseData);
+				var numberOfIncomeOrExpenseCategories = Object.keys(json).length;
+			//	alert(Object.keys(json).length);
+				var checkIfPaddingIsAdded = false;
+				if (fileName == "incomesPresentation") {
+					$('#presented-table-name').html('Incomes');
+					$('#switcher-incomeLink-presentedInformation').html('Presented');
+					$('#switcher-expenseLink-presentedInformation').html('Click <a class="font-light-stronger-orange link-registration-income-expense" id="linkToPresentExpenses" href="">here</a>');
+				}
+				else if (fileName == "expensesPresentation") {
+					$('#presented-table-name').html('Expenses');
+					$('#switcher-expenseLink-presentedInformation').html('Presented');
+					$('#switcher-incomeLink-presentedInformation').html('Click <a class="font-light-stronger-orange link-registration-income-expense" id="linkToPresentIncomes" href="">here</a>');
+				}
+				for (let i = 0; i < 18; i++) {
+					if (i < numberOfIncomeOrExpenseCategories) {
+						$('#th' + i).html(json[i][0]);
+						$('#td' + i).html(json[i][1]); 
+						checkIfPaddingIsAdded = $('#th' + i).hasClass("p-0");
+					//	alert(checkIfPaddingIsAdded);
+						if (checkIfPaddingIsAdded) {
+							$('#th' + i).removeClass('p-0');
+							$('#td' + i).removeClass('p-0');
+						}
+					}
+					else {
+						$('#th' + i).html("");
+						$('#td' + i).html(""); 
+						checkIfPaddingIsAdded = $('#th' + i).hasClass("p-0");
+						if (!checkIfPaddingIsAdded) {
+							$('#th' + i).addClass('p-0');
+							$('#td' + i).addClass('p-0');
+						}
+					}
+				}
+			}
+		});
+	}
+
+		$("#switcher-expenseLink-presentedInformation").on("click","#linkToPresentExpenses", function(e) {
+			e.preventDefault();
+			switchIncomeExpenseSummary('expensesPresentation');
+		}); 
+
+		$("#switcher-incomeLink-presentedInformation").on("click", "#linkToPresentIncomes", function(e) {
+			e.preventDefault();
+			switchIncomeExpenseSummary('incomesPresentation');
+		});  
+
+
+
+/*
+		$("div p#switcher-expenseLink-presentedInformation > a#linkToPresentExpenses").on("click", function(e) {
+			e.preventDefault();
+			switchIncomeExpenseSummary('expensesPresentation');
+		}); 
+
+		$("div p#switcher-incomeLink-presentedInformation > a#linkToPresentIncomes").on("click", function(e) {
+			e.preventDefault();
+			switchIncomeExpenseSummary('incomesPresentation');
+		});  
+*/
+		/*
+		$('#linkToPresentIncomes').click(function(e) {
+		//	e.preventDefault();
+			switchIncomeExpenseSummary('incomesPresentation',e);
+		});  
+
+		$('#linkToPresentExpenses').click(function(e) {
+			//e.preventDefault();
+			switchIncomeExpenseSummary('expensesPresentation',e);
+		}); 
+*/
 		
+	
+	
 	$(document).ready(function(){
+/*		$('#linkToPresentIncomes').click(function(e) {
+		//	e.preventDefault();
+			switchIncomeExpenseSummary('incomesPresentation',e);
+		});  
+
+		$('#linkToPresentExpenses').click(function(e) {
+			//e.preventDefault();
+			switchIncomeExpenseSummary('expensesPresentation',e);
+		}); 
+*/
 		$('#periodForBalanceSummary').click(getCurrentOption);
 	
 		$('#periodForBalanceSummary').change(function() { 
@@ -359,6 +287,47 @@ require 'includes/headMetaTitleLink.php';
 		$("#closeModalButton").click(function() {
 			$('#periodForBalanceSummary').val(optionValuePrevious);
 		});
+
+
+/*
+		for (let i = 0; i < 18; i++) {
+			let thElement = $('#th' + i);
+			let tdElement = $('#td' + i); 
+
+			if (isElementEmpty(thElement) && isElementEmpty(tdElement)) {
+				thElement.addClass('p-0');
+				tdElement.addClass('p-0');
+			}
+		}
+*/
+/* Click <a class="font-light-stronger-orange link-registration-income-expense" href="#">here</a> */
+
+/*
+		$.ajax({
+			type: "POST",
+			url: "/includes/insertExpensePartOne.php",
+			data: $('#firstForm').serialize(),
+		}).done(function() {
+			$.ajax({
+				type: "POST",
+				url: "/includes/insertExpensePartTwo.php",
+				data: $('#secondForm').serialize(),
+				success: function(errorMessage) {
+					if(!errorMessage) {
+						$('#expenseRegisterConfirmation > p').html('Expense is registered successfully. Click <a href=\"addexpense.php\" class=\"font-light-orange link-registration-income-expense\">here</a> to insert next one');
+						$('#buttonToSubmitForm').prop('disabled', true);
+					}
+					else {
+						var json = JSON.parse(errorMessage);
+						$('#expenseRegisterConfirmation > p').html(json);
+					}
+				}});
+			});
+*/
+
+
+
+
 		
 	});
 	</script>

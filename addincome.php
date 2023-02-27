@@ -25,7 +25,7 @@ require 'includes/headMetaTitleLink.php';
 				<ul class="navbar-nav ms-auto">
 					<li class="nav-item text-center"><a class="nav-link active" href="#" aria-current="page">Add income</a></li>
 					<li class="nav-item text-center"><a class="nav-link" href="addexpense.php">Add expense</a></li>
-					<li class="nav-item text-center"><a class="nav-link" href="balancereview.html">Review balance</a></li>
+					<li class="nav-item text-center"><a class="nav-link" href="balancereview.php">Review balance</a></li>
 					<li class="nav-item text-center"><a class="nav-link" href="#">Settings</a></li>
 					<li class="nav-item text-center"><a class="nav-link" href="includes/logout.php">Log out</a></li>
 				</ul>
