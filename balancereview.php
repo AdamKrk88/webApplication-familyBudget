@@ -7,6 +7,7 @@ session_start();
 $database = new Database(DB_HOST,DB_NAME,DB_USER,DB_PASS);
 $connection = $database->getConnectionToDatabase();
 $categoryTotalAmountValue = Expense::getCategoryAndRelatedAmount($connection, $_SESSION['userId'], "Date", "isCurrentMonthDate");
+$balance = Budget::getTotalBalance($connection, $_SESSION['userId'], "Date", "isCurrentMonthDate");
 $numberOfCategoriesInFirstTable = floor(count($categoryTotalAmountValue) / 2) + count($categoryTotalAmountValue) % 2;
 $numberOfCategoriesInSecondTable = floor(count($categoryTotalAmountValue) / 2);
 
@@ -87,11 +88,11 @@ require 'includes/headMetaTitleLink.php';
 							</div> 
 							<div class="col-3 text-end" style="font-size: 1rem;">
 								<h3 class="lh-1 font-color-black fw-bolder font-size-scaled-from-18px bg-dark-grey w-100 mt-0 py-1 pe-2 form-label">Balance</h3>
-								<p class="font-size-scaled-from-15px bg-light-grey mb-0 d-inline-block align-middle pe-2">10000000</p>
+								<p class="font-size-scaled-from-15px bg-light-grey mb-0 d-inline-block align-middle pe-2" id="total-balance"><?= $balance; ?></p>
 							</div>
 							<div class="col-12 text-center font-orange">
 								<div class="underline py-1"></div>
-								<p class="font-size-scaled-from-15px mb-0 mt-1">Congratulations. You are focused on efficiency in financial management</p>
+								<p class="font-size-scaled-from-15px mb-0 mt-1" id="balance-comment"><?php if($balance > 0): ?>Congratulations. You are focused on efficiency in financial management<?php elseif($balance < 0): ?>Your balance is below zero. Review your budget<?php else: ?>Balance is equal to zero<?php endif; ?></p>
 							</div>
 						</div>																								
 					</div>
@@ -99,7 +100,7 @@ require 'includes/headMetaTitleLink.php';
 					<div class="col-md-10 col-12 offset-md-1 mt-4">
 						<div class="row g-0 bg-light-grey">
 							<div class="col-12 bg-dark-grey">
-								<h3 class="font-color-black fw-bolder font-size-scaled-from-18px text-center mb-0 py-1" id="presented-table-name">Expenses</h3>
+								<h3 class="font-color-black fw-bolder font-size-scaled-from-18px text-center mb-0 py-1 position-relative" id="presented-table-name">Expenses</h3>
 							</div>
 							<div class="col-12">
 								<?php if(!empty($categoryTotalAmountValue)): ?>
@@ -149,7 +150,7 @@ require 'includes/headMetaTitleLink.php';
 			
 		</article>
 	</main>
-	
+<!--	<div id='tester'></div>    -->
 	<div class="container position-relative">
 		<div class="row">
 			<footer class="col-12 text-center footer-position">
@@ -167,6 +168,14 @@ require 'includes/headMetaTitleLink.php';
 	
 	<script>
 	var optionValuePrevious = 1;
+	var startDateValue ="0";
+	var endDateValue = "0";
+	var counterForClickEventRelease = 0;
+	var firstOptionClicked = 0;
+	
+	String.prototype.left = function(n) {
+    return this.substring(0, n);
+	}
 	
 	function getCurrentOption() {
 		var optionValueCurrent = $(this).val();
@@ -175,29 +184,116 @@ require 'includes/headMetaTitleLink.php';
 		}
 	}
 
+	function getFirstClickOption(that) {
+		
+		if (counterForClickEventRelease % 2 == 1) {
+			
+		firstOptionClicked = $(that).val();
+	//	alert(firstOptionClicked);
+		}
+	}
+
+	function getSelectedOptionFromDropDownList(that) {
+		return $(that).children("option:selected").val(); 
+	}
+
 	function isElementEmpty(element) {
       return !$.trim(element.html())
   	}
 
-	function switchIncomeExpenseSummary(fileName) {
+	function isElementHasDisabledAttributeOn(attribute) {
+		if (typeof(attribute) !== 'undefined' && attribute !== false) {
+			return true;
+		} 
+		return false;
+	}
+
+	function switchIncomeExpenseSummary(fileName, timePeriodSelectedByUser, isFromDropDownList, isModal, startDateFromModal ='0', endDateFromModal = '0') {
 	  	$.ajax({
-			url: "/includes/" + fileName + ".php",
-	//		dataType: "html",    
+			url: "/includes/" + fileName + ".php",   
+			type: 'get',
+			data: {
+				'timePeriod': timePeriodSelectedByUser, 
+				'isModal': isModal,
+				'startDateFromModal': startDateFromModal,
+				'endDateFromModal': endDateFromModal
+			},
 			success: function(incomeOrExpenseData) {
 				var json = JSON.parse(incomeOrExpenseData);
 				var numberOfIncomeOrExpenseCategories = Object.keys(json).length;
 			//	alert(Object.keys(json).length);
 				var checkIfPaddingIsAdded = false;
-				if (fileName == "incomesPresentation") {
-					$('#presented-table-name').html('Incomes');
-					$('#switcher-incomeLink-presentedInformation').html('Presented');
-					$('#switcher-expenseLink-presentedInformation').html('Click <a class="font-light-stronger-orange link-registration-income-expense" id="linkToPresentExpenses" href="">here</a>');
+			//	alert('I am here');
+				if (!isFromDropDownList) {
+					if (fileName == "incomesPresentation") {
+						$('#presented-table-name').html('Incomes <span class="position-absolute top-50 end-0 translate-middle-y font-size-scaled-from-13px py-1 pe-2" id="date-for-your-choice"></span>');
+					//	alert(startDateFromModal);
+					//	alert(endDateFromModal);
+					//alert(typeof(startDateFromModal));
+				//	$('#date-for-your-choice').html('tralal');
+						if (startDateFromModal != '0' && endDateFromModal != '0' && (startDateFromModal == endDateFromModal)) {
+							$('#date-for-your-choice').html('one day  ' + startDateFromModal);
+						}
+						else if (startDateFromModal != '0' && endDateFromModal != '0') {
+							$('#date-for-your-choice').html('from  ' + startDateFromModal + '  to  ' + endDateFromModal);
+						}
+						else {
+							$('#date-for-your-choice').html('');
+						}
+						$('#switcher-incomeLink-presentedInformation').html('Presented');
+						$('#switcher-expenseLink-presentedInformation').html('Click <a class="font-light-stronger-orange link-registration-income-expense" id="linkToPresentExpenses" href="">here</a>');
+					}
+					else if (fileName == "expensesPresentation") {
+						$('#presented-table-name').html('Expenses <span class="position-absolute top-50 end-0 translate-middle-y font-size-scaled-from-13px py-1 pe-2" id="date-for-your-choice"></span>');
+					//	alert(startDateFromModal);
+					//	alert(endDateFromModal);
+						if (startDateFromModal != '0' && endDateFromModal != '0' && (startDateFromModal == endDateFromModal)) {
+							$('#date-for-your-choice').html('one day  ' + startDateFromModal);
+						}
+						else if (startDateFromModal != '0' && endDateFromModal != '0') {
+							$('#date-for-your-choice').html('from  ' + startDateFromModal + '  to  ' + endDateFromModal);
+						}
+						else {
+							$('#date-for-your-choice').html('');
+						}
+						$('#switcher-expenseLink-presentedInformation').html('Presented');
+						$('#switcher-incomeLink-presentedInformation').html('Click <a class="font-light-stronger-orange link-registration-income-expense" id="linkToPresentIncomes" href="">here</a>');
+					}
 				}
-				else if (fileName == "expensesPresentation") {
-					$('#presented-table-name').html('Expenses');
-					$('#switcher-expenseLink-presentedInformation').html('Presented');
-					$('#switcher-incomeLink-presentedInformation').html('Click <a class="font-light-stronger-orange link-registration-income-expense" id="linkToPresentIncomes" href="">here</a>');
+				else if (isFromDropDownList && !isModal) {
+					$('#date-for-your-choice').html('');
 				}
+
+				if (isModal) {
+					if (fileName == "incomesPresentation") {
+						$('#presented-table-name').html('Incomes <span class="position-absolute top-50 end-0 translate-middle-y font-size-scaled-from-13px py-1 pe-2" id="date-for-your-choice"></span>');
+				
+						if (startDateFromModal != '0' && endDateFromModal != '0' && (startDateFromModal == endDateFromModal)) {
+							$('#date-for-your-choice').html('one day  ' + startDateFromModal);
+						}
+						else if (startDateFromModal != '0' && endDateFromModal != '0') {
+							$('#date-for-your-choice').html('from  ' + startDateFromModal + '  to  ' + endDateFromModal);
+						}
+						else {
+							$('#date-for-your-choice').html('');
+						}
+					}
+
+					else if (fileName == "expensesPresentation") {
+						$('#presented-table-name').html('Expenses <span class="position-absolute top-50 end-0 translate-middle-y font-size-scaled-from-13px py-1 pe-2" id="date-for-your-choice"></span>');
+			
+						if (startDateFromModal != '0' && endDateFromModal != '0' && (startDateFromModal == endDateFromModal)) {
+							$('#date-for-your-choice').html('one day  ' + startDateFromModal);
+						}
+						else if (startDateFromModal != '0' && endDateFromModal != '0') {
+							$('#date-for-your-choice').html('from  ' + startDateFromModal + '  to  ' + endDateFromModal);
+						}
+						else {
+							$('#date-for-your-choice').html('');
+						}
+					}
+				}
+
 				for (let i = 0; i < 18; i++) {
 					if (i < numberOfIncomeOrExpenseCategories) {
 						$('#th' + i).html(json[i][0]);
@@ -223,6 +319,36 @@ require 'includes/headMetaTitleLink.php';
 		});
 	}
 
+	function getTotalBalance(timePeriodSelectedByUser, isModal, startDateFromModal ='0', endDateFromModal = '0') {
+		$.ajax({
+			url: "/includes/totalBalance.php",   
+			type: 'get',
+			data: {
+				'timePeriod': timePeriodSelectedByUser, 
+				'isModal': isModal,
+				'startDateFromModal': startDateFromModal,
+				'endDateFromModal': endDateFromModal
+			},
+			success: function(balance) {
+				var json = JSON.parse(balance);
+				$('#total-balance').html(json);
+				if (json > 0) {
+					$('#balance-comment').html('Congratulations. You are focused on efficiency in financial management');
+				}
+				else if(json < 0) {
+					$('#balance-comment').html('Your balance is below zero. Review your budget');
+				}
+				else {
+					$('#balance-comment').html('Balance is equal to zero');
+				}
+				//alert(typeof(json));
+			}
+		});
+	}
+
+
+
+/*
 		$("#switcher-expenseLink-presentedInformation").on("click","#linkToPresentExpenses", function(e) {
 			e.preventDefault();
 			switchIncomeExpenseSummary('expensesPresentation');
@@ -233,7 +359,7 @@ require 'includes/headMetaTitleLink.php';
 			switchIncomeExpenseSummary('incomesPresentation');
 		});  
 
-
+*/
 
 /*
 		$("div p#switcher-expenseLink-presentedInformation > a#linkToPresentExpenses").on("click", function(e) {
@@ -271,22 +397,154 @@ require 'includes/headMetaTitleLink.php';
 			switchIncomeExpenseSummary('expensesPresentation',e);
 		}); 
 */
-		$('#periodForBalanceSummary').click(getCurrentOption);
+	//	$('#periodForBalanceSummary').click(getCurrentOption);
 	
+	//	$('#boxToProvidePeriodForBalanceSummary').unbind('change');
 		$('#periodForBalanceSummary').change(function() { 
-			var optionValueNew = $(this).val(); 
-			if(optionValueNew=="4"){ 
-				$('#boxToProvidePeriodForBalanceSummary').modal("show"); 
+			var optionValueNew = getSelectedOptionFromDropDownList(this);
+			var typeOfDataReviewed = $('#presented-table-name').text().left(8).trim();
+		//	alert(typeOfDataReviewed);
+		//	if (optionValueNew == "1" || optionValueNew == "2" || optionValueNew == "3") {
+				startDateValue ="0";
+				endDateValue = "0";
+				if (optionValueNew == "1" && typeOfDataReviewed== "Expenses") {
+					switchIncomeExpenseSummary('expensesPresentation', 'isCurrentMonthDate', true, false);
+					getTotalBalance('isCurrentMonthDate', false);
+					// (timePeriodSelectedByUser, isModal, startDateFromModal ='0', endDateFromModal = '0')
+				}
+				else if (optionValueNew == "2" && typeOfDataReviewed== "Expenses") {
+					switchIncomeExpenseSummary('expensesPresentation', 'isPreviousMonthDate', true, false);
+					getTotalBalance('isPreviousMonthDate', false);
+				}
+				else if (optionValueNew == "3" && typeOfDataReviewed== "Expenses") {
+					switchIncomeExpenseSummary('expensesPresentation', 'isCurrentYearDate', true, false);
+					getTotalBalance('isCurrentYearDate', false);
+				}
+				else if (optionValueNew == "1" && typeOfDataReviewed== "Incomes") {
+					switchIncomeExpenseSummary('incomesPresentation', 'isCurrentMonthDate', true, false);
+					getTotalBalance('isCurrentMonthDate', false);
+				}
+				else if (optionValueNew == "2" && typeOfDataReviewed== "Incomes") {
+					switchIncomeExpenseSummary('incomesPresentation', 'isPreviousMonthDate', true, false);
+					getTotalBalance('isPreviousMonthDate', false);
+				}
+				else if (optionValueNew == "3" && typeOfDataReviewed== "Incomes") {
+					switchIncomeExpenseSummary('incomesPresentation', 'isCurrentYearDate', true, false);
+					getTotalBalance('isCurrentYearDate', false);
+				}
+	//		}
+			//var optionValueNew = $(this).children("option:selected").val(); 
+		//	alert(typeOfDataReviewed);
+	//		if(optionValueNew == "4"){ 
+				//$('#boxToProvidePeriodForBalanceSummary').unbind('change');
+				
+		//		$('#boxToProvidePeriodForBalanceSummary').modal("show"); 
+			//	var startDateFromModal = $('#startDate').val();
+			//	var endDateFromModal = $('#endDate').val();
+		//	}
+		});
+
+		$('#periodForBalanceSummary').click(function() {
+		//	getCurrentOption();
+			//alert('tralala');	
+			var currentOptionSelected = $(this).val();
+		//	alert(currentOptionSelected);	
+			counterForClickEventRelease++;
+			getFirstClickOption(this);
+		//	alert('tralala');   //firstOptionClicked
+		
+			if (currentOptionSelected == "4" && counterForClickEventRelease > 1) {
+				$('#boxToProvidePeriodForBalanceSummary').modal("show");
+				
+				const disabledAttributeForButtonsInModal = [$("#closeModalSymbol").attr("disabled"), $("#closeModalButton").attr("disabled"), $("#submitModalButton").attr("disabled"), $("#startDate").attr("disabled"), $("#endDate").attr("disabled")];
+		//		$("#closeModalButton").attr("disabled", true);
+		//		$("#submitModalButton").attr("disabled", true);
+				for (let i = 0; i < disabledAttributeForButtonsInModal.length; i++ ) {
+					if (isElementHasDisabledAttributeOn(disabledAttributeForButtonsInModal[i])) {
+							switch (i) {
+								case 0:
+									$("#closeModalSymbol").removeAttr("disabled");
+									break;
+								case 1:
+									$("#closeModalButton").removeAttr("disabled");
+									break;
+								case 2:
+									$("#submitModalButton").removeAttr("disabled");
+									break;
+								case 3:
+									$("#startDate").removeAttr("disabled");
+									break;
+								case 4:
+									$("#endDate").removeAttr("disabled");
+							}
+					}
+				}
+
+				counterForClickEventRelease = 0;
+				
+		//		alert(typeof($("#closeModalSymbol").attr("disabled")));
+		//		$("#closeModalButton").attr("disabled", true);
+		//		$("#submitModalButton").attr("disabled", true);
+
 			}
 		});
 		
 		$("#closeModalSymbol").click(function() {
-			$('#periodForBalanceSummary').val(optionValuePrevious);
+		//	if ($('#periodForBalanceSummary').children("option:selected").val() != '4') {
+	//		if () {
+			$('#periodForBalanceSummary').val(firstOptionClicked);
+	//		}
+		//	}
 		});
 		
 		$("#closeModalButton").click(function() {
-			$('#periodForBalanceSummary').val(optionValuePrevious);
+		//	if ($('#periodForBalanceSummary').children("option:selected").val() != '4') {
+	//		if () {
+			$('#periodForBalanceSummary').val(firstOptionClicked);   //optionValuePrevious
+	//		}
+		//	}
 		});
+
+
+		$("#switcher-expenseLink-presentedInformation").on("click","#linkToPresentExpenses", function(e) {
+			e.preventDefault();
+			var selectedOptionFromDropDownList = getSelectedOptionFromDropDownList('#periodForBalanceSummary');
+		//	alert(selectedOptionFromDropDownList);
+			if (selectedOptionFromDropDownList == "1") {
+				switchIncomeExpenseSummary('expensesPresentation', 'isCurrentMonthDate', false, false);
+			}
+			else if (selectedOptionFromDropDownList == "2") {
+				switchIncomeExpenseSummary('expensesPresentation', 'isPreviousMonthDate', false, false);
+			}
+			else if (selectedOptionFromDropDownList == "3") {
+				switchIncomeExpenseSummary('expensesPresentation', 'isCurrentYearDate', false, false);
+			}
+			else if (selectedOptionFromDropDownList == "4") {
+		//		startDateValue =$("#startDate").val();   //tutaj
+		//		endDateValue = $("#endDate").val();
+				switchIncomeExpenseSummary('expensesPresentation', 'isTimePeriodProvidedByUser', false, true, startDateValue, endDateValue);
+			}
+		}); 
+
+		$("#switcher-incomeLink-presentedInformation").on("click", "#linkToPresentIncomes", function(e) {
+			e.preventDefault();
+			var selectedOptionFromDropDownList = getSelectedOptionFromDropDownList('#periodForBalanceSummary');
+
+			if (selectedOptionFromDropDownList == "1") {
+				switchIncomeExpenseSummary('incomesPresentation', 'isCurrentMonthDate', false, false);
+			}
+			else if (selectedOptionFromDropDownList == "2") {
+				switchIncomeExpenseSummary('incomesPresentation', 'isPreviousMonthDate', false, false);
+			}
+			else if (selectedOptionFromDropDownList == "3") {
+				switchIncomeExpenseSummary('incomesPresentation', 'isCurrentYearDate', false, false);
+			}
+			else if (selectedOptionFromDropDownList == "4") {
+			//	startDateValue =$("#startDate").val();   //tutaj
+			//	endDateValue = $("#endDate").val();
+				switchIncomeExpenseSummary('incomesPresentation', 'isTimePeriodProvidedByUser', false, true, startDateValue, endDateValue);
+			}
+		});  
 
 
 /*
@@ -330,9 +588,9 @@ require 'includes/headMetaTitleLink.php';
 
 		
 	});
-	</script>
+
 	
-	<script>
+//here was script tag closing and open ones
 	function addZeroToDayOrMonthIfNecessaryAndConvertToString(number) {
 		if (number < 10) {
 			number = "0" + number;
@@ -368,8 +626,8 @@ require 'includes/headMetaTitleLink.php';
 	}	
 	
 	function checkDateInModal() {	
-		var startDateValue =$("#startDate").val();
-		var endDateValue = $("#endDate").val();
+		startDateValue =$("#startDate").val();  //tutaj
+		endDateValue = $("#endDate").val();
 		if (startDateValue != "" && endDateValue != "") {
 			var startDate = new Date($("#startDate").val());
 			var endDate = new Date($("#endDate").val());
@@ -380,48 +638,104 @@ require 'includes/headMetaTitleLink.php';
 			var backgroundColorForStartDateInput = $("#startDate").css("background-color");
 		}
 	
-		if (startDateValue == "" || endDateValue == "") {
+
+
+
+		if (startDateValue == "" || endDateValue == "") { //tutaj
 			$("#errorMessage").addClass("font-red").removeClass("font-green").html("Provide dates");
+			return false;
 		}
 		
 		else if (startDateAsInteger > currentDateAsInteger && endDateAsInteger > currentDateAsInteger ) {
 			$("#startDate").css("background-color","#ff8080");
 			$("#endDate").css("background-color","#ff8080");
 			$("#errorMessage").addClass("font-red").removeClass("font-green").html("Both dates greater than current date");
+			return false;
 		}
 		
 		else if (startDateAsInteger > currentDateAsInteger) {
 			$("#startDate").css("background-color","#ff8080");
 			$("#endDate").removeAttr("style");
 			$("#errorMessage").addClass("font-red").removeClass("font-green").html("Start date greater than current date");
+			return false;
 		}
 		
 		else if (endDateAsInteger > currentDateAsInteger) {
 			$("#endDate").css("background-color","#ff8080");
 			$("#startDate").removeAttr("style");
 			$("#errorMessage").addClass("font-red").removeClass("font-green").html("End date greater than current date");
+			return false;
 		}
 		
 		else if (endDateAsInteger < startDateAsInteger) {
 			$("#startDate").css("background-color","#ff8080");
 			$("#endDate").removeAttr("style");
 			$("#errorMessage").addClass("font-red").removeClass("font-green").html("Start date greater than end date");	
+			return false;
 		}
 		
-		else if (endDateAsInteger >= startDateAsInteger && backgroundColorForEndDateInput == "rgb(255, 255, 255)" && backgroundColorForStartDateInput == "rgb(255, 255, 255)") {
-			$("#errorMessage").html("");	
+/*
+		if (!$("#errorMessage").text() =="") {
+			return false;
 		}
+*/
+
+		if (endDateAsInteger >= startDateAsInteger && backgroundColorForEndDateInput == "rgb(255, 255, 255)" && backgroundColorForStartDateInput == "rgb(255, 255, 255)") {
+		//	setTimeout(() => {alert('Hi')}, 3000);
+			$("#errorMessage").addClass("font-green").removeClass("font-red").html("Correct");	
+
+	}
 		
 		else if (endDateAsInteger >= startDateAsInteger && (backgroundColorForEndDateInput == "rgb(255, 128, 128)" || backgroundColorForStartDateInput == "rgb(255, 128, 128)")) {
 			$("#startDate").removeAttr("style");
 			$("#endDate").removeAttr("style");
-			$("#errorMessage").addClass("font-green").removeClass("font-red");
-			$("#errorMessage").html("Now it is correct");		
+			$("#errorMessage").addClass("font-green").removeClass("font-red").html("Now it is correct");
+		//	$("#errorMessage").html("Now it is correct. Wait 3 sec");		
 		}
+
+		return true;
 	}
 	
 	
-	$("#submitModalButton").click(checkDateInModal);
+	$("#submitModalButton").click(function () {
+		if (checkDateInModal()) {
+		//	startDateValue =$("#startDate").val();   //tutaj
+		//	endDateValue = $("#endDate").val();
+		//	alert(startDateValue);
+		$("#closeModalSymbol").attr("disabled", true);
+		$("#closeModalButton").attr("disabled", true);
+		$("#submitModalButton").attr("disabled", true);
+		$("#startDate").attr("disabled", true);
+		$("#endDate").attr("disabled", true);
+			var typeOfDataReviewed = $('#presented-table-name').text().left(8).trim();
+			//$('#boxToProvidePeriodForBalanceSummary').modal("hide"); 
+
+			$('#boxToProvidePeriodForBalanceSummary').delay(2000).queue(function() { 
+  				$(this).modal("hide");
+  
+  				if (typeOfDataReviewed == "Expenses") {
+					switchIncomeExpenseSummary('expensesPresentation', 'isTimePeriodProvidedByUser', true, true, startDateValue, endDateValue); 
+					getTotalBalance('isTimePeriodProvidedByUser', true, startDateValue, endDateValue);
+					// (timePeriodSelectedByUser, isModal, startDateFromModal ='0', endDateFromModal = '0')
+				}
+				else if (typeOfDataReviewed == "Incomes") {
+					switchIncomeExpenseSummary('incomesPresentation', 'isTimePeriodProvidedByUser', true, true, startDateValue, endDateValue);
+					getTotalBalance('isTimePeriodProvidedByUser', true, startDateValue, endDateValue);
+				}
+  				
+				$(this).dequeue(); 
+			});
+/*
+			if (typeOfDataReviewed == "Expenses") {
+				switchIncomeExpenseSummary('expensesPresentation', 'isTimePeriodProvidedByUser', true, true, startDateValue, endDateValue);   //tutaj
+			}
+			else if (typeOfDataReviewed == "Incomes") {
+				switchIncomeExpenseSummary('incomesPresentation', 'isTimePeriodProvidedByUser', true, true, startDateValue, endDateValue);
+			}
+			*/
+		}
+	});
+
 	$("#boxToProvidePeriodForBalanceSummary").on("hidden.bs.modal",clearModalBoxToDefault);
 	</script>
 	

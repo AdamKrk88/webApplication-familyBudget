@@ -31,4 +31,27 @@ class Date {
         } 
     }
 
+    public static function isCurrentYearDate($dateFromDatabase) {
+
+        $firstDayOfCurrentYear = date('Y-m-d', strtotime('first day of january this year'));
+        $lastDayOfCurrentYear = date('Y-m-d', strtotime('last day of december this year'));
+        
+        if ($firstDayOfCurrentYear <= $dateFromDatabase && $lastDayOfCurrentYear >= $dateFromDatabase) {
+            return true;
+        }
+        else {
+            return false;
+        } 
+    }
+
+    public static function isTimePeriodProvidedByUser($dateFromDatabase, $startDateFromModal, $endDateFromModal) {
+   
+        if ($startDateFromModal <= $dateFromDatabase && $endDateFromModal >= $dateFromDatabase) {
+            return true;
+        }
+        else {
+            return false;
+        } 
+    }
+
 }

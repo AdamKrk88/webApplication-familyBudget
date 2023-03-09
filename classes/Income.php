@@ -47,7 +47,7 @@ class Income {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public static function getCategoryAndRelatedAmount($dbConnection, $user_id, $class, $method) {
+    public static function getCategoryAndRelatedAmount($dbConnection, $user_id, $class, $method, $startDateFromModal = '0', $endDateFromModal = '0') {
         $sql = "SELECT income.amount, income.date, income.category
                 FROM income
                 WHERE user_id = :user_id";
@@ -60,15 +60,32 @@ class Income {
         $categoryKeyTotalAmountValue = [];
         $categoryTotalAmountValue = [];
 
-        foreach($categoryAndAmountsArray as $singleExpense) {
-    
-            if (call_user_func("$class::$method","{$singleExpense['date']}")) {
-                if(array_key_exists($singleExpense['category'], $categoryKeyTotalAmountValue)) {
-                    $categoryKeyTotalAmountValue[$singleExpense['category']] = round((double)$categoryKeyTotalAmountValue[$singleExpense['category']] + (double)$singleExpense['amount'],2);
+        if (!$startDateFromModal && !$endDateFromModal) {
+            foreach($categoryAndAmountsArray as $singleExpense) {
+        
+                if (call_user_func("$class::$method","{$singleExpense['date']}")) {
+                    if(array_key_exists($singleExpense['category'], $categoryKeyTotalAmountValue)) {
+                        $categoryKeyTotalAmountValue[$singleExpense['category']] = round((double)$categoryKeyTotalAmountValue[$singleExpense['category']] + (double)$singleExpense['amount'],2);
+                    }
+                    else {
+                        $categoryKeyTotalAmountValue[$singleExpense['category']] = (double)$singleExpense['amount'];
+                    }
                 }
-                else {
-                    $categoryKeyTotalAmountValue[$singleExpense['category']] = (double)$singleExpense['amount'];
+
+            }
+        }
+        else {
+            foreach($categoryAndAmountsArray as $singleExpense) {
+        
+                if (call_user_func("$class::$method","{$singleExpense['date']}", $startDateFromModal, $endDateFromModal)) {
+                    if(array_key_exists($singleExpense['category'], $categoryKeyTotalAmountValue)) {
+                        $categoryKeyTotalAmountValue[$singleExpense['category']] = round((double)$categoryKeyTotalAmountValue[$singleExpense['category']] + (double)$singleExpense['amount'],2);
+                    }
+                    else {
+                        $categoryKeyTotalAmountValue[$singleExpense['category']] = (double)$singleExpense['amount'];
+                    }
                 }
+
             }
 
         }
