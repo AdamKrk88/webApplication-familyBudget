@@ -97,4 +97,16 @@ class Income {
         return $categoryTotalAmountValue;
     }
 
+    public static function getTotalIncome($dbConnection, $user_id, $class, $method, $startDateFromModal = '0', $endDateFromModal = '0') {
+        $categoryAmountForIncomeSection = self::getCategoryAndRelatedAmount($dbConnection, $user_id, $class, $method, $startDateFromModal, $endDateFromModal);
+        $totalIncome = 0;
+
+        foreach ($categoryAmountForIncomeSection as $incomePerCategory) {
+            $totalIncome = round($totalIncome + (double)$incomePerCategory[1], 2);
+        }
+
+        return $totalIncome;
+
+    }
+
 }

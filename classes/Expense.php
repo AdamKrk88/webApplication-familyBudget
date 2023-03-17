@@ -127,4 +127,16 @@ class Expense {
         return $categoryTotalAmountValue;
     }
 
+    public static function getTotalExpense($dbConnection, $user_id, $class, $method, $startDateFromModal = '0', $endDateFromModal = '0') {
+        $categoryAmountForExpenseSection = self::getCategoryAndRelatedAmount($dbConnection, $user_id, $class, $method, $startDateFromModal, $endDateFromModal);
+        $totalExpense = 0;
+
+        foreach ($categoryAmountForExpenseSection as $expensePerCategory) {
+            $totalExpense = round($totalExpense + (double)$expensePerCategory[1], 2);
+        }
+
+        return $totalExpense;
+
+    }
+
 }
