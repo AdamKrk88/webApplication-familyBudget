@@ -41,7 +41,7 @@ require 'includes/headMetaTitleLink.php';
 	<main>
 		<article>
 			
-			<div class="container-fluid height-no-navbar-lg-xl">
+			<div class="container-fluid height-no-navbar">
 				<div class="row">
 
 					<div class="col-md-10 col-12 offset-md-1 mt-2">
@@ -105,7 +105,8 @@ require 'includes/headMetaTitleLink.php';
 								<h3 class="font-color-black fw-bolder font-size-scaled-from-18px text-center mb-0 py-1 position-relative" id="presented-table-name">Expenses</h3>
 							</div>
 							<div class="col-12">
-								<?php if(!empty($categoryTotalAmountValue)): ?>
+								<p class="font-color-black font-size-scaled-from-15px mb-0 mt-0 text-center" id="noDataComment"><?php if(empty($categoryTotalAmountValue)): ?> Nothing to show <?php endif; ?></p>
+						
 								<div class="row g-0">
 									<div class="col-4">
 										<div class="table-responsive d-flex align-items-start justify-content-between">	
@@ -129,7 +130,9 @@ require 'includes/headMetaTitleLink.php';
 									</div>
 
 									<div id="myChartDiv" class="col-4 p-0">
+										<?php if(!empty($categoryTotalAmountValue)): ?>
 										<canvas id="myChart"></canvas>
+										<?php endif; ?>    
 									</div>
 
 									<div class="col-3 offset-1">
@@ -154,7 +157,7 @@ require 'includes/headMetaTitleLink.php';
 										</div>	
 									</div>
 								</div>
-								<?php endif; ?>
+							
 							</div>
 						</div>
 					</div>
@@ -168,7 +171,7 @@ require 'includes/headMetaTitleLink.php';
 <!--	<div id='tester'></div>    -->
 	<div class="container position-relative">
 		<div class="row">
-			<footer class="col-12 text-center footer-position">
+			<footer class="col-12 text-center position-absolute bottom-0 end-0">
 				<a class="footer-link font-color-black" href="https://www.flaticon.com/free-icons/money" title="money icons" target="_blank">Money icons created by Freepik - Flaticon</a>.  
 				<a class="footer-link font-color-black d-block d-sm-inline-block" href="https://pl.freepik.com/search?format=search&query=marmur&type=photo" target="_blank">Marmur image created by rawpixel.com - pl.freepik.com</a>
 				<span class="font-color-black d-block">All rights reserved &copy; 2022. Thank you for your visit </span>    
@@ -213,11 +216,42 @@ require 'includes/headMetaTitleLink.php';
 	var endDateValue = "0";
 	var counterForClickEventRelease = 0;
 	var firstOptionClicked = 0;
-//	const screenWidthPieChartHeight = provideScreenWidthAndPieChartHeight();
+	var screenWidthPieChartHeight = [];
 	var resizingCounter = 0;
 	var screenResized = false;
+	var pieChart;
 
-	var pieChart = new Chart($("#myChart"), {
+	
+
+
+	if (checkIfDataForPieChartExist()) {
+		screenWidthPieChartHeight = createPieChart(true);
+
+		if (window.outerWidth >= 1200) {
+			Chart.defaults.font.size = 13;
+		
+		}
+		
+		if (window.outerWidth >= 768 && window.outerWidth < 1200) {
+			Chart.defaults.font.size = 12;
+		
+		}
+
+		if (window.outerWidth < 768) {
+			Chart.defaults.font.size = 11;
+			pieChart.options['plugins']['legend']['display'] = false;
+			$('#myChartDiv').css('height',screenWidthPieChartHeight[1]/2);
+			pieChart.update();
+		}
+	}
+
+
+	function createPieChart(isCallOnload) {
+		if($('#myChart').length === 0) {
+			$('#myChartDiv').html("<canvas id='myChart'></canvas>");
+		}
+
+		pieChart = new Chart($("#myChart"), {
         type: 'pie',
 		options: {
 			responsive: true,
@@ -237,115 +271,160 @@ require 'includes/headMetaTitleLink.php';
 			}       	
 		},
 		data: {
-            labels: displayCategories(),
+            labels: displayCategories(isCallOnload),
             datasets: [
                 {
-                    backgroundColor: displayBackgroundColor(),	
-                    data: displayPercentagesForCategories(),
+                    backgroundColor: displayBackgroundColor(isCallOnload),	
+                    data: displayPercentagesForCategories(isCallOnload),
                 }
             ]
         }			
         });
 
-	const screenWidthPieChartHeight = provideScreenWidthAndPieChartHeight();
-	
-	function displayCategories() {
-		var numberOfCategories = parseInt("<?= $categoryTotalAmountValueLength; ?>");
+		return provideScreenWidthAndPieChartHeight();
+	}
 
+//	const screenWidthPieChartHeight = provideScreenWidthAndPieChartHeight();
+//	setPieChartHeightToZeroIfNoData();
+
+	function checkIfDataForPieChartExist() {
 		var categoryTotalAmountValue = <?= json_encode($categoryTotalAmountValue); ?>;
-		var categories = [];
-	//	alert(categoryTotalAmountValue[0][0]);
-
-		for (let i = 0; i < numberOfCategories; i++) {
-			categories[i] = categoryTotalAmountValue[i][0];
+		if (Array.isArray(categoryTotalAmountValue) && categoryTotalAmountValue.length) {
+			return true;
 		}
 
-		return categories;
+		return false;
+	}
+
+	function recoverPieChartHeight() {
+		if (window.outerWidth >= 1200) {
+			$('#myChartDiv').css('height',screenWidthPieChartHeight[1]);		
+		}
+			
+		if (window.outerWidth >= 768 && window.outerWidth < 1200) {
+			$('#myChartDiv').css('height',screenWidthPieChartHeight[1]);
+		}
+
+		if (window.outerWidth < 768) {	
+			$('#myChartDiv').css('height',screenWidthPieChartHeight[1]/2);	
+		}
+	}
+	
+	function displayCategories(isCallOnload) {
+		var categories = [];
+
+		if (isCallOnload) {
+			var numberOfCategories = parseInt("<?= $categoryTotalAmountValueLength; ?>");
+			var categoryTotalAmountValue = <?= json_encode($categoryTotalAmountValue); ?>;
+		//	alert(categoryTotalAmountValue[0][0]);
+
+			for (let i = 0; i < numberOfCategories; i++) {
+				categories[i] = categoryTotalAmountValue[i][0];
+			}
+
+			return categories;
+		}
+		else {
+			return categories;
+		}
 	}
 
 	   
-	function displayBackgroundColor() {
-		var numberOfCategories = parseInt("<?= $categoryTotalAmountValueLength; ?>");
-
+	function displayBackgroundColor(isCallOnload) {
 		var colors = [];
-	//	alert(categoryTotalAmountValue[0][0]);
-
-		for (let i = 0; i < numberOfCategories; i++) {
-			switch(i) {
-				case 0:
-					colors[i] = "#ffccff";
-					break;
-				case 1:
-					colors[i] = "#bf80ff";
-					break;
-				case 2:
-					colors[i] = "#ff80ff";
-					break;
-				case 3:
-					colors[i] = "#df9fbf";
-					break;
-				case 4:
-					colors[i] = "#ff80bf";
-					break;
-				case 5:
-					colors[i] = "#ff80aa";
-					break;
-				case 6:
-					colors[i] = "#df9f9f";
-					break;
-				case 7:
-					colors[i] = "#ff8080";
-					break;
-				case 8:
-					colors[i] = "#ffbf80";
-					break;
-				case 9:
-					colors[i] = "#ffdf80";
-					break;
-				case 10:
-					colors[i] = "#dfff80";
-					break;
-				case 11:
-					colors[i] = "#80ff80";
-					break;
-				case 12:
-					colors[i] = "#80ffe5";
-					break;
-				case 13:
-					colors[i] = "#80ccff";
-					break;
-				case 14:
-					colors[i] = "#8080ff";
-					break;
-				case 15:
-					colors[i] = "#b3b3cc";
-					break;
-				case 16:
-					colors[i] = "#9fbfdf";
-					break;
-				case 17:
-					colors[i] = "#80bfff";
-			}
-		}
 		
-		return colors;
+		if (isCallOnload) {
+			var numberOfCategories = parseInt("<?= $categoryTotalAmountValueLength; ?>");
+
+		//	alert(categoryTotalAmountValue[0][0]);
+
+			for (let i = 0; i < numberOfCategories; i++) {
+				switch(i) {
+					case 0:
+						colors[i] = "#ffccff";
+						break;
+					case 1:
+						colors[i] = "#bf80ff";
+						break;
+					case 2:
+						colors[i] = "#ff80ff";
+						break;
+					case 3:
+						colors[i] = "#df9fbf";
+						break;
+					case 4:
+						colors[i] = "#ff80bf";
+						break;
+					case 5:
+						colors[i] = "#ff80aa";
+						break;
+					case 6:
+						colors[i] = "#df9f9f";
+						break;
+					case 7:
+						colors[i] = "#ff8080";
+						break;
+					case 8:
+						colors[i] = "#ffbf80";
+						break;
+					case 9:
+						colors[i] = "#ffdf80";
+						break;
+					case 10:
+						colors[i] = "#dfff80";
+						break;
+					case 11:
+						colors[i] = "#80ff80";
+						break;
+					case 12:
+						colors[i] = "#80ffe5";
+						break;
+					case 13:
+						colors[i] = "#80ccff";
+						break;
+					case 14:
+						colors[i] = "#8080ff";
+						break;
+					case 15:
+						colors[i] = "#b3b3cc";
+						break;
+					case 16:
+						colors[i] = "#9fbfdf";
+						break;
+					case 17:
+						colors[i] = "#80bfff";
+				}
+			}
+			
+			return colors;
+		}
+		else {
+			return colors;
+		}
 	}
 
-	function displayPercentagesForCategories() {
-		var numberOfCategories = parseInt("<?= $categoryTotalAmountValueLength; ?>");
-		var totalExpense = parseFloat("<?= $expense; ?>");
-
-		var categoryTotalAmountValue = <?= json_encode($categoryTotalAmountValue); ?>;
-		var percentagePerCategory = 0;
+	function displayPercentagesForCategories(isCallOnload) {
 		var percentages = [];
-	//	alert(categoryTotalAmountValue[0][0]);
-	//	alert(totalExpense);
-		for (let i = 0; i < numberOfCategories; i++) {
-			percentagePerCategory = (parseFloat(categoryTotalAmountValue[i][1]) / totalExpense) * 100;
-			percentages[i] = percentagePerCategory.toFixed(2);
+		
+		if (isCallOnload) {
+			var numberOfCategories = parseInt("<?= $categoryTotalAmountValueLength; ?>");
+			var totalExpense = parseFloat("<?= $expense; ?>");
+
+			var categoryTotalAmountValue = <?= json_encode($categoryTotalAmountValue); ?>;
+			var percentagePerCategory = 0;
+			
+		//	alert(categoryTotalAmountValue[0][0]);
+		//	alert(totalExpense);
+			for (let i = 0; i < numberOfCategories; i++) {
+				percentagePerCategory = (parseFloat(categoryTotalAmountValue[i][1]) / totalExpense) * 100;
+				percentages[i] = percentagePerCategory.toFixed(2);
+			}
+		//	alert(percentages);
+			return percentages;
 		}
-	//	alert(percentages);
-		return percentages;
+		else {
+			return percentages;
+		}
 	}
 
 //	displayPercentagesForCategories();
@@ -474,6 +553,7 @@ require 'includes/headMetaTitleLink.php';
 
 	function switchIncomeExpenseSummary(fileName, timePeriodSelectedByUser, isFromDropDownList, isModal, startDateFromModal ='0', endDateFromModal = '0') {
 	  	$.ajax({
+			async: false,
 			url: "/includes/" + fileName + ".php",   
 			type: 'get',
 			data: {
@@ -558,26 +638,47 @@ require 'includes/headMetaTitleLink.php';
 					}
 				}
 
-				for (let i = 0; i < 18; i++) {
-					if (i < numberOfIncomeOrExpenseCategories) {
-						$('#th' + i).html(json[i][0]);
-						$('#td' + i).html(json[i][1]); 
-						checkIfPaddingIsAdded = $('#th' + i).hasClass("p-0");
-					//	alert(checkIfPaddingIsAdded);
-						if (checkIfPaddingIsAdded) {
-							$('#th' + i).removeClass('p-0');
-							$('#td' + i).removeClass('p-0');
+				if (Array.isArray(json) && json.length) {
+					$('#noDataComment').html('').removeClass('py-2');
+					if (pieChart === undefined) {
+						screenWidthPieChartHeight = createPieChart(false);
+					//	alert(pieChart);
+					}
+
+					for (let i = 0; i < 18; i++) {
+						if (i < numberOfIncomeOrExpenseCategories) {
+							$('#th' + i).html(json[i][0]);
+							$('#td' + i).html(json[i][1]); 
+							checkIfPaddingIsAdded = $('#th' + i).hasClass("p-0");
+						//	alert(checkIfPaddingIsAdded);
+							if (checkIfPaddingIsAdded) {
+								$('#th' + i).removeClass('p-0');
+								$('#td' + i).removeClass('p-0');
+							}
+						}
+						else {
+							$('#th' + i).html("");
+							$('#td' + i).html(""); 
+							checkIfPaddingIsAdded = $('#th' + i).hasClass("p-0");
+							if (!checkIfPaddingIsAdded) {
+								$('#th' + i).addClass('p-0');
+								$('#td' + i).addClass('p-0');
+							}
 						}
 					}
-					else {
+				}
+				else {
+					$('#noDataComment').html('Nothing to show').addClass('py-2');
+					for (let i = 0; i < 18; i++) {
 						$('#th' + i).html("");
 						$('#td' + i).html(""); 
 						checkIfPaddingIsAdded = $('#th' + i).hasClass("p-0");
-						if (!checkIfPaddingIsAdded) {
-							$('#th' + i).addClass('p-0');
-							$('#td' + i).addClass('p-0');
-						}
+							if (!checkIfPaddingIsAdded) {
+								$('#th' + i).addClass('p-0');
+								$('#td' + i).addClass('p-0');
+							}
 					}
+
 				}
 			}
 		});
@@ -626,12 +727,19 @@ require 'includes/headMetaTitleLink.php';
 			success: function(dataToUpdatePieChart) {
 				var json = JSON.parse(dataToUpdatePieChart);
 			//	alert(json);
-				
+			//	alert(pieChart);
 				pieChart.data['labels'] = json['incomeCategories'];
 				pieChart.data['datasets'][0]['backgroundColor'] = json['backgroundColorForPieChart'];
 				pieChart.data['datasets'][0]['data'] = json['percentagePerCategory'];
 
 				pieChart.update();
+				
+				if (Array.isArray(json['incomeCategories']) && json['incomeCategories'].length === 0) {
+					$('#myChartDiv').css('height', 0);
+				}
+				else {
+					recoverPieChartHeight();
+				}
 				
 		//data['datasets'][0]['data'][tooltipItem['index']]
 			}
@@ -751,33 +859,31 @@ require 'includes/headMetaTitleLink.php';
 		if (window.outerWidth >= 1200) {
 			Chart.defaults.font.size = 13;
 			pieChart.options['plugins']['legend']['display'] = true;
-			
-			
-			$('#myChartDiv').css('height',screenWidthPieChartHeight[1]);
-			
 		
-
+			if (Array.isArray(pieChart.data['labels']) && pieChart.data['labels'].length) {	
+				$('#myChartDiv').css('height',screenWidthPieChartHeight[1]);
+			}
+		
 		}
 		
 		if (window.outerWidth >= 768 && window.outerWidth < 1200) {
 			Chart.defaults.font.size = 12;
 			pieChart.options['plugins']['legend']['display'] = true;
 		
-			
-			$('#myChartDiv').css('height',screenWidthPieChartHeight[1]);
-			
-		
-
+			if (Array.isArray(pieChart.data['labels']) && pieChart.data['labels'].length) {	
+				$('#myChartDiv').css('height',screenWidthPieChartHeight[1]);
+			}
+	
 		}
 
 		if (window.outerWidth < 768) {
 			Chart.defaults.font.size = 11;
 			pieChart.options['plugins']['legend']['display'] = false;
 			
-			$('#myChartDiv').css('height',screenWidthPieChartHeight[1]/2);
-			
+			if (Array.isArray(pieChart.data['labels']) && pieChart.data['labels'].length) {	
+				$('#myChartDiv').css('height',screenWidthPieChartHeight[1]/2);
+			}
 		
-
 		}
 
 		pieChart.update();
@@ -840,30 +946,35 @@ pieChart.data['labels'] = json['incomeCategories'];
 	
 	$(document).ready(function(){
 
-		if (window.outerWidth >= 1200) {
-			Chart.defaults.font.size = 13;
-		//	pieChart.options['plugins']['legend']['display'] = true;
-		}
-		
-		if (window.outerWidth >= 768 && window.outerWidth < 1200) {
-			Chart.defaults.font.size = 12;
-		//	pieChart.options['plugins']['legend']['display'] = true;
-		}
-/*
-		if (window.outerWidth == 768) {
-			$("#submitModalButton").removeAttr("disabled");
-		} 
+		/*
+		if (checkIfDataForPieChartExist()) {
+		//	const screenWidthPieChartHeight = createPieChart();
+			if (window.outerWidth >= 1200) {
+				Chart.defaults.font.size = 13;
+			//	pieChart.options['plugins']['legend']['display'] = true;
+			}
+			
+			if (window.outerWidth >= 768 && window.outerWidth < 1200) {
+				Chart.defaults.font.size = 12;
+			//	pieChart.options['plugins']['legend']['display'] = true;
+			}
+			
+	
+			if (window.outerWidth == 768) {
+				$("#submitModalButton").removeAttr("disabled");
+			} 
+	
+			if (window.outerWidth < 768) {
+				Chart.defaults.font.size = 11;
+				pieChart.options['plugins']['legend']['display'] = false;
+				$('#myChartDiv').css('height',screenWidthPieChartHeight[1]/2);
+			//	pieChart.options['aspectRatio'] = 1;
+			//	alert(pieChart.options['aspectRatio']);
+				pieChart.update();
+			}
+
+	}
 */
-		if (window.outerWidth < 768) {
-			Chart.defaults.font.size = 11;
-			pieChart.options['plugins']['legend']['display'] = false;
-			$('#myChartDiv').css('height',screenWidthPieChartHeight[1]/2);
-		//	pieChart.options['aspectRatio'] = 1;
-		//	alert(pieChart.options['aspectRatio']);
-			pieChart.update();
-		}
-
-
 
 /*
 		var pieChart = new Chart($("#myChart"), {
