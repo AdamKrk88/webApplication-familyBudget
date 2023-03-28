@@ -102,14 +102,43 @@ require 'includes/headMetaTitleLink.php';
 					<div class="col-md-10 col-12 offset-md-1 mt-4">
 						<div class="row g-0 bg-light-grey">
 							<div class="col-12 bg-dark-grey">
-								<h3 class="font-color-black fw-bolder font-size-scaled-from-18px text-center mb-0 py-1 position-relative" id="presented-table-name">Expenses</h3>
+								<h3 class="font-color-black fw-bolder font-size-scaled-from-18px text-center mb-0 py-1 position-relative" id="presented-table-name">Expenses<a class="position-absolute top-50 start-0 translate-middle-y font-size-scaled-from-15px link-registration-income-expense font-color-black py-1 ps-2" href="" id="chart-list-switcher"><em>Chart / List Switcher</em></a></h3>
 							</div>
 							<div class="col-12">
-								<p class="font-color-black font-size-scaled-from-15px mb-0 mt-0 text-center" id="noDataComment"><?php if(empty($categoryTotalAmountValue)): ?> Nothing to show <?php endif; ?></p>
+								<p class="font-color-black font-size-scaled-from-15px mb-0 mt-0 text-center mt-1" id="noDataComment"><?php if(empty($categoryTotalAmountValue)): ?> Nothing to show <?php endif; ?></p>
 						
+								<div class="table-responsive">	
+									<table class="table table-borderless font-size-scaled-from-15px font-color-black mb-0 text-center">							
+										<thead>
+											<tr>
+												<th scope="col" class="p-0 fw-bolder" style="width:10%" id="id-list"></th>
+												<th scope="col" class="p-0 fw-bolder" style="width:15%" id="date-list"></th>
+												<th scope="col" class="p-0 fw-bolder" style="width:16%" id="category-list"></th>
+												<th scope="col" class="p-0 fw-bolder" style="width:16%" id="payment-list"></th>
+												<th scope="col" class="p-0 fw-bolder" style="width:30%" id="comment-list"></th>
+												<th scope="col" class="p-0 fw-bolder" style="width:13%" id="amount-list"></th>
+											</tr>
+										</thead>	
+
+										<tbody>
+											<?php for($i = 0; $i < 7; $i++): ?>
+											<tr>
+												<th scope="row" id="th-id-<?= $i; ?>" class="p-0"></th>
+												<td id="td-date-<?= $i; ?>" class="p-0"></td>
+												<td id="td-category-<?= $i; ?>" class="p-0"></td>
+												<td id="td-payment-<?= $i; ?>" class="p-0"></td>
+												<td id="td-comment-<?= $i; ?>" class="p-0"></td>
+												<td id="td-amount-<?= $i; ?>" class="p-0"></td>
+											</tr>
+											<?php endfor; ?>
+										</tbody>	
+									</table>
+								</div>
+
+
 								<div class="row g-0">
 									<div class="col-4">
-										<div class="table-responsive d-flex align-items-start justify-content-between">	
+										<div class="table-responsive d-flex align-items-start justify-content-between mt-1">	
 											<table class="table table-borderless font-size-scaled-from-15px font-color-black lh-1 w-auto mb-0">							
 												<tbody>
 													<?php for($i = 0; $i < count($categoryTotalAmountValue); $i += 2): ?>
@@ -136,7 +165,7 @@ require 'includes/headMetaTitleLink.php';
 									</div>
 
 									<div class="col-3 offset-1">
-										<div class="table-responsive d-flex align-items-start justify-content-end">
+										<div class="table-responsive d-flex align-items-start justify-content-end mt-1">
 						
 											<table class="table table-borderless font-size-scaled-from-15px font-color-black lh-1 w-auto mb-0">				
 												<tbody>
@@ -154,15 +183,20 @@ require 'includes/headMetaTitleLink.php';
 													<?php endfor; ?>
 												</tbody>
 											</table>
-										</div>	
+										</div>							
 									</div>
 								</div>
-							
+							</div>
+						</div>
+						<div class="row g-0">
+							<div class="col-6 text-center font-size-scaled-from-15px bg-dark-grey" id="previous-link-div">
+								<a class="link-registration-income-expense font-color-black fst-italic fw-bolder" id="previous-link" href=""></a>
+							</div>
+							<div class="col-6 text-center font-size-scaled-from-15px bg-dark-grey" id="next-link-div">
+								<a class="link-registration-income-expense font-color-black fst-italic fw-bolder" id="next-link" href=""></a>
 							</div>
 						</div>
 					</div>
-	
-
 				</div>
 			</div>
 			
@@ -220,6 +254,7 @@ require 'includes/headMetaTitleLink.php';
 	var resizingCounter = 0;
 	var screenResized = false;
 	var pieChart;
+	var dataToDisplayList = [];
 
 	
 
@@ -306,7 +341,8 @@ require 'includes/headMetaTitleLink.php';
 		}
 
 		if (window.outerWidth < 768) {	
-			$('#myChartDiv').css('height',screenWidthPieChartHeight[1]/2);	
+			$('#myChartDiv').css('height',screenWidthPieChartHeight[1]/2);
+			pieChart.options['plugins']['legend']['display'] = false;	
 		}
 	}
 	
@@ -551,7 +587,7 @@ require 'includes/headMetaTitleLink.php';
 		return false;
 	}
 
-	function switchIncomeExpenseSummary(fileName, timePeriodSelectedByUser, isFromDropDownList, isModal, startDateFromModal ='0', endDateFromModal = '0') {
+	function switchIncomeExpenseSummary(fileName, timePeriodSelectedByUser, isFromDropDownList, isFromChartListSwitcher, isModal, startDateFromModal ='0', endDateFromModal = '0') {
 	  	$.ajax({
 			async: false,
 			url: "/includes/" + fileName + ".php",   
@@ -568,9 +604,9 @@ require 'includes/headMetaTitleLink.php';
 			//	alert(Object.keys(json).length);
 				var checkIfPaddingIsAdded = false;
 			//	alert('I am here');
-				if (!isFromDropDownList) {
+				if (!isFromDropDownList && !isFromChartListSwitcher) {
 					if (fileName == "incomesPresentation") {
-						$('#presented-table-name').html('Incomes <span class="position-absolute top-50 end-0 translate-middle-y font-size-scaled-from-13px py-1 pe-2" id="date-for-your-choice"></span>');
+						$('#presented-table-name').html('Incomes <span class="position-absolute top-50 end-0 translate-middle-y font-size-scaled-from-13px py-1 pe-2" id="date-for-your-choice"></span><a class="position-absolute top-50 start-0 translate-middle-y font-size-scaled-from-15px link-registration-income-expense font-color-black py-1 ps-2" href="" id="chart-list-switcher"><em>Chart / List Switcher</em></a>');
 					//	alert(startDateFromModal);
 					//	alert(endDateFromModal);
 					//alert(typeof(startDateFromModal));
@@ -588,7 +624,7 @@ require 'includes/headMetaTitleLink.php';
 						$('#switcher-expenseLink-presentedInformation').html('Click <a class="font-light-stronger-orange link-registration-income-expense" id="linkToPresentExpenses" href="">here</a>');
 					}
 					else if (fileName == "expensesPresentation") {
-						$('#presented-table-name').html('Expenses <span class="position-absolute top-50 end-0 translate-middle-y font-size-scaled-from-13px py-1 pe-2" id="date-for-your-choice"></span>');
+						$('#presented-table-name').html('Expenses <span class="position-absolute top-50 end-0 translate-middle-y font-size-scaled-from-13px py-1 pe-2" id="date-for-your-choice"></span><a class="position-absolute top-50 start-0 translate-middle-y font-size-scaled-from-15px link-registration-income-expense font-color-black py-1 ps-2" href="" id="chart-list-switcher"><em>Chart / List Switcher</em></a>');
 					//	alert(startDateFromModal);
 					//	alert(endDateFromModal);
 						if (startDateFromModal != '0' && endDateFromModal != '0' && (startDateFromModal == endDateFromModal)) {
@@ -608,9 +644,9 @@ require 'includes/headMetaTitleLink.php';
 					$('#date-for-your-choice').html('');
 				}
 
-				if (isModal) {
+				if (isModal && !isFromChartListSwitcher) {
 					if (fileName == "incomesPresentation") {
-						$('#presented-table-name').html('Incomes <span class="position-absolute top-50 end-0 translate-middle-y font-size-scaled-from-13px py-1 pe-2" id="date-for-your-choice"></span>');
+						$('#presented-table-name').html('Incomes <span class="position-absolute top-50 end-0 translate-middle-y font-size-scaled-from-13px py-1 pe-2" id="date-for-your-choice"></span><a class="position-absolute top-50 start-0 translate-middle-y font-size-scaled-from-15px link-registration-income-expense font-color-black py-1 ps-2" href="" id="chart-list-switcher"><em>Chart / List Switcher</em></a>');
 				
 						if (startDateFromModal != '0' && endDateFromModal != '0' && (startDateFromModal == endDateFromModal)) {
 							$('#date-for-your-choice').html('one day  ' + startDateFromModal);
@@ -624,7 +660,7 @@ require 'includes/headMetaTitleLink.php';
 					}
 
 					else if (fileName == "expensesPresentation") {
-						$('#presented-table-name').html('Expenses <span class="position-absolute top-50 end-0 translate-middle-y font-size-scaled-from-13px py-1 pe-2" id="date-for-your-choice"></span>');
+						$('#presented-table-name').html('Expenses <span class="position-absolute top-50 end-0 translate-middle-y font-size-scaled-from-13px py-1 pe-2" id="date-for-your-choice"></span><a class="position-absolute top-50 start-0 translate-middle-y font-size-scaled-from-15px link-registration-income-expense font-color-black py-1 ps-2" href="" id="chart-list-switcher"><em>Chart / List Switcher</em></a>');
 			
 						if (startDateFromModal != '0' && endDateFromModal != '0' && (startDateFromModal == endDateFromModal)) {
 							$('#date-for-your-choice').html('one day  ' + startDateFromModal);
@@ -639,7 +675,8 @@ require 'includes/headMetaTitleLink.php';
 				}
 
 				if (Array.isArray(json) && json.length) {
-					$('#noDataComment').html('').removeClass('py-2');
+				//	$('#noDataComment').html('').removeClass('py-2');
+					$('#noDataComment').html('');
 					if (pieChart === undefined) {
 						screenWidthPieChartHeight = createPieChart(false);
 					//	alert(pieChart);
@@ -668,7 +705,8 @@ require 'includes/headMetaTitleLink.php';
 					}
 				}
 				else {
-					$('#noDataComment').html('Nothing to show').addClass('py-2');
+				//	$('#noDataComment').html('Nothing to show').addClass('py-2');
+					$('#noDataComment').html('Nothing to show');
 					for (let i = 0; i < 18; i++) {
 						$('#th' + i).html("");
 						$('#td' + i).html(""); 
@@ -745,6 +783,37 @@ require 'includes/headMetaTitleLink.php';
 			}
 		});
 	}	
+
+	function cleanList() {
+		var typeOfDataReviewed = $('#presented-table-name').text().left(8).trim();
+		$('#id-list').html("");
+		$('#date-list').html("");
+		$('#category-list').html("");
+		$('#comment-list').html("");
+		$('#amount-list').html("");
+		
+		if (typeOfDataReviewed == "Expenses") {
+			$('#payment-list').html("");
+
+			for (let i = 0; i < dataToDisplayList.length && i < 7; i++) {
+				$("#th-id-" + i).addClass('p-0').html("");
+				$("#td-date-" + i).addClass('p-0').html("");
+				$("#td-category-" + i).addClass('p-0').html("");
+				$("#td-payment-" + i).addClass('p-0').html("");
+				$("#td-comment-" + i).addClass('p-0').html("");
+				$("#td-amount-" + i).addClass('p-0').html("");
+			}
+		}
+		else {
+			for (let i = 0; i < dataToDisplayList.length && i < 7; i++) {
+				$("#th-id-" + i).addClass('p-0').html("");
+				$("#td-date-" + i).addClass('p-0').html("");
+				$("#td-category-" + i).addClass('p-0').html("");
+				$("#td-comment-" + i).addClass('p-0').html("");
+				$("#td-amount-" + i).addClass('p-0').html("");
+			}
+		}
+	}
 
 //below you can copy
 
@@ -854,40 +923,276 @@ require 'includes/headMetaTitleLink.php';
 		return true;
 	}
 
+	function capitalizeFirstLetter(string){
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+	function provideNumberOfCategories(arrayOfUserIncomesOrExpenses) {
+		var arrayLength = arrayOfUserIncomesOrExpenses.length;
+		var categories = [];
+		if (Array.isArray(arrayOfUserIncomesOrExpenses) && arrayOfUserIncomesOrExpenses.length) {
+			categories[0] = arrayOfUserIncomesOrExpenses[0]['category'];
+
+			for (let i = 1; i < arrayLength; i++) {
+				
+				if($.inArray(arrayOfUserIncomesOrExpenses[i]['category'], categories) === -1) {
+					categories.push(arrayOfUserIncomesOrExpenses[i]['category']);
+				}
+
+			}
+		}
+
+		return categories.length;
+	}
+
+	function getOnePage(expenseOrIncome, timePeriodSelectedByUser, isModal, startDateFromModal = '0', endDateFromModal = '0') {
+		$.ajax({
+			async: false,
+			url: "/includes/firstPageOfList.php",   
+			type: 'get',
+			data: {
+				'expenseOrIncome': expenseOrIncome,
+				'timePeriod': timePeriodSelectedByUser, 
+				'isModal': isModal,
+				'startDateFromModal': startDateFromModal,
+				'endDateFromModal': endDateFromModal
+			}, 
+			success: function(dataToUpdateFirstPage) {
+			//	alert(dataToUpdateFirstPage);
+			//	alert(dataToUpdateFirstPage);
+				var json = JSON.parse(dataToUpdateFirstPage);
+			//	alert(json);
+				if (Array.isArray(json) && json.length) {
+					dataToDisplayList = json;
+					var numberOfCategories = provideNumberOfCategories(json);
+					var tableHeader = Object.keys(json[0]);
+				
+					pieChart.data['labels'] = [];
+					pieChart.data.datasets[0]['backgroundColor'] = [];
+					pieChart.data.datasets[0]['data'] = [];
+					pieChart.update();
+					$('#myChartDiv').css('height', 0);	
+					$("#myChart").remove();
+
+					for (let i = 0; i < numberOfCategories; i++) {
+						$('#th' + i).html("");
+						$('#td' + i).html(""); 
+						$('#th' + i).addClass('p-0');
+						$('#td' + i).addClass('p-0');
+					}
+
+					if (expenseOrIncome == "Expense") {
+						if (!$('#payment-list').length) {
+							$('#category-list').after('<th scope="col" class="p-0 fw-bolder" style="width:16%" id="payment-list"></th>');
+						//	$('#id-list').css('width', '10%');
+						//	$('#date-list').css('width', '15%');
+							$('#category-list').css('width', '16%');
+							$('#comment-list').css('width', '30%');
+							$('#amount-list').css('width', '13%');
+							
+							var className = "";
+							for (let i = 0; i < 7; i++) {
+								className = 'td-payment-' + i;
+								$("#td-category-" + i).after('<td id=' + className + ' class="p-0"></td>');
+							}
+						}
+						$('#id-list').html(tableHeader[0].toUpperCase());
+						$('#date-list').html(capitalizeFirstLetter(tableHeader[1]));
+						$('#category-list').html(capitalizeFirstLetter(tableHeader[2]));
+						$('#payment-list').html(capitalizeFirstLetter(tableHeader[3]));
+						$('#comment-list').html(capitalizeFirstLetter(tableHeader[4]));
+						$('#amount-list').html(capitalizeFirstLetter(tableHeader[5]));
+
+						for (let i = 0; i < json.length && i < 7; i++) {
+							$("#th-id-" + i).removeClass('p-0').html(json[i]['id']);
+							$("#td-date-" + i).removeClass('p-0').html(json[i]['date']);
+							$("#td-category-" + i).removeClass('p-0').html(json[i]['category']);
+							$("#td-payment-" + i).removeClass('p-0').html(json[i]['payment']);
+							$("#td-comment-" + i).removeClass('p-0').html(json[i]['comment']);
+							$("#td-amount-" + i).removeClass('p-0').html(json[i]['amount']);
+						}
+					}
+					else if (expenseOrIncome == "Income") {
+						if ($('#payment-list').length) {
+							
+							for (let i = 0; i < 7; i++) {
+								$("#td-payment-" + i).remove();
+							
+							}
+							
+							$('#payment-list').remove();
+
+					//		$('#id-list').css('width', '10%');
+					//		$('#date-list').css('width', '15%');
+							$('#category-list').css('width', '19%');
+							$('#comment-list').css('width', '40%');
+							$('#amount-list').css('width', '16%');
+						}
+
+						$('#id-list').html(tableHeader[0].toUpperCase());
+						$('#date-list').html(capitalizeFirstLetter(tableHeader[1]));
+						$('#category-list').html(capitalizeFirstLetter(tableHeader[2]));
+				
+						$('#comment-list').html(capitalizeFirstLetter(tableHeader[3]));
+						$('#amount-list').html(capitalizeFirstLetter(tableHeader[4]));
+
+						for (let i = 0; i < json.length && i < 7; i++) {
+							$("#th-id-" + i).removeClass('p-0').html(json[i]['id']);
+							$("#td-date-" + i).removeClass('p-0').html(json[i]['date']);
+							$("#td-category-" + i).removeClass('p-0').html(json[i]['category']);
+						
+							$("#td-comment-" + i).removeClass('p-0').html(json[i]['comment']);
+							$("#td-amount-" + i).removeClass('p-0').html(json[i]['amount']);
+						}	
+					}
+					
+					if (json.length > 7) {
+						$('#next-link').html('Next');
+					}
+
+				}
+			}
+		});
+	}
+	
+	
+	function updateInformationForNextPageInTheList(itemPositionOnTheList, numberOfItemsToBeUpdated, isExpenseList) {
+	//	var numberOfItemsToClear = 7 - numberOfItemsToBeUpdated;
+		
+		if (isExpenseList) {
+			for (let i = 0, j = itemPositionOnTheList; i < numberOfItemsToBeUpdated; i++) {
+				$("#th-id-" + i).html(dataToDisplayList[j]['id']);
+				$("#td-date-" + i).html(dataToDisplayList[j]['date']);
+				$("#td-category-" + i).html(dataToDisplayList[j]['category']);
+				$("#td-payment-" + i).html(dataToDisplayList[j]['payment']);
+				$("#td-comment-" + i).html(dataToDisplayList[j]['comment']);
+				$("#td-amount-" + i).html(dataToDisplayList[j]['amount']);
+				j++;
+			}
+		}
+		else {
+			for (let i = 0, j = itemPositionOnTheList; i < numberOfItemsToBeUpdated; i++) {
+				$("#th-id-" + i).html(dataToDisplayList[j]['id']);
+				$("#td-date-" + i).html(dataToDisplayList[j]['date']);
+				$("#td-category-" + i).html(dataToDisplayList[j]['category']);
+				$("#td-comment-" + i).html(dataToDisplayList[j]['comment']);
+				$("#td-amount-" + i).html(dataToDisplayList[j]['amount']);
+				j++;
+			}
+		}
+
+		if (numberOfItemsToBeUpdated < 7 && isExpenseList) {
+			for (let i = numberOfItemsToBeUpdated; i < 7; i++) {
+				$("#th-id-" + i).addClass('p-0').html("");
+				$("#td-date-" + i).addClass('p-0').html("");
+				$("#td-category-" + i).addClass('p-0').html("");
+				$("#td-payment-" + i).addClass('p-0').html("");
+				$("#td-comment-" + i).addClass('p-0').html("");
+				$("#td-amount-" + i).addClass('p-0').html("");
+			}
+		}
+		else if (numberOfItemsToBeUpdated < 7) {
+			for (let i = numberOfItemsToBeUpdated; i < 7; i++) {
+				$("#th-id-" + i).addClass('p-0').html("");
+				$("#td-date-" + i).addClass('p-0').html("");
+				$("#td-category-" + i).addClass('p-0').html("");
+				$("#td-comment-" + i).addClass('p-0').html("");
+				$("#td-amount-" + i).addClass('p-0').html("");
+			}
+		}
+	}
+
+	function updateInformationForPreviousPageInTheList(itemPositionOnTheList, numberOfItemsToBeRestored, isExpenseList) {
+	//	var numberOfItemsToClear = 7 - numberOfItemsToBeUpdated;
+
+		if (numberOfItemsToBeRestored > 0 && isExpenseList) {
+			for (let i = 7 - numberOfItemsToBeRestored; i < 7; i++) {
+				$("#th-id-" + i).removeClass('p-0');
+				$("#td-date-" + i).removeClass('p-0');
+				$("#td-category-" + i).removeClass('p-0');
+				$("#td-payment-" + i).removeClass('p-0');
+				$("#td-comment-" + i).removeClass('p-0');
+				$("#td-amount-" + i).removeClass('p-0');
+			}
+		}
+		else if (numberOfItemsToBeRestored > 0) {
+			for (let i = 7 - numberOfItemsToBeRestored; i < 7; i++) {
+				$("#th-id-" + i).removeClass('p-0');
+				$("#td-date-" + i).removeClass('p-0');
+				$("#td-category-" + i).removeClass('p-0');
+				$("#td-comment-" + i).removeClass('p-0');
+				$("#td-amount-" + i).removeClass('p-0');
+			}
+		}
+
+
+		if (isExpenseList) {
+			for (let i = 0, j = itemPositionOnTheList; i < 7; i++) {
+				$("#th-id-" + i).html(dataToDisplayList[j]['id']);
+				$("#td-date-" + i).html(dataToDisplayList[j]['date']);
+				$("#td-category-" + i).html(dataToDisplayList[j]['category']);
+				$("#td-payment-" + i).html(dataToDisplayList[j]['payment']);
+				$("#td-comment-" + i).html(dataToDisplayList[j]['comment']);
+				$("#td-amount-" + i).html(dataToDisplayList[j]['amount']);
+				j++;
+			}
+		}
+		else {
+			for (let i = 0, j = itemPositionOnTheList; i < 7; i++) {
+				$("#th-id-" + i).html(dataToDisplayList[j]['id']);
+				$("#td-date-" + i).html(dataToDisplayList[j]['date']);
+				$("#td-category-" + i).html(dataToDisplayList[j]['category']);
+				$("#td-comment-" + i).html(dataToDisplayList[j]['comment']);
+				$("#td-amount-" + i).html(dataToDisplayList[j]['amount']);
+				j++;
+			}
+		}
+	}
+
+/*
+	<th scope="col" class="p-0" id="id-list"></th>
+	<th scope="col" class="p-0" id="date-list"></th>
+	<th scope="col" class="p-0" id="category-list"></th>
+	<th scope="col" class="p-0" id="payment-list"></th>
+	<th scope="col" class="p-0" id="comment-list"></th>
+	<th scope="col" class="p-0" id="amount-list"></th>
+*/
+
 	function resizeFontsForPieChart() {
-	
-		if (window.outerWidth >= 1200) {
-			Chart.defaults.font.size = 13;
-			pieChart.options['plugins']['legend']['display'] = true;
 		
-			if (Array.isArray(pieChart.data['labels']) && pieChart.data['labels'].length) {	
-				$('#myChartDiv').css('height',screenWidthPieChartHeight[1]);
-			}
-		
-		}
-		
-		if (window.outerWidth >= 768 && window.outerWidth < 1200) {
-			Chart.defaults.font.size = 12;
-			pieChart.options['plugins']['legend']['display'] = true;
-		
-			if (Array.isArray(pieChart.data['labels']) && pieChart.data['labels'].length) {	
-				$('#myChartDiv').css('height',screenWidthPieChartHeight[1]);
-			}
-	
-		}
-
-		if (window.outerWidth < 768) {
-			Chart.defaults.font.size = 11;
-			pieChart.options['plugins']['legend']['display'] = false;
+		if (pieChart !== undefined && pieChart !== null) {
+			if (window.outerWidth >= 1200) {
+				Chart.defaults.font.size = 13;
+				pieChart.options['plugins']['legend']['display'] = true;
 			
-			if (Array.isArray(pieChart.data['labels']) && pieChart.data['labels'].length) {	
-				$('#myChartDiv').css('height',screenWidthPieChartHeight[1]/2);
+				if (Array.isArray(pieChart.data['labels']) && pieChart.data['labels'].length) {	
+					$('#myChartDiv').css('height',screenWidthPieChartHeight[1]);
+				}
+			
 			}
+			
+			if (window.outerWidth >= 768 && window.outerWidth < 1200) {
+				Chart.defaults.font.size = 12;
+				pieChart.options['plugins']['legend']['display'] = true;
+			
+				if (Array.isArray(pieChart.data['labels']) && pieChart.data['labels'].length) {	
+					$('#myChartDiv').css('height',screenWidthPieChartHeight[1]);
+				}
 		
+			}
+
+			if (window.outerWidth < 768) {
+				Chart.defaults.font.size = 11;
+				pieChart.options['plugins']['legend']['display'] = false;
+				
+				if (Array.isArray(pieChart.data['labels']) && pieChart.data['labels'].length) {	
+					$('#myChartDiv').css('height',screenWidthPieChartHeight[1]/2);
+				}
+			
+			}
+
+			pieChart.update();
 		}
-
-		pieChart.update();
-
 	}
 
 	function provideScreenWidthAndPieChartHeight() {
@@ -945,7 +1250,7 @@ pieChart.data['labels'] = json['incomeCategories'];
 	
 	
 	$(document).ready(function(){
-
+	//	getOnePage();
 		/*
 		if (checkIfDataForPieChartExist()) {
 		//	const screenWidthPieChartHeight = createPieChart();
@@ -1024,41 +1329,56 @@ pieChart.data['labels'] = json['incomeCategories'];
 		$('#periodForBalanceSummary').change(function() { 
 			var optionValueNew = getSelectedOptionFromDropDownList(this);
 			var typeOfDataReviewed = $('#presented-table-name').text().left(8).trim();
+			var isPieChartDisplayed = isElementEmpty($('#id-list'));
+
+			if (!isPieChartDisplayed && optionValueNew != "4") {
+				cleanList();
+				createPieChart(false);
+			}
+
+			if (!isElementEmpty($('#next-link'))) {
+				$('#next-link').html('');
+			}
+
+			if (!isElementEmpty($('#previous-link'))) {
+				$('#previous-link').html('');
+			}
 		//	alert(typeOfDataReviewed);
 		//	if (optionValueNew == "1" || optionValueNew == "2" || optionValueNew == "3") {
-				startDateValue ="0";
-				endDateValue = "0";
-				if (optionValueNew == "1" && typeOfDataReviewed== "Expenses") {
-					switchIncomeExpenseSummary('expensesPresentation', 'isCurrentMonthDate', true, false);
-					getTotalBalance('isCurrentMonthDate', false);
-					updatePieChart(pieChart, 'Expense', 'isCurrentMonthDate', false);
-					// (timePeriodSelectedByUser, isModal, startDateFromModal ='0', endDateFromModal = '0')
-				}
-				else if (optionValueNew == "2" && typeOfDataReviewed== "Expenses") {
-					switchIncomeExpenseSummary('expensesPresentation', 'isPreviousMonthDate', true, false);
-					getTotalBalance('isPreviousMonthDate', false);
-					updatePieChart(pieChart, 'Expense', 'isPreviousMonthDate', false);
-				}
-				else if (optionValueNew == "3" && typeOfDataReviewed== "Expenses") {
-					switchIncomeExpenseSummary('expensesPresentation', 'isCurrentYearDate', true, false);
-					getTotalBalance('isCurrentYearDate', false);
-					updatePieChart(pieChart, 'Expense', 'isCurrentYearDate', false);
-				}
-				else if (optionValueNew == "1" && typeOfDataReviewed== "Incomes") {
-					switchIncomeExpenseSummary('incomesPresentation', 'isCurrentMonthDate', true, false);
-					getTotalBalance('isCurrentMonthDate', false);
-					updatePieChart(pieChart, 'Income', 'isCurrentMonthDate', false);
-				}
-				else if (optionValueNew == "2" && typeOfDataReviewed== "Incomes") {
-					switchIncomeExpenseSummary('incomesPresentation', 'isPreviousMonthDate', true, false);
-					getTotalBalance('isPreviousMonthDate', false);
-					updatePieChart(pieChart, 'Income', 'isPreviousMonthDate', false);
-				}
-				else if (optionValueNew == "3" && typeOfDataReviewed== "Incomes") {
-					switchIncomeExpenseSummary('incomesPresentation', 'isCurrentYearDate', true, false);
-					getTotalBalance('isCurrentYearDate', false);
-					updatePieChart(pieChart, 'Income', 'isCurrentYearDate', false);
-				}
+			startDateValue ="0";
+			endDateValue = "0";
+			
+			if (optionValueNew == "1" && typeOfDataReviewed== "Expenses") {
+				switchIncomeExpenseSummary('expensesPresentation', 'isCurrentMonthDate', true, false, false);
+				getTotalBalance('isCurrentMonthDate', false);
+				updatePieChart(pieChart, 'Expense', 'isCurrentMonthDate', false);
+				// (timePeriodSelectedByUser, isModal, startDateFromModal ='0', endDateFromModal = '0')
+			}
+			else if (optionValueNew == "2" && typeOfDataReviewed== "Expenses") {
+				switchIncomeExpenseSummary('expensesPresentation', 'isPreviousMonthDate', true, false, false);
+				getTotalBalance('isPreviousMonthDate', false);
+				updatePieChart(pieChart, 'Expense', 'isPreviousMonthDate', false);
+			}
+			else if (optionValueNew == "3" && typeOfDataReviewed== "Expenses") {
+				switchIncomeExpenseSummary('expensesPresentation', 'isCurrentYearDate', true, false, false);
+				getTotalBalance('isCurrentYearDate', false);
+				updatePieChart(pieChart, 'Expense', 'isCurrentYearDate', false);
+			}
+			else if (optionValueNew == "1" && typeOfDataReviewed== "Incomes") {
+				switchIncomeExpenseSummary('incomesPresentation', 'isCurrentMonthDate', true, false, false);
+				getTotalBalance('isCurrentMonthDate', false);
+				updatePieChart(pieChart, 'Income', 'isCurrentMonthDate', false);
+			}
+			else if (optionValueNew == "2" && typeOfDataReviewed== "Incomes") {
+				switchIncomeExpenseSummary('incomesPresentation', 'isPreviousMonthDate', true, false, false);
+				getTotalBalance('isPreviousMonthDate', false);
+				updatePieChart(pieChart, 'Income', 'isPreviousMonthDate', false);
+			}
+			else if (optionValueNew == "3" && typeOfDataReviewed== "Incomes") {
+				switchIncomeExpenseSummary('incomesPresentation', 'isCurrentYearDate', true, false, false);
+				getTotalBalance('isCurrentYearDate', false);
+				updatePieChart(pieChart, 'Income', 'isCurrentYearDate', false);
+			}
 	//		}
 			//var optionValueNew = $(this).children("option:selected").val(); 
 		//	alert(typeOfDataReviewed);
@@ -1136,23 +1456,38 @@ pieChart.data['labels'] = json['incomeCategories'];
 		$("#switcher-expenseLink-presentedInformation").on("click","#linkToPresentExpenses", function(e) {
 			e.preventDefault();
 			var selectedOptionFromDropDownList = getSelectedOptionFromDropDownList('#periodForBalanceSummary');
+			var isPieChartDisplayed = isElementEmpty($('#id-list'));
+
+			if (!isPieChartDisplayed) {
+				cleanList();
+				createPieChart(false);
+			}
+
+			if (!isElementEmpty($('#next-link'))) {
+				$('#next-link').html('');
+			}
+
+			if (!isElementEmpty($('#previous-link'))) {
+				$('#previous-link').html('');
+			}
+
 		//	alert(selectedOptionFromDropDownList);
 			if (selectedOptionFromDropDownList == "1") {
-				switchIncomeExpenseSummary('expensesPresentation', 'isCurrentMonthDate', false, false);
+				switchIncomeExpenseSummary('expensesPresentation', 'isCurrentMonthDate', false, false, false);
 				updatePieChart(pieChart, 'Expense', 'isCurrentMonthDate', false);
 			}
 			else if (selectedOptionFromDropDownList == "2") {
-				switchIncomeExpenseSummary('expensesPresentation', 'isPreviousMonthDate', false, false);
+				switchIncomeExpenseSummary('expensesPresentation', 'isPreviousMonthDate', false, false, false);
 				updatePieChart(pieChart, 'Expense', 'isPreviousMonthDate', false);
 			}
 			else if (selectedOptionFromDropDownList == "3") {
-				switchIncomeExpenseSummary('expensesPresentation', 'isCurrentYearDate', false, false);
+				switchIncomeExpenseSummary('expensesPresentation', 'isCurrentYearDate', false, false, false);
 				updatePieChart(pieChart, 'Expense', 'isCurrentYearDate', false);
 			}
 			else if (selectedOptionFromDropDownList == "4") {
 		//		startDateValue =$("#startDate").val();   //tutaj
 		//		endDateValue = $("#endDate").val();
-				switchIncomeExpenseSummary('expensesPresentation', 'isTimePeriodProvidedByUser', false, true, startDateValue, endDateValue);
+				switchIncomeExpenseSummary('expensesPresentation', 'isTimePeriodProvidedByUser', false, false, true, startDateValue, endDateValue);
 				updatePieChart(pieChart, 'Expense', 'isTimePeriodProvidedByUser', true, startDateValue, endDateValue);
 			}
 		}); 
@@ -1160,27 +1495,176 @@ pieChart.data['labels'] = json['incomeCategories'];
 		$("#switcher-incomeLink-presentedInformation").on("click", "#linkToPresentIncomes", function(e) {
 			e.preventDefault();
 			var selectedOptionFromDropDownList = getSelectedOptionFromDropDownList('#periodForBalanceSummary');
+			var isPieChartDisplayed = isElementEmpty($('#id-list'));
+
+			if (!isPieChartDisplayed) {
+				cleanList();
+				createPieChart(false);
+			}
+
+			if (!isElementEmpty($('#next-link'))) {
+				$('#next-link').html('');
+			}
+
+			if (!isElementEmpty($('#previous-link'))) {
+				$('#previous-link').html('');
+			}
 
 			if (selectedOptionFromDropDownList == "1") {
-				switchIncomeExpenseSummary('incomesPresentation', 'isCurrentMonthDate', false, false);
+				switchIncomeExpenseSummary('incomesPresentation', 'isCurrentMonthDate', false, false, false);
 				updatePieChart(pieChart, 'Income', 'isCurrentMonthDate', false);
 			//	updatePieChart(pieChart, expenseOrIncome, timePeriodSelectedByUser, isModal, startDateFromModal = "0", endDateFromModal = "0")	
 			}
 			else if (selectedOptionFromDropDownList == "2") {
-				switchIncomeExpenseSummary('incomesPresentation', 'isPreviousMonthDate', false, false);
+				switchIncomeExpenseSummary('incomesPresentation', 'isPreviousMonthDate', false, false, false);
 				updatePieChart(pieChart, 'Income', 'isPreviousMonthDate', false);
 			}
 			else if (selectedOptionFromDropDownList == "3") {
-				switchIncomeExpenseSummary('incomesPresentation', 'isCurrentYearDate', false, false);
+				switchIncomeExpenseSummary('incomesPresentation', 'isCurrentYearDate', false, false, false);
 				updatePieChart(pieChart, 'Income', 'isCurrentYearDate', false);
 			}
 			else if (selectedOptionFromDropDownList == "4") {
 			//	startDateValue =$("#startDate").val();   //tutaj
 			//	endDateValue = $("#endDate").val();
-				switchIncomeExpenseSummary('incomesPresentation', 'isTimePeriodProvidedByUser', false, true, startDateValue, endDateValue);
+				switchIncomeExpenseSummary('incomesPresentation', 'isTimePeriodProvidedByUser', false, false, true, startDateValue, endDateValue);
 				updatePieChart(pieChart, 'Income', 'isTimePeriodProvidedByUser', true, startDateValue, endDateValue);
 			}
-		});  
+		});
+
+		$("#presented-table-name").on("click","#chart-list-switcher", function(e) {
+			e.preventDefault(); 
+			var typeOfDataReviewed = $('#presented-table-name').text().left(8).trim();
+			var selectedOptionFromDropDownList = getSelectedOptionFromDropDownList('#periodForBalanceSummary');
+			var isPieChartDisplayed = isElementEmpty($('#id-list'));
+			
+			if (isPieChartDisplayed) {
+				if (selectedOptionFromDropDownList == "1" && typeOfDataReviewed== "Expenses") {
+					getOnePage('Expense', 'isCurrentMonthDate', false);
+				}
+				else if (selectedOptionFromDropDownList == "2" && typeOfDataReviewed== "Expenses") {
+					getOnePage('Expense', 'isPreviousMonthDate', false);
+				}
+				else if (selectedOptionFromDropDownList == "3" && typeOfDataReviewed== "Expenses") {
+					getOnePage('Expense', 'isCurrentYearDate', false);
+				}
+				else if (selectedOptionFromDropDownList == "4" && typeOfDataReviewed== "Expenses") {
+					getOnePage('Expense', 'isTimePeriodProvidedByUser', true, startDateValue, endDateValue);
+				}
+				else if (selectedOptionFromDropDownList == "1" && typeOfDataReviewed== "Incomes") {
+					getOnePage('Income', 'isCurrentMonthDate', false);
+				}
+				else if (selectedOptionFromDropDownList == "2" && typeOfDataReviewed== "Incomes") {
+					getOnePage('Income', 'isPreviousMonthDate', false);
+				}
+				else if (selectedOptionFromDropDownList == "3" && typeOfDataReviewed== "Incomes") {
+					getOnePage('Income', 'isCurrentYearDate', false);
+				}
+				else if (selectedOptionFromDropDownList == "4" && typeOfDataReviewed== "Incomes") {
+					getOnePage('Income', 'isTimePeriodProvidedByUser', true, startDateValue, endDateValue);
+				}
+			}
+			else {
+				cleanList();
+				createPieChart(false);
+
+				if (!isElementEmpty($('#next-link'))) {
+					$('#next-link').html('');
+				}
+
+				if (!isElementEmpty($('#previous-link'))) {
+					$('#previous-link').html('');
+				}
+
+				if (selectedOptionFromDropDownList == "1" && typeOfDataReviewed== "Expenses") {
+					switchIncomeExpenseSummary('expensesPresentation', 'isCurrentMonthDate', false, true, false);
+					updatePieChart(pieChart, 'Expense', 'isCurrentMonthDate', false);
+				}
+				else if (selectedOptionFromDropDownList == "2" && typeOfDataReviewed== "Expenses") {
+					switchIncomeExpenseSummary('expensesPresentation', 'isPreviousMonthDate', false, true, false);
+					updatePieChart(pieChart, 'Expense', 'isPreviousMonthDate', false);
+				}
+				else if (selectedOptionFromDropDownList == "3" && typeOfDataReviewed== "Expenses") {
+					switchIncomeExpenseSummary('expensesPresentation', 'isCurrentYearDate', false, true, false);
+					updatePieChart(pieChart, 'Expense', 'isCurrentYearDate', false);
+				}
+				else if (selectedOptionFromDropDownList == "4" && typeOfDataReviewed== "Expenses") {
+					switchIncomeExpenseSummary('expensesPresentation', 'isTimePeriodProvidedByUser', false, true, true, startDateValue, endDateValue);
+					updatePieChart(pieChart, 'Expense', 'isTimePeriodProvidedByUser', true, startDateValue, endDateValue);
+				}
+				else if (selectedOptionFromDropDownList == "1" && typeOfDataReviewed== "Incomes") {
+					switchIncomeExpenseSummary('incomesPresentation', 'isCurrentMonthDate', false, true, false);
+					updatePieChart(pieChart, 'Income', 'isCurrentMonthDate', false);
+				}
+				else if (selectedOptionFromDropDownList == "2" && typeOfDataReviewed== "Incomes") {
+					switchIncomeExpenseSummary('incomesPresentation', 'isPreviousMonthDate', false, true, false);
+					updatePieChart(pieChart, 'Income', 'isPreviousMonthDate', false);
+				}
+				else if (selectedOptionFromDropDownList == "3" && typeOfDataReviewed== "Incomes") {
+					switchIncomeExpenseSummary('incomesPresentation', 'isCurrentYearDate', false, true, false);
+					updatePieChart(pieChart, 'Income', 'isCurrentYearDate', false);
+				}
+				else if (selectedOptionFromDropDownList == "4" && typeOfDataReviewed== "Incomes") {
+					switchIncomeExpenseSummary('incomesPresentation', 'isTimePeriodProvidedByUser', false, true, true, startDateValue, endDateValue);
+					updatePieChart(pieChart, 'Income', 'isTimePeriodProvidedByUser', true, startDateValue, endDateValue);
+				}
+
+				//  switchIncomeExpenseSummary(fileName, timePeriodSelectedByUser, isFromDropDownList, isFromChartListSwitcher, isModal, startDateFromModal ='0', endDateFromModal = '0')
+			}
+	//		window.location.replace("balancereview.php?page=1&flow=expense&type=list"); 
+		});
+
+
+		$('#next-link').click(function(e) {
+			e.preventDefault();
+			var numberOfPages = Math.ceil(dataToDisplayList.length / 7);
+			var firstIdOnThePage = $('#th-id-0').text();
+			var indexOfFirstIdOnTheCurrentPageInArray = dataToDisplayList.indexOf(dataToDisplayList.find(function(obj) {return obj['id'] === firstIdOnThePage}));
+			var indexOfFirstIdOnTheNextPage = indexOfFirstIdOnTheCurrentPageInArray + 7;
+			var currentPageNumber = (indexOfFirstIdOnTheCurrentPageInArray / 7) + 1;
+			var isExpenseList = ($('#presented-table-name').text().left(8).trim() === "Expenses") ? true : false;
+			var numberOfAllItems = dataToDisplayList.length;
+			
+			// updateInformationForNextPageInTheList(itemPositionOnTheList, numberOfItemsToBeUpdated, isExpenseList)
+			if (currentPageNumber + 1 < numberOfPages) {
+				updateInformationForNextPageInTheList(indexOfFirstIdOnTheNextPage, 7, isExpenseList);
+			}
+			else if (currentPageNumber + 1 == numberOfPages) {
+				$('#next-link').html('');
+				var numberOfItemsOnLastPage =  (numberOfAllItems - (numberOfPages - 1) * 7); 
+				updateInformationForNextPageInTheList(indexOfFirstIdOnTheNextPage, numberOfItemsOnLastPage, isExpenseList);
+			}
+
+			if (isElementEmpty($('#previous-link'))) {
+				$('#previous-link').html('Previous');
+			}
+			//alert(dataToDisplayList.find((o) => {return o['id'] === firstIdOnThePage})['id']);
+			//alert(dataToDisplayList.indexOf(dataToDisplayList.find(function(obj) {return obj['id'] === "10"})));
+		});
+
+		$('#previous-link').click(function(e) {
+			e.preventDefault();
+			var numberOfPages = Math.ceil(dataToDisplayList.length / 7);
+			var firstIdOnThePage = $('#th-id-0').text();
+			var indexOfFirstIdOnTheCurrentPageInArray = dataToDisplayList.indexOf(dataToDisplayList.find(function(obj) {return obj['id'] === firstIdOnThePage}));
+			var indexOfFirstIdOnThePreviousdPage = indexOfFirstIdOnTheCurrentPageInArray - 7;
+			var currentPageNumber = (indexOfFirstIdOnTheCurrentPageInArray / 7) + 1;
+			var isExpenseList = ($('#presented-table-name').text().left(8).trim() === "Expenses") ? true : false;
+			var numberOfAllItems = dataToDisplayList.length;
+
+			// updateInformationForPreviousPageInTheList(itemPositionOnTheList, numberOfItemsToBeRestored, isExpenseList)
+			if (currentPageNumber != numberOfPages) {
+				updateInformationForPreviousPageInTheList(indexOfFirstIdOnThePreviousdPage, 0, isExpenseList);
+			}
+			else if (currentPageNumber == numberOfPages) {
+				var numberOfItemsToBeRestored = (numberOfPages * 7) - numberOfAllItems;
+				updateInformationForPreviousPageInTheList(indexOfFirstIdOnThePreviousdPage, numberOfItemsToBeRestored, isExpenseList);
+				$('#next-link').html('Next');
+			}
+
+			if (currentPageNumber - 1 == 1) {
+				$('#previous-link').html('');
+			}
+		});
 
 
 /*
@@ -1234,25 +1718,46 @@ pieChart.data['labels'] = json['incomeCategories'];
 		//	startDateValue =$("#startDate").val();   //tutaj
 		//	endDateValue = $("#endDate").val();
 		//	alert(startDateValue);
-		$("#closeModalSymbol").attr("disabled", true);
-		$("#closeModalButton").attr("disabled", true);
-		$("#submitModalButton").attr("disabled", true);
-		$("#startDate").attr("disabled", true);
-		$("#endDate").attr("disabled", true);
+			$("#closeModalSymbol").attr("disabled", true);
+			$("#closeModalButton").attr("disabled", true);
+			$("#submitModalButton").attr("disabled", true);
+			$("#startDate").attr("disabled", true);
+			$("#endDate").attr("disabled", true);
+
+			var isPieChartDisplayed = isElementEmpty($('#id-list'));
+
+	/*		if (!isPieChartDisplayed) {
+				cleanList();
+				createPieChart(false);
+			}  */
+
 			var typeOfDataReviewed = $('#presented-table-name').text().left(8).trim();
 			//$('#boxToProvidePeriodForBalanceSummary').modal("hide"); 
 
 			$('#boxToProvidePeriodForBalanceSummary').delay(2000).queue(function() { 
+				if (!isPieChartDisplayed) {
+					cleanList();
+					createPieChart(false);
+				}
+
+				if (!isElementEmpty($('#next-link'))) {
+					$('#next-link').html('');
+				}
+
+				if (!isElementEmpty($('#previous-link'))) {
+					$('#previous-link').html('');
+				}
+
   				$(this).modal("hide");
   
   				if (typeOfDataReviewed == "Expenses") {
-					switchIncomeExpenseSummary('expensesPresentation', 'isTimePeriodProvidedByUser', true, true, startDateValue, endDateValue); 
+					switchIncomeExpenseSummary('expensesPresentation', 'isTimePeriodProvidedByUser', true, false, true, startDateValue, endDateValue); 
 					getTotalBalance('isTimePeriodProvidedByUser', true, startDateValue, endDateValue);
 					updatePieChart(pieChart, 'Expense', 'isTimePeriodProvidedByUser', true, startDateValue, endDateValue);
 					// (timePeriodSelectedByUser, isModal, startDateFromModal ='0', endDateFromModal = '0')
 				}
 				else if (typeOfDataReviewed == "Incomes") {
-					switchIncomeExpenseSummary('incomesPresentation', 'isTimePeriodProvidedByUser', true, true, startDateValue, endDateValue);
+					switchIncomeExpenseSummary('incomesPresentation', 'isTimePeriodProvidedByUser', true, false, true, startDateValue, endDateValue);
 					getTotalBalance('isTimePeriodProvidedByUser', true, startDateValue, endDateValue);
 					updatePieChart(pieChart, 'Income', 'isTimePeriodProvidedByUser', true, startDateValue, endDateValue);
 				}

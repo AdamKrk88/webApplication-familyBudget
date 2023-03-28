@@ -139,4 +139,54 @@ class Expense {
 
     }
 
+
+    public static function getOnePageOfList($dbConnection, $user_id, $class, $method, $startDateFromModal = '0', $endDateFromModal = '0') {
+        $sql = "SELECT *
+                FROM expense
+                WHERE user_id = :user_id
+                ORDER BY id";
+
+        $stmt = $dbConnection->prepare($sql);
+        $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
+  //      $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+  //      $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+       
+        $expenseTable = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $expenseTableForGivenPeriod = [];
+
+    //    foreach($expenseTable as $singleExpense) {
+     //   if (call_user_func("$class::$method","{$singleExpense['date']}"))    
+     
+        if (!$startDateFromModal && !$endDateFromModal) {
+            for ($i = 0; $i < count($expenseTable); $i++) {
+                if (call_user_func("$class::$method",$expenseTable[$i]['date'])) {
+                    $expenseTableForGivenPeriod[] = array(
+                                                        'id' => $expenseTable[$i]['id'], 
+                                                        'date' => $expenseTable[$i]['date'],
+                                                        'category' => $expenseTable[$i]['category'],
+                                                        'payment' => $expenseTable[$i]['payment'],
+                                                        'comment' => $expenseTable[$i]['comment'],
+                                                        'amount' => $expenseTable[$i]['amount']);             
+                }
+   
+            }
+        }
+        else {
+            for ($i = 0; $i < count($expenseTable); $i++) {
+                if (call_user_func("$class::$method",$expenseTable[$i]['date'], $startDateFromModal, $endDateFromModal)) {
+                    $expenseTableForGivenPeriod[] = array(
+                                                        'id' => $expenseTable[$i]['id'], 
+                                                        'date' => $expenseTable[$i]['date'],
+                                                        'category' => $expenseTable[$i]['category'],
+                                                        'payment' => $expenseTable[$i]['payment'],
+                                                        'comment' => $expenseTable[$i]['comment'],
+                                                        'amount' => $expenseTable[$i]['amount']);             
+                }
+            }
+        }
+
+        return  $expenseTableForGivenPeriod;
+    }
+
 }
