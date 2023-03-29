@@ -62,4 +62,133 @@ class Expense {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public static function getCategoryAndRelatedAmount($dbConnection, $user_id, $class, $method, $startDateFromModal = '0', $endDateFromModal = '0') {
+        $sql = "SELECT expense.amount, expense.date, expense.category
+                FROM expense
+                WHERE user_id = :user_id";
+
+        $stmt = $dbConnection->prepare($sql);
+        $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $categoryAndAmountsArray = $stmt->fetchAll(PDO::FETCH_ASSOC);
+     //   return $categoryAndAmountsArray;
+        $categoryKeyTotalAmountValue = [];
+        $categoryTotalAmountValue = [];
+     //   var_dump($categoryAndAmountsArray[5]);
+        if (!$startDateFromModal && !$endDateFromModal) {
+            foreach($categoryAndAmountsArray as $singleExpense) {
+            // $tra = $singleExpense['date'];
+           // var_dump($singleExpense);
+                if (call_user_func("$class::$method","{$singleExpense['date']}")) {
+                 //   var_dump("Hurra");
+                    if(array_key_exists($singleExpense['category'], $categoryKeyTotalAmountValue)) {
+                        $categoryKeyTotalAmountValue[$singleExpense['category']] = round((double)$categoryKeyTotalAmountValue[$singleExpense['category']] + (double)$singleExpense['amount'],2);
+                    }
+                    else {
+                        $categoryKeyTotalAmountValue[$singleExpense['category']] = (double)$singleExpense['amount'];
+                    }
+                }
+
+            }
+        } 
+        else {
+            foreach($categoryAndAmountsArray as $singleExpense) {
+                // $tra = $singleExpense['date'];
+        
+                    if (call_user_func("$class::$method","{$singleExpense['date']}", $startDateFromModal, $endDateFromModal)) {
+                        if(array_key_exists($singleExpense['category'], $categoryKeyTotalAmountValue)) {
+                            $categoryKeyTotalAmountValue[$singleExpense['category']] = round((double)$categoryKeyTotalAmountValue[$singleExpense['category']] + (double)$singleExpense['amount'],2);
+                        }
+                        else {
+                            $categoryKeyTotalAmountValue[$singleExpense['category']] = (double)$singleExpense['amount'];
+                        }
+                    }
+    
+                }
+
+        }
+
+/*
+        foreach($categoryAndAmountsArray as $singleExpense) {
+            if (Date::isCurrentMonthDate($singleExpense['date'])) {
+                if(array_key_exists($singleExpense['category'], $categoryKeyTotalAmountValue)) {
+                    $categoryKeyTotalAmountValue[$singleExpense['category']] = (double)$categoryKeyTotalAmountValue[$singleExpense['category']] + (double)$singleExpense['amount'];
+                }
+                else {
+                    $categoryKeyTotalAmountValue[$singleExpense['category']] = (double)$singleExpense['amount'];
+                }
+            }
+
+        }
+*/
+        foreach($categoryKeyTotalAmountValue as $key => $value) {
+            $categoryTotalAmountValue[] = array($key, NumberFormatter::formatNumber($value));
+        }
+
+        return $categoryTotalAmountValue;
+    }
+
+    public static function getTotalExpense($dbConnection, $user_id, $class, $method, $startDateFromModal = '0', $endDateFromModal = '0') {
+        $categoryAmountForExpenseSection = self::getCategoryAndRelatedAmount($dbConnection, $user_id, $class, $method, $startDateFromModal, $endDateFromModal);
+        $totalExpense = 0;
+
+        foreach ($categoryAmountForExpenseSection as $expensePerCategory) {
+            $totalExpense = round($totalExpense + (double)$expensePerCategory[1], 2);
+        }
+
+        return NumberFormatter::formatNumber($totalExpense);
+
+    }
+
+
+    public static function getOnePageOfList($dbConnection, $user_id, $class, $method, $startDateFromModal = '0', $endDateFromModal = '0') {
+        $sql = "SELECT *
+                FROM expense
+                WHERE user_id = :user_id
+                ORDER BY id";
+
+        $stmt = $dbConnection->prepare($sql);
+        $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
+  //      $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+  //      $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+       
+        $expenseTable = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $expenseTableForGivenPeriod = [];
+
+    //    foreach($expenseTable as $singleExpense) {
+     //   if (call_user_func("$class::$method","{$singleExpense['date']}"))    
+     
+        if (!$startDateFromModal && !$endDateFromModal) {
+            for ($i = 0; $i < count($expenseTable); $i++) {
+                if (call_user_func("$class::$method",$expenseTable[$i]['date'])) {
+                    $expenseTableForGivenPeriod[] = array(
+                                                        'id' => $expenseTable[$i]['id'], 
+                                                        'date' => $expenseTable[$i]['date'],
+                                                        'category' => $expenseTable[$i]['category'],
+                                                        'payment' => $expenseTable[$i]['payment'],
+                                                        'comment' => $expenseTable[$i]['comment'],
+                                                        'amount' => NumberFormatter::formatNumber($expenseTable[$i]['amount']));             
+                }
+   
+            }
+        }
+        else {
+            for ($i = 0; $i < count($expenseTable); $i++) {
+                if (call_user_func("$class::$method",$expenseTable[$i]['date'], $startDateFromModal, $endDateFromModal)) {
+                    $expenseTableForGivenPeriod[] = array(
+                                                        'id' => $expenseTable[$i]['id'], 
+                                                        'date' => $expenseTable[$i]['date'],
+                                                        'category' => $expenseTable[$i]['category'],
+                                                        'payment' => $expenseTable[$i]['payment'],
+                                                        'comment' => $expenseTable[$i]['comment'],
+                                                        'amount' => NumberFormatter::formatNumber($expenseTable[$i]['amount']));             
+                }
+            }
+        }
+
+        return  $expenseTableForGivenPeriod;
+    }
+
 }

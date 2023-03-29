@@ -251,6 +251,16 @@ tbody th
 	text-align: center;
 }
 
+tbody td
+{
+	text-align: center;
+}
+
+tbody .padding-0405rem
+{
+	padding: 0.4rem 0.5rem;
+}
+
 .table>:not(caption)>*>*
 {
 	padding: 0.4rem 0.5rem;
@@ -453,7 +463,7 @@ label#labelTextNextToList
 
 /* Legend for pie chart */
 
-
+/*
 .piechart
 {
 	border-radius: 50%;
@@ -471,6 +481,13 @@ label#labelTextNextToList
 {
 	background-image: conic-gradient(red 90deg, orange 90deg 180deg, yellow 180deg 270deg, 
      green 270deg);
+}
+*/
+
+#target
+{
+	width: 150px;
+	height: 150px;
 }
 
 .entry-color 
@@ -643,13 +660,7 @@ label#labelTextNextToList
 	{
 		font-size: 12px;
 	}
-	
-	.piechart
-	{	
-		height: 110px;
-		width: 110px;
-	}
-	
+		
 	.entry-color 
 	{
     height: 7px;

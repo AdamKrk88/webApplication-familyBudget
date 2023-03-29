@@ -1,22 +1,11 @@
-<!DOCTYPE HTML>
-<html lang="en">
-<head>
-	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1"> 
-	<title>Budget Manager</title>
-	<meta name="description" content="Monitor your incomes and expenses - manage your budget and save money" />
-	<meta name="keywords" content="money, budget, income, expense" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">   
-	<link rel="stylesheet" href="css/style.css" type="text/css" />
-	<link rel="stylesheet" href="css/fontello.css" type="text/css" />
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
-	<!--[if lt IE 9]>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
-	<![endif]-->
-</head>
+<?php
+//require 'includes/autoloader.php';
+//session_start();
+//Authorization::checkAuthorization();
+
+require 'includes/headCharsetLang.php';  
+require 'includes/headMetaTitleLink.php';
+?>
 
 <body>	
 	<header>	
@@ -29,11 +18,11 @@
 			</button>
 			<div class="collapse navbar-collapse" id="mainmenu">
 				<ul class="navbar-nav ms-auto">
-					<li class="nav-item text-center"><a class="nav-link" href="addincome.html">Add income</a></li>
-					<li class="nav-item text-center"><a class="nav-link" href="addexpense.html">Add expense</a></li>
+					<li class="nav-item text-center"><a class="nav-link" href="addincome.php">Add income</a></li>
+					<li class="nav-item text-center"><a class="nav-link" href="addexpense.php">Add expense</a></li>
 					<li class="nav-item text-center"><a class="nav-link active" href="#" aria-current="page">Review balance</a></li>
 					<li class="nav-item text-center"><a class="nav-link" href="#">Settings</a></li>
-					<li class="nav-item text-center"><a class="nav-link" href="login.html">Log out</a></li>
+					<li class="nav-item text-center"><a class="nav-link" href="includes/logout.php">Log out</a></li>
 				</ul>
 			</div>
 		</nav>		
@@ -54,7 +43,7 @@
 										<tbody>
 											<tr>
 												<th scope="row">Food</th>
-												<td>200</td>
+												<td>100000000</td>
 											</tr>
 											<tr>
 												<th scope="row">Transport</th>
