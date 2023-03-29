@@ -72,14 +72,16 @@ class Expense {
         $stmt->execute();
 
         $categoryAndAmountsArray = $stmt->fetchAll(PDO::FETCH_ASSOC);
+     //   return $categoryAndAmountsArray;
         $categoryKeyTotalAmountValue = [];
         $categoryTotalAmountValue = [];
-
+     //   var_dump($categoryAndAmountsArray[5]);
         if (!$startDateFromModal && !$endDateFromModal) {
             foreach($categoryAndAmountsArray as $singleExpense) {
             // $tra = $singleExpense['date'];
-    
+           // var_dump($singleExpense);
                 if (call_user_func("$class::$method","{$singleExpense['date']}")) {
+                 //   var_dump("Hurra");
                     if(array_key_exists($singleExpense['category'], $categoryKeyTotalAmountValue)) {
                         $categoryKeyTotalAmountValue[$singleExpense['category']] = round((double)$categoryKeyTotalAmountValue[$singleExpense['category']] + (double)$singleExpense['amount'],2);
                     }
@@ -121,7 +123,7 @@ class Expense {
         }
 */
         foreach($categoryKeyTotalAmountValue as $key => $value) {
-            $categoryTotalAmountValue[] = array($key, $value);
+            $categoryTotalAmountValue[] = array($key, NumberFormatter::formatNumber($value));
         }
 
         return $categoryTotalAmountValue;
@@ -135,7 +137,7 @@ class Expense {
             $totalExpense = round($totalExpense + (double)$expensePerCategory[1], 2);
         }
 
-        return $totalExpense;
+        return NumberFormatter::formatNumber($totalExpense);
 
     }
 
@@ -167,7 +169,7 @@ class Expense {
                                                         'category' => $expenseTable[$i]['category'],
                                                         'payment' => $expenseTable[$i]['payment'],
                                                         'comment' => $expenseTable[$i]['comment'],
-                                                        'amount' => $expenseTable[$i]['amount']);             
+                                                        'amount' => NumberFormatter::formatNumber($expenseTable[$i]['amount']));             
                 }
    
             }
@@ -181,7 +183,7 @@ class Expense {
                                                         'category' => $expenseTable[$i]['category'],
                                                         'payment' => $expenseTable[$i]['payment'],
                                                         'comment' => $expenseTable[$i]['comment'],
-                                                        'amount' => $expenseTable[$i]['amount']);             
+                                                        'amount' => NumberFormatter::formatNumber($expenseTable[$i]['amount']));             
                 }
             }
         }

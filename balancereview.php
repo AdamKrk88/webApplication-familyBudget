@@ -599,6 +599,7 @@ require 'includes/headMetaTitleLink.php';
 				'endDateFromModal': endDateFromModal
 			},
 			success: function(incomeOrExpenseData) {
+			//	alert(incomeOrExpenseData);
 				var json = JSON.parse(incomeOrExpenseData);
 				var numberOfIncomeOrExpenseCategories = Object.keys(json).length;
 			//	alert(Object.keys(json).length);
@@ -1347,7 +1348,7 @@ pieChart.data['labels'] = json['incomeCategories'];
 		//	if (optionValueNew == "1" || optionValueNew == "2" || optionValueNew == "3") {
 			startDateValue ="0";
 			endDateValue = "0";
-			
+		
 			if (optionValueNew == "1" && typeOfDataReviewed== "Expenses") {
 				switchIncomeExpenseSummary('expensesPresentation', 'isCurrentMonthDate', true, false, false);
 				getTotalBalance('isCurrentMonthDate', false);

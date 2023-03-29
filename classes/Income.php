@@ -91,7 +91,7 @@ class Income {
         }
 
         foreach($categoryKeyTotalAmountValue as $key => $value) {
-            $categoryTotalAmountValue[] = array($key, $value);
+            $categoryTotalAmountValue[] = array($key, NumberFormatter::formatNumber($value));
         }
 
         return $categoryTotalAmountValue;
@@ -105,7 +105,7 @@ class Income {
             $totalIncome = round($totalIncome + (double)$incomePerCategory[1], 2);
         }
 
-        return $totalIncome;
+        return NumberFormatter::formatNumber($totalIncome);
 
     }
 
@@ -135,7 +135,7 @@ class Income {
                                                         'category' => $incomeTable[$i]['category'],
                                                     //  'payment' => $incomeTable[$i]['payment'],
                                                         'comment' => $incomeTable[$i]['comment'],
-                                                        'amount' => $incomeTable[$i]['amount']);             
+                                                        'amount' => NumberFormatter::formatNumber($incomeTable[$i]['amount']));             
                 }
     //       }
             }
@@ -149,7 +149,7 @@ class Income {
                                                         'category' => $incomeTable[$i]['category'],
                                                  //       'payment' => $incomeTable[$i]['payment'],
                                                         'comment' => $incomeTable[$i]['comment'],
-                                                        'amount' => $incomeTable[$i]['amount']);             
+                                                        'amount' => NumberFormatter::formatNumber($incomeTable[$i]['amount']));             
                 }
             }
         }
