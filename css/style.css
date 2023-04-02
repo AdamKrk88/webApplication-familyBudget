@@ -112,6 +112,26 @@ body
 	color: #000000;
 }
 
+.flex-even {
+	flex: 1;
+}
+
+.settings-option-style:not(:last-child)
+{
+	border-right: 2px solid #bfbfbf;
+}
+
+.settings-option-style:hover
+{
+	background-color: #fffdf9;
+	color: #ff6600;
+}
+
+.user-change
+{
+	
+}
+
 .bg-light-grey
 {
 	background-color: #f2f2f2;

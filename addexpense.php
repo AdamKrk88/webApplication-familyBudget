@@ -28,7 +28,7 @@ require 'includes/headMetaTitleLink.php';
 					<li class="nav-item text-center"><a class="nav-link" href="addincome.php">Add income</a></li>
 					<li class="nav-item text-center"><a class="nav-link active" href="#" aria-current="page">Add expense</a></li>
 					<li class="nav-item text-center"><a class="nav-link" href="balancereview.php">Review balance</a></li>
-					<li class="nav-item text-center"><a class="nav-link" href="#">Settings</a></li>
+					<li class="nav-item text-center"><a class="nav-link" href="settings.php">Settings</a></li>
 					<li class="nav-item text-center"><a class="nav-link" href="includes/logout.php">Log out</a></li>
 				</ul>
 			</div>
