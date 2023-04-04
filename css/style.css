@@ -142,6 +142,16 @@ body
 	background-color: #bfbfbf;
 }
 
+.bg-medium-light-grey
+{
+	background-color: #e9e9e9;
+}
+
+.highlight-option:hover 
+{
+	background-color: #fafafa;
+}
+
 .font-color-black
 {
 	color: #000000;
@@ -190,6 +200,11 @@ body
 .w-85
 {
 	width: 85% !important;
+}
+
+.w-95
+{
+	width: 95% !important;
 }
 
 .w-40
