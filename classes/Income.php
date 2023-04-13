@@ -97,6 +97,21 @@ class Income {
         return $categoryTotalAmountValue;
     }
 
+    public static function getAllIncomes($dbConnection, $user_id) {
+        $sql = "SELECT income.amount, income.date, income.category
+                FROM income
+                WHERE user_id = :user_id";
+
+        $stmt = $dbConnection->prepare($sql);
+        $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $categoryAndAmountsArray = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        return $categoryAndAmountsArray;
+    }
+
+
     public static function getTotalIncome($dbConnection, $user_id, $class, $method, $startDateFromModal = '0', $endDateFromModal = '0') {
         $categoryAmountForIncomeSection = self::getCategoryAndRelatedAmount($dbConnection, $user_id, $class, $method, $startDateFromModal, $endDateFromModal);
         $totalIncome = 0;

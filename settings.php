@@ -15,6 +15,13 @@ if ($customizeQueryStringValue) {
 				$connection = $database->getConnectionToDatabase();
 				$categories = Expense::getCategories($connection, $_SESSION['userId']);
 				$payments = Expense::getPayments($connection, $_SESSION['userId']);
+				$allExpenses = Expense::getAllExpenses($connection, $_SESSION['userId']);
+				break;
+			case "Income":
+				$database = new Database(DB_HOST,DB_NAME,DB_USER,DB_PASS);
+				$connection = $database->getConnectionToDatabase();
+				$categories = Income::getCategories($connection, $_SESSION['userId']);
+				$allIncomes = Income::getAllIncomes($connection, $_SESSION['userId']);
 				break;
 		}
 	}
@@ -69,7 +76,7 @@ require 'includes/headMetaTitleLink.php';
 								<h2 class="font-color-black fw-bolder font-size-scaled-from-30px position-relative m-0 py-1">User<a class="position-absolute top-50 end-0 translate-middle-y font-size-scaled-from-15px link-registration-income-expense font-color-black py-1 pe-2 fst-italic" href="settings.php">Back</a></h2>
 								<div class="underline"></div>	
 								
-								<form class="lh-1 bg-medium-light-grey highlight-option" action="" method="post">	
+								<form class="lh-1 bg-medium-light-grey highlight-option" method="post">	
 									<div class="form-group row align-items-center" style="font-size: 1rem;">
 										<div class="col-3 py-1">
 											<label class="font-color-grey font-size-scaled-from-15px fw-bolder py-2 h-100" for="name-change">Name</label>
@@ -83,7 +90,7 @@ require 'includes/headMetaTitleLink.php';
 									</div>
 								</form> 
 
-								<form class="lh-1 highlight-option" action="" method="post">	
+								<form class="lh-1 highlight-option" method="post">	
 									<div class="form-group row align-items-center" style="font-size: 1rem;">
 										<div class="col-3 py-1">
 											<label class="font-color-grey font-size-scaled-from-15px fw-bolder py-2 h-100" for="email-change">Email</label>
@@ -135,14 +142,22 @@ require 'includes/headMetaTitleLink.php';
 											<label class="font-color-grey font-size-scaled-from-15px fw-bolder py-2 h-100" for="remove-category-expense">Category</label>
 										</div>
 										<div class="col-6 py-1">	
+											<?php if (!empty($categories)): ?>
 											<select class="form-select form-select-sm w-auto d-inline-block fw-bold font-color-grey text-center" id="remove-category-expense" name="remove-category-expense" aria-label="Category options that can be removed">
 												<?php foreach ($categories as $category): ?>																				
 												<option value="<?= $category['category']; ?>"><?= $category['category']; ?></option>
 												<?php endforeach; ?>										
 											</select>
+											<?php else: ?>
+											<p class="text-center font-orange font-size-scaled-from-15px mb-0">No categories available</p>
+											<?php endif; ?>
 										</div>
 										<div class="col-3 py-1">
+											<?php if (!empty($categories)): ?>
 											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to remove category for expense">Remove from the list</button>	
+											<?php else: ?>
+											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to remove category for expense" disabled>Remove from the list</button>	
+											<?php endif; ?>
 										</div>
 									</div>
 								</form> 
@@ -167,14 +182,22 @@ require 'includes/headMetaTitleLink.php';
 											<label class="font-color-grey font-size-scaled-from-15px fw-bolder py-2 h-100" for="remove-payment-expense">Payment</label>
 										</div>
 										<div class="col-6 py-1">	
+											<?php if (!empty($payments)): ?>
 											<select class="form-select form-select-sm w-auto d-inline-block fw-bold font-color-grey text-center" id="remove-payment-expense" name="remove-payment-expense" aria-label="Payment options that can be removed">
 												<?php foreach ($payments as $payment): ?>
 												<option value="<?= $payment['payment']; ?>"><?= $payment['payment']; ?></option>
 												<?php endforeach; ?>									
 											</select>
+											<?php else: ?>
+											<p class="text-center font-orange font-size-scaled-from-15px mb-0">No payments method available</p>
+											<?php endif; ?>
 										</div>
 										<div class="col-3 py-1">
+											<?php if (!empty($payments)): ?>
 											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to remove payment option for expense">Remove from the list</button>	
+											<?php else: ?>
+											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to remove payment option for expense" disabled>Remove from the list</button>	
+											<?php endif; ?>
 										</div>
 									</div>
 								</form>
@@ -185,10 +208,18 @@ require 'includes/headMetaTitleLink.php';
 											<label class="font-color-grey font-size-scaled-from-15px fw-bolder py-2 h-100" for="remove-expense">ID</label>
 										</div>
 										<div class="col-6 py-1">
+											<?php if (!empty($allExpenses)): ?>
 											<input class="form-control form-control-sm fw-bold font-color-grey w-25 mx-auto" type="text" name="remove-expense" id="remove-expense" title="Please fill out to remove expense" aria-label="remove expense" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
+											<?php else: ?>
+											<p class="text-center font-orange font-size-scaled-from-15px mb-0">No expense registered</p>
+											<?php endif; ?>
 										</div>
 										<div class="col-3 py-1">
+											<?php if (!empty($allExpenses)): ?>
 											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to remove expense">Remove expense</button>	
+											<?php else: ?>
+											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to remove expense" disabled>Remove expense</button>		
+											<?php endif; ?>
 										</div>
 									</div>
 								</form> 
@@ -200,11 +231,19 @@ require 'includes/headMetaTitleLink.php';
 											<label class="font-color-grey font-size-scaled-from-15px fw-bolder d-block py-2 h-100" for="edit-expense-comment">Comment</label>
 										</div>
 										<div class="col-6 py-1">
+											<?php if (!empty($allExpenses)): ?>
 											<input class="form-control form-control-sm fw-bold font-color-grey w-25 mx-auto mb-2" type="text" name="edit-expense-id-comment" id="edit-expense-id-comment" title="Please fill out to edit expense" aria-label="ID of expense to be edited" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
 											<input class="form-control form-control-sm fw-bold font-color-grey" type="text" name="edit-expense-comment" id="edit-expense-comment" title="Please fill out to edit expense" aria-label="Update of comment for expense" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
+											<?php else: ?>
+											<p class="text-center font-orange font-size-scaled-from-15px mb-0">No expense registered</p>
+											<?php endif; ?>
 										</div>
 										<div class="col-3 py-1 align-self-stretch">
+											<?php if (!empty($allExpenses)): ?>
 											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to edit expense with the comment">Edit comment for expense</button>	
+											<?php else: ?>
+											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to edit expense with the comment" disabled>Edit comment for expense</button>	
+											<?php endif; ?>
 										</div>
 									</div>
 								</form> 
@@ -216,15 +255,145 @@ require 'includes/headMetaTitleLink.php';
 											<label class="font-color-grey font-size-scaled-from-15px fw-bolder d-block py-2 h-100" for="edit-expense-category">Category</label>
 										</div>
 										<div class="col-6 py-1">
+											<?php if (!empty($categories) && !empty($allExpenses)): ?>
 											<input class="form-control form-control-sm fw-bold font-color-grey w-25 mx-auto mb-2" type="text" name="edit-expense-id-category" id="edit-expense-id-category" title="Please fill out to edit expense" aria-label="ID of expense to be edited" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
 											<select class="form-select form-select-sm w-auto d-inline-block fw-bold font-color-grey text-center" id="edit-expense-category" name="edit-expense-category" aria-label="Category to be updated for expense">
 												<?php foreach ($categories as $category): ?>																				
 												<option value="<?= $category['category']; ?>"><?= $category['category']; ?></option>
 												<?php endforeach; ?>										
 											</select>
+											<?php elseif (empty($allExpenses)): ?>
+											<p class="text-center font-orange font-size-scaled-from-15px mb-0">No expense registered</p>
+											<?php else: ?>
+											<p class="text-center font-orange font-size-scaled-from-15px mb-0">No categories available</p>
+											<?php endif; ?>
 										</div>
 										<div class="col-3 py-1 align-self-stretch">
+											<?php if (!empty($categories) && !empty($allExpenses)): ?>
 											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to edit expense with the category">Edit category for expense</button>	
+											<?php else: ?>
+											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to edit expense with the category" disabled>Edit category for expense</button>	
+											<?php endif; ?>
+										</div>
+									</div>
+								</form> 
+
+								<?php elseif ($isAllowedCustomizePresent && $customizeQueryStringValue === "Income"): ?>
+								<h2 class="font-color-black fw-bolder font-size-scaled-from-30px position-relative m-0 py-1">Income<a class="position-absolute top-50 end-0 translate-middle-y font-size-scaled-from-15px link-registration-income-expense font-color-black py-1 pe-2 fst-italic" href="settings.php">Back</a></h2>
+								<div class="underline"></div>	
+
+								<form class="lh-1 bg-medium-light-grey highlight-option" action="" method="post">	
+									<div class="form-group row align-items-center" style="font-size: 1rem;">
+										<div class="col-3 py-1">
+											<label class="font-color-grey font-size-scaled-from-15px fw-bolder py-2 h-100" for="add-category-income">Category</label>
+										</div>
+										<div class="col-6 py-1">
+											<input class="form-control form-control-sm fw-bold font-color-grey w-50 mx-auto" type="text" name="add-category-income" id="add-category-income" title="Please fill out to add category" aria-label="add category for income" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
+										</div>
+										<div class="col-3 py-1">
+											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to add category for income">Add to the list</button>	
+										</div>
+									</div>
+								</form> 
+
+								<form class="lh-1 highlight-option" action="" method="post">	
+									<div class="form-group row align-items-center" style="font-size: 1rem;">
+										<div class="col-3 py-1">
+											<label class="font-color-grey font-size-scaled-from-15px fw-bolder py-2 h-100" for="remove-category-income">Category</label>
+										</div>
+										<div class="col-6 py-1">
+											<?php if (!empty($categories)): ?>
+											<select class="form-select form-select-sm w-auto d-inline-block fw-bold font-color-grey text-center" id="remove-category-income" name="remove-category-income" aria-label="Category options that can be removed">
+												<?php foreach ($categories as $category): ?>																				
+												<option value="<?= $category['category']; ?>"><?= $category['category']; ?></option>
+												<?php endforeach; ?>										
+											</select>
+											<?php else: ?>
+											<p class="text-center font-orange font-size-scaled-from-15px mb-0">No categories available</p>
+											<?php endif; ?>
+										</div>
+										<div class="col-3 py-1">
+											<?php if (!empty($categories)): ?>
+											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to remove category for income">Remove from the list</button>	
+											<?php else: ?>
+											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to remove category for income" disabled>Remove from the list</button>		
+											<?php endif; ?>
+										</div>
+									</div>
+								</form> 
+
+								<form class="lh-1 bg-medium-light-grey highlight-option" action="" method="post">	
+									<div class="form-group row align-items-center" style="font-size: 1rem;">
+										<div class="col-3 py-1">
+											<label class="font-color-grey font-size-scaled-from-15px fw-bolder py-2 h-100" for="remove-income">ID</label>
+										</div>
+										<div class="col-6 py-1">
+											<?php if (!empty($allIncomes)): ?>
+											<input class="form-control form-control-sm fw-bold font-color-grey w-25 mx-auto" type="text" name="remove-income" id="remove-income" title="Please fill out to remove income" aria-label="remove income" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
+											<?php else: ?>
+											<p class="text-center font-orange font-size-scaled-from-15px mb-0">No income registered</p>
+											<?php endif; ?>
+										</div>
+										<div class="col-3 py-1">
+											<?php if (!empty($allIncomes)): ?>
+											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to remove income">Remove income</button>	
+											<?php else: ?>
+											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to remove income" disabled>Remove income</button>		
+											<?php endif; ?>
+										</div>
+									</div>
+								</form> 
+
+								<form class="lh-1 highlight-option" action="" method="post">	
+									<div class="form-group row align-items-center" style="font-size: 1rem;">
+										<div class="col-3 py-1">
+											<label class="font-color-grey font-size-scaled-from-15px fw-bolder d-block py-2 h-100 mb-2" for="edit-income-id-comment">ID</label>
+											<label class="font-color-grey font-size-scaled-from-15px fw-bolder d-block py-2 h-100" for="edit-income-comment">Comment</label>
+										</div>
+										<div class="col-6 py-1">
+											<?php if (!empty($allIncomes)): ?>
+											<input class="form-control form-control-sm fw-bold font-color-grey w-25 mx-auto mb-2" type="text" name="edit-income-id-comment" id="edit-income-id-comment" title="Please fill out to edit income" aria-label="ID of income to be edited" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
+											<input class="form-control form-control-sm fw-bold font-color-grey" type="text" name="edit-income-comment" id="edit-income-comment" title="Please fill out to edit income" aria-label="Update of comment for income" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
+											<?php else: ?>
+											<p class="text-center font-orange font-size-scaled-from-15px mb-0">No income registered</p>
+											<?php endif; ?>
+										</div>
+										<div class="col-3 py-1 align-self-stretch">
+											<?php if (!empty($allIncomes)): ?>
+											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to edit income with the comment">Edit comment for income</button>	
+											<?php else: ?>
+											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to edit income with the comment" disabled>Edit comment for income</button>
+											<?php endif; ?>
+										</div>
+									</div>
+								</form> 
+
+								<form class="lh-1 bg-medium-light-grey highlight-option" action="" method="post">	
+									<div class="form-group row align-items-center" style="font-size: 1rem;">
+										<div class="col-3 py-1">
+											<label class="font-color-grey font-size-scaled-from-15px fw-bolder d-block py-2 h-100 mb-2" for="edit-income-id-category">ID</label>
+											<label class="font-color-grey font-size-scaled-from-15px fw-bolder d-block py-2 h-100" for="edit-income-category">Category</label>
+										</div>
+										<div class="col-6 py-1">
+											<?php if (!empty($categories) && !empty($allIncomes)): ?>
+											<input class="form-control form-control-sm fw-bold font-color-grey w-25 mx-auto mb-2" type="text" name="edit-income-id-category" id="edit-income-id-category" title="Please fill out to edit income" aria-label="ID of income to be edited" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
+											<select class="form-select form-select-sm w-auto d-inline-block fw-bold font-color-grey text-center" id="edit-income-category" name="edit-income-category" aria-label="Category to be updated for income">
+												<?php foreach ($categories as $category): ?>																				
+												<option value="<?= $category['category']; ?>"><?= $category['category']; ?></option>
+												<?php endforeach; ?>										
+											</select>
+											<?php elseif (empty($allIncomes)): ?>
+											<p class="text-center font-orange font-size-scaled-from-15px mb-0">No income registered</p>
+											<?php else: ?>
+											<p class="text-center font-orange font-size-scaled-from-15px mb-0">No categories available</p>
+											<?php endif; ?>
+										</div>
+										<div class="col-3 py-1 align-self-stretch">
+											<?php if (!empty($categories) && !empty($allIncomes)): ?>
+											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to edit income with the category">Edit category for income</button>	
+											<?php else: ?>
+											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to edit income with the category" disabled>Edit category for income</button>
+											<?php endif; ?>
 										</div>
 									</div>
 								</form> 

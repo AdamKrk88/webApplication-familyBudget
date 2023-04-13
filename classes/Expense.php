@@ -129,6 +129,20 @@ class Expense {
         return $categoryTotalAmountValue;
     }
 
+    public static function getAllExpenses($dbConnection, $user_id) {
+        $sql = "SELECT expense.amount, expense.date, expense.category
+                FROM expense
+                WHERE user_id = :user_id";
+
+        $stmt = $dbConnection->prepare($sql);
+        $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $categoryAndAmountsArray = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $categoryAndAmountsArray;
+    }
+
     public static function getTotalExpense($dbConnection, $user_id, $class, $method, $startDateFromModal = '0', $endDateFromModal = '0') {
         $categoryAmountForExpenseSection = self::getCategoryAndRelatedAmount($dbConnection, $user_id, $class, $method, $startDateFromModal, $endDateFromModal);
         $totalExpense = 0;
