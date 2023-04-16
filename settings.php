@@ -3,13 +3,94 @@ require 'includes/autoloader.php';
 session_start();
 //Authorization::checkAuthorization();
 
+if (!isset($_POST['name']) && !isset($_POST['email']) && !isset($_POST['password'])) {
+	$_SESSION['successMessage'] = [];
+	unset($_SESSION['successMessage']);
+}
+
 $customizeQueryStringValue = $_GET['customize'] ?? false;
 
 if ($customizeQueryStringValue) {
 	$allowedCustomizeOptions = ["User", "Expense", "Income"];
 	$isAllowedCustomizePresent = in_array($customizeQueryStringValue, $allowedCustomizeOptions, TRUE);
 	if ($isAllowedCustomizePresent) {
+	//	$successMessage = ["Name changed", "Email changed", "Password changed"];
 		switch ($customizeQueryStringValue) {
+			case "User":
+				if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+					$user = new User();
+					$database = new Database(DB_HOST,DB_NAME,DB_USER,DB_PASS);
+					$connection = $database->getConnectionToDatabase();
+					
+					if (isset($_POST['name'])) {
+						$user->name = $_POST['name'];
+						if ($user->validateName()) {
+							try {
+								$sql = "UPDATE user
+										SET name = :name
+										WHERE id = :id";
+								$stmt = $connection->prepare($sql);
+								$stmt->bindValue(':name', $user->name, PDO::PARAM_STR);
+								$stmt->bindValue(':id', $_SESSION['userId'], PDO::PARAM_INT);
+								$stmt->execute();
+
+								$_SESSION['successMessage'][0] = 'Name changed';
+							}
+							catch(PDOException $e) {
+								echo $e->getMessage();
+								exit;
+							}
+							//var_dump(strlen($_POST['name']));
+							//username change
+						}
+					}
+
+					elseif (isset($_POST['email'])) {
+						$user->email = $_POST['email'];
+						if ($user->validateEmail()) {
+							try {
+								$sql = "UPDATE user
+										SET email = :email
+										WHERE id = :id";
+								$stmt = $connection->prepare($sql);
+								$stmt->bindValue(':email', $user->email, PDO::PARAM_STR);
+								$stmt->bindValue(':id', $_SESSION['userId'], PDO::PARAM_INT);
+								$stmt->execute();
+
+								$_SESSION['successMessage'][1] = 'Email changed';
+							}
+							catch(PDOException $e) {
+								echo $e->getMessage();
+								exit;
+							}
+						}
+					}
+
+					elseif (isset($_POST['password'])) {
+						$user->password = $_POST['password'];
+						if ($user->validatePassword()) {
+							$user->password = password_hash($user->password, PASSWORD_DEFAULT);
+							try {
+								$sql = "UPDATE user
+										SET password = :password
+										WHERE id = :id";
+								$stmt = $connection->prepare($sql);
+								$stmt->bindValue(':password', $user->password, PDO::PARAM_STR);
+								$stmt->bindValue(':id', $_SESSION['userId'], PDO::PARAM_INT);
+								$stmt->execute();
+
+								$_SESSION['successMessage'][2] = 'Password changed';
+							}
+							catch(PDOException $e) {
+								echo $e->getMessage();
+								exit;
+							}
+						}
+					}
+
+					//	$_SESSION['userId']
+				}
+				break;
 			case "Expense":
 				$database = new Database(DB_HOST,DB_NAME,DB_USER,DB_PASS);
 				$connection = $database->getConnectionToDatabase();
@@ -73,7 +154,32 @@ require 'includes/headMetaTitleLink.php';
 									<li class="nav-item text-center flex-even settings-option-style"><a class="nav-link" href="settings.php?customize=Income">Income</a></li>
 								</ul>
 								<?php elseif ($isAllowedCustomizePresent && $customizeQueryStringValue === "User"): ?>
-								<h2 class="font-color-black fw-bolder font-size-scaled-from-30px position-relative m-0 py-1">User<a class="position-absolute top-50 end-0 translate-middle-y font-size-scaled-from-15px link-registration-income-expense font-color-black py-1 pe-2 fst-italic" href="settings.php">Back</a></h2>
+								<h2 class="font-color-black fw-bolder font-size-scaled-from-30px position-relative m-0 py-1">User
+									<a class="position-absolute top-50 end-0 translate-middle-y font-size-scaled-from-15px link-registration-income-expense font-color-black py-1 pe-2 fst-italic" href="settings.php">Back</a>
+									<p class="position-absolute top-50 start-0 translate-middle-y font-size-scaled-from-15px font-orange py-1 ps-2" id="messageForUser"><?php 
+											if (isset($_POST['name']) || isset($_POST['email']) || isset($_POST['password'])) { 
+												if (!empty($user->errors) && !isset($_SESSION['successMessage'])) {
+													echo $user->errors[0];
+												}
+												elseif (!empty($user->errors) && isset($_SESSION['successMessage'])) {
+													echo $user->errors[0] . ". ";
+												}	
+												else {
+													if (isset($_POST['name'])) {
+														echo $_SESSION['successMessage'][0] . ". ";
+													}
+													elseif (isset($_POST['email'])) {
+														echo $_SESSION['successMessage'][1] . ". ";
+													}
+													elseif (isset($_POST['password'])) {
+														echo $_SESSION['successMessage'][2] . ". ";
+													}
+												}
+											
+										?><a class="link-registration-income-expense font-light-orange fst-italic" href="settings.php?customize=User"><?php if (isset($_SESSION['successMessage'])) {echo "Reload";} ?></a>
+										<?php } ?>
+									</p>
+								</h2>
 								<div class="underline"></div>	
 								
 								<form class="lh-1 bg-medium-light-grey highlight-option" method="post">	
@@ -82,10 +188,18 @@ require 'includes/headMetaTitleLink.php';
 											<label class="font-color-grey font-size-scaled-from-15px fw-bolder py-2 h-100" for="name-change">Name</label>
 										</div>
 										<div class="col-6 py-1">
+											<?php if (!isset($_SESSION['successMessage'][0])): ?>
 											<input class="form-control form-control-sm fw-bold font-color-grey" type="text" name="name" id="name-change" title="Please fill out to change username" aria-label="username change" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
+											<?php elseif (isset($_SESSION['successMessage'][0])): ?>
+											<input class="form-control form-control-sm fw-bold font-color-grey" type="text" aria-label="username change" disabled />	
+											<?php endif; ?>
 										</div>
 										<div class="col-3 py-1">
-											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Name change button">Change</button>	
+											<?php if (!isset($_SESSION['successMessage'][0])): ?>
+											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" id="nameChangeButton" type="submit" aria-label="Name change button">Change</button>	
+											<?php elseif (isset($_SESSION['successMessage'][0])): ?>
+											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Name change button" disabled>Change</button>	
+											<?php endif; ?>
 										</div>
 									</div>
 								</form> 
@@ -96,10 +210,18 @@ require 'includes/headMetaTitleLink.php';
 											<label class="font-color-grey font-size-scaled-from-15px fw-bolder py-2 h-100" for="email-change">Email</label>
 										</div>
 										<div class="col-6 py-1">
+											<?php if (!isset($_SESSION['successMessage'][1])): ?>
 											<input class="form-control form-control-sm fw-bold font-color-grey" type="email" name="email" id="email-change" title="Please fill out to change email" aria-label="email change" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
+											<?php elseif (isset($_SESSION['successMessage'][1])): ?>
+											<input class="form-control form-control-sm fw-bold font-color-grey" type="email" aria-label="email change" disabled />
+											<?php endif; ?>
 										</div>
 										<div class="col-3 py-1">
-											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Email change button">Change</button>	
+											<?php if (!isset($_SESSION['successMessage'][1])): ?>
+											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" id="emailChangeButton" type="submit" aria-label="Email change button">Change</button>	
+											<?php elseif (isset($_SESSION['successMessage'][1])): ?>
+											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Email change button" disabled>Change</button>
+											<?php endif; ?>
 										</div>
 									</div>
 								</form> 
@@ -110,14 +232,26 @@ require 'includes/headMetaTitleLink.php';
 											<label class="font-color-grey font-size-scaled-from-15px fw-bolder py-2 h-100" for="password-change">Password</label>
 										</div>
 										<div class="col-6 py-1">
+											<?php if (!isset($_SESSION['successMessage'][2])): ?>
 											<input class="form-control form-control-sm fw-bold font-color-grey" type="password" name="password" id="password-change" title="Please fill out to change password" aria-label="password change" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
+											<?php elseif (isset($_SESSION['successMessage'][2])): ?>
+											<input class="form-control form-control-sm fw-bold font-color-grey" type="password" aria-label="password change" disabled/>
+											<?php endif; ?>
 										</div>
 										<div class="col-3 py-1">
-											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Password change button">Change</button>	
+											<?php if (!isset($_SESSION['successMessage'][2])): ?>
+											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" id="passwordChangeButton" type="submit" aria-label="Password change button">Change</button>	
+											<?php elseif (isset($_SESSION['successMessage'][2])): ?>
+											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Password change button" disabled>Change</button>
+											<?php endif; ?>
 										</div>
 									</div>
-								</form> 
-
+								</form>
+								<?php if (!isset($_SESSION['successMessage'][2])): ?>
+								<div class="position-relative">
+									<p class="form-text text-muted font-size-scaled-from-13px fst-italic position-absolute">Password must contain at least one uppercase letter, one lowercase letter, one number and one special character. Length at least 10 characters</p>
+								</div>
+								<?php endif; ?>
 								<?php elseif ($isAllowedCustomizePresent && $customizeQueryStringValue === "Expense"): ?>
 								<h2 class="font-color-black fw-bolder font-size-scaled-from-30px position-relative m-0 py-1">Expense<a class="position-absolute top-50 end-0 translate-middle-y font-size-scaled-from-15px link-registration-income-expense font-color-black py-1 pe-2 fst-italic" href="settings.php">Back</a></h2>
 								<div class="underline"></div>	
@@ -421,5 +555,33 @@ require 'includes/headMetaTitleLink.php';
 	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js" integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous"></script>   
 
+	<script>
+	
+	function isElementEmpty(element) {
+      return !$.trim(element.html());
+  	}
+
+	$(document).ready(function(){
+		$("#nameChangeButton").click(function() {
+			if (!isElementEmpty($("#messageForUser"))) {
+			$("#messageForUser").html('');
+			}
+		});
+		
+		$("#emailChangeButton").click(function() {
+			if (!isElementEmpty($("#messageForUser"))) {
+			$("#messageForUser").html('');
+			}
+		});
+
+		$("#passwordChangeButton").click(function() {
+			if (!isElementEmpty($("#messageForUser"))) {
+			$("#messageForUser").html('');
+			}
+		});
+	
+	});   
+
+	</script>
 </body>
 </html>

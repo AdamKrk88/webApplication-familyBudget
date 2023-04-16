@@ -150,4 +150,63 @@
     //    exit;
     }
 
+    public function validateName() {
+        if ($this->name == '') {
+            $this->errors[] = 'Provide new username';
+        }
+        elseif ($this->name != '') {
+            $this->name = Validation::test_input($this->name);
+            if (!preg_match("/^[a-zA-Z-' ]*$/",$this->name)) {
+            $this->errors[] = "Only letters and white space allowed";
+            }
+            elseif (strlen($this->name) > 15) {
+                $this->errors[] = "Up to 15 characters is allowed";
+            }
+        }
+        if (empty($this->errors)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function validateEmail() {
+        if ($this->email == '') {
+            $this->errors[] = 'Provide new email';
+        }
+        elseif ($this->email != '') {
+            $this->email = Validation::test_input($this->email);
+            $this->email = filter_var($this->email, FILTER_SANITIZE_EMAIL);
+            if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
+            $this->errors[] = "Invalid email format";
+            }
+        }
+        if (empty($this->errors)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function validatePassword() {
+        if ($this->password == '') {
+            $this->errors[] = 'Provide new password';
+        }
+        elseif ($this->password !='') {
+            $uppercase = preg_match('@[A-Z]@', $this->password);
+            $lowercase = preg_match('@[a-z]@', $this->password);
+            $number    = preg_match('@[0-9]@', $this->password);
+            $specialChars = preg_match('@[^\w]@', $this->password);
+            
+            if (!$uppercase || !$lowercase || !$number || !$specialChars || strlen($this->password) < 10 ) {
+                $this->errors[] = 'Password invalid';
+            }
+        }
+        if (empty($this->errors)) {
+            return true;
+        }
+
+        return false;
+    }
+
 }
