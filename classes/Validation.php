@@ -20,4 +20,220 @@ class Validation {
         }
         return $error;       
       }
+
+      public static function checkIfCategoryExistInDatabase($dbConnection, $category, $expenseOrIncome) {
+        $sql = "SELECT category 
+                FROM category_$expenseOrIncome
+                WHERE category = :category";
+        $stmt = $dbConnection->prepare($sql);
+        $stmt->bindValue(':category', $category, PDO::PARAM_STR);
+        $stmt->execute();
+        $categoryFromDatabase = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (isset($categoryFromDatabase) && empty($categoryFromDatabase)) {
+            return false;
+        }
+        
+     //   $this->errors[] = "Provided username exist - please use another one";
+        return true;
+     //   var_dump(isset($userFromDatabase));
+    //    exit;
+    }
+
+
+    public static function checkIfPaymentExistInDatabase($dbConnection, $payment) {
+      $sql = "SELECT payment 
+              FROM payment_expense
+              WHERE payment = :payment";
+      $stmt = $dbConnection->prepare($sql);
+      $stmt->bindValue(':payment', $payment, PDO::PARAM_STR);
+      $stmt->execute();
+      $paymentFromDatabase = $stmt->fetch(PDO::FETCH_ASSOC);
+      if (isset($paymentFromDatabase) && empty($paymentFromDatabase)) {
+          return false;
+      }
+      
+   //   $this->errors[] = "Provided username exist - please use another one";
+      return true;
+   //   var_dump(isset($userFromDatabase));
+  //    exit;
+  }
+
+  public static function checkIfExpenseIdExistInDatabase($dbConnection, $id, $user_id) {
+    $sql = "SELECT id 
+            FROM expense
+            WHERE id = :id AND user_id = :user_id";
+    $stmt = $dbConnection->prepare($sql);
+    $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+    $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
+    $stmt->execute();
+    $expenseFromDatabase = $stmt->fetch(PDO::FETCH_ASSOC);
+    if (isset($expenseFromDatabase) && empty($expenseFromDatabase)) {
+        return false;
+    }
+    
+ //   $this->errors[] = "Provided username exist - please use another one";
+    return true;
+ //   var_dump(isset($userFromDatabase));
+//    exit;
+}
+
+
+    public static function checkIfNumberOfCategoriesIsAboveThreshold($dbConnection) {
+      $sql = "SELECT COUNT(*) as amount_categories 
+              FROM category_expense";
+      $stmt = $dbConnection->prepare($sql);
+      $stmt->execute();
+
+      $numberOfCategoriesArray = $stmt->fetch(PDO::FETCH_ASSOC);
+      $numberOfCategories = (int)$numberOfCategoriesArray['amount_categories'];
+      
+      if ($numberOfCategories < 18) {
+        return false;
+      }
+      else {
+        return true;
+      }
+    }
+
+    public static function checkIfNumberOfPaymentOptionsIsAboveThreshold($dbConnection) {
+      $sql = "SELECT COUNT(*) as amount_payments 
+              FROM payment_expense";
+      $stmt = $dbConnection->prepare($sql);
+      $stmt->execute();
+
+      $numberOfPaymentsArray = $stmt->fetch(PDO::FETCH_ASSOC);
+      $numberOfPayments = (int)$numberOfPaymentsArray['amount_payments'];
+      
+      if ($numberOfPayments < 5) {
+        return false;
+      }
+      else {
+        return true;
+      }
+    }
+
+
+
+      public static function validateCategory($dbConnection, $category, $expenseOrIncome) {
+        $errors = [];
+        if ($category == '') {
+          $errors[] = 'Provide category to add';
+        }
+        elseif ($category != '') {
+          $category = Validation::test_input($category);
+          if (!preg_match("/^([a-zA-Z]+)* ?[a-zA-Z]+$/",$category)) {
+            $errors[] = "Only letters and one white space allowed";
+          }
+          elseif (strlen($category) > 20) {
+            $errors[] = "Up to 20 characters is allowed";
+          }
+          else {
+            $category = strtolower($category);
+            $category = ucfirst($category);
+            if (self::checkIfCategoryExistInDatabase($dbConnection, $category, $expenseOrIncome)) {
+              $errors[] = "Error. Category exists";
+            }
+            elseif (self::checkIfNumberOfCategoriesIsAboveThreshold($dbConnection)) {
+              $errors[] = "Error. Maximum number of categories: 18";
+            }
+          }
+      }
+
+      $result = array($category, $errors);
+      return $result;
+      }
+
+      public static function validatePayment($dbConnection, $payment) {
+        $errors = [];
+        if ($payment == '') {
+          $errors[] = 'Provide payment option to add';
+        }
+        elseif ($payment != '') {
+          $payment = Validation::test_input($payment);
+          if (!preg_match("/^([a-zA-Z]+)* ?[a-zA-Z]+$/",$payment)) {
+            $errors[] = "Only letters and one white space allowed";
+          }
+          elseif (strlen($payment) > 15) {
+            $errors[] = "Up to 15 characters is allowed";
+          }
+          else {
+            $payment = strtolower($payment);
+            $payment = ucfirst($payment);
+            if (self::checkIfPaymentExistInDatabase($dbConnection, $payment)) {
+              $errors[] = "Error. Payment option exists";
+            }
+            elseif (self::checkIfNumberOfPaymentOptionsIsAboveThreshold($dbConnection)) {
+              $errors[] = "Error. Maximum number of options: 5";
+            }
+          }
+      }
+
+      $result = array($payment, $errors);
+      return $result;
+      }
+
+      public static function validateId($dbConnection, $id, $user_id) {
+        $errors = [];
+        if ($id == '') {
+          $errors[] = 'Provide id for expense to be removed';
+        }
+        elseif ($id != '') {
+          $id = Validation::test_input($id);
+          if (!preg_match("/^([0-9]+)*[0-9]+$/",$id)) {
+            $errors[] = "Only number allowed";
+          }
+          else {
+            if (!self::checkIfExpenseIdExistInDatabase($dbConnection, $id, $user_id)) {
+              $errors[] = "Error. No expense with this id";
+            }
+          }
+      }
+
+      $result = array($id, $errors);
+      return $result;
+      }
+
+      public static function validateIdAndCategory($dbConnection, $id, $user_id, $categoryProvided) {
+        $resultForIdValidation = self::validateId($dbConnection, $id, $user_id);
+        $idValidated = $resultForIdValidation[0];
+        $errors = $resultForIdValidation[1];
+        if (empty($errors)) {
+
+          $sql = "SELECT category 
+                  FROM expense
+                  WHERE id = :id";
+          $stmt = $dbConnection->prepare($sql);
+          $stmt->bindValue(':id', $idValidated, PDO::PARAM_INT);
+          $stmt->execute();
+          $currentCategory = $stmt->fetch(PDO::FETCH_ASSOC);
+
+          if ($currentCategory["category"] === $categoryProvided) {
+            $errors[] = "Current category. No change";
+          } 
+        }
+
+      $result = array($idValidated, $errors);
+      return $result;
+      }
+
+      public static function validateComment($comment) {
+        $errors = [];
+        
+        if ($comment == '') {
+          $comment = NULL;
+        }
+        elseif ($comment != '') {
+          $comment = Validation::test_input($comment);
+          if (!preg_match("/^[a-z0-9\040\.\-\/]+$/i",$comment)) {
+            $errors[] = "Comment invalid";
+          }
+          elseif (strlen($comment) > 25) {
+            $errors[] = "Up to 25 characters is allowed";
+          }
+      }
+
+      $result = array($comment, $errors);
+      return $result;
+      }
+
 }

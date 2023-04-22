@@ -3,7 +3,10 @@ require 'includes/autoloader.php';
 session_start();
 //Authorization::checkAuthorization();
 
-if (!isset($_POST['name']) && !isset($_POST['email']) && !isset($_POST['password'])) {
+if (!isset($_POST['name']) && !isset($_POST['email']) && !isset($_POST['password']) 
+	&& !isset($_POST['add-category-expense']) && !isset($_POST['remove-category-expense']) && !isset($_POST['add-payment-expense'])
+	&& !isset($_POST['remove-payment-expense']) && !isset($_POST['remove-expense']) && !isset($_POST['edit-expense-id-comment'])
+	&& !isset($_POST['edit-expense-id-category'])) {
 	$_SESSION['successMessage'] = [];
 	unset($_SESSION['successMessage']);
 }
@@ -94,17 +97,214 @@ if ($customizeQueryStringValue) {
 			case "Expense":
 				$database = new Database(DB_HOST,DB_NAME,DB_USER,DB_PASS);
 				$connection = $database->getConnectionToDatabase();
+			//	$categories = Expense::getCategories($connection, $_SESSION['userId']);
+			//	$payments = Expense::getPayments($connection, $_SESSION['userId']);
+			//	$allExpenses = Expense::getAllExpenses($connection, $_SESSION['userId']);
+
+				if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+					if (isset($_POST['add-category-expense'])) {
+						$result = Validation::validateCategory($connection, $_POST['add-category-expense'], 'expense');
+						$errorsExpenseOrIncomePart = $result[1];
+						$category = $result[0];
+						if (empty($errorsExpenseOrIncomePart)) {
+							try {
+								$sql = "INSERT INTO category_expense (category, user_id)
+										VALUES (:category, :user_id)";
+
+								$stmt = $connection->prepare($sql);
+								$stmt->bindValue(':category', $category, PDO::PARAM_STR);
+								$stmt->bindValue(':user_id', $_SESSION['userId'], PDO::PARAM_INT);
+								$stmt->execute();
+
+								$_SESSION['successMessage'][3] = 'Category added';
+							}
+							catch(PDOException $e) {
+								echo $e->getMessage();
+								exit;
+							}
+						}
+					}
+
+					elseif (isset($_POST['remove-category-expense'])) {
+		
+							try {
+								$sql = "DELETE FROM category_expense
+										WHERE category = :category AND user_id = :user_id";
+
+								$stmt = $connection->prepare($sql);
+								$stmt->bindValue(':category', $_POST['remove-category-expense'], PDO::PARAM_STR);
+								$stmt->bindValue(':user_id', $_SESSION['userId'], PDO::PARAM_INT);
+								$stmt->execute();
+
+								$errorsExpenseOrIncomePart = [];
+								$_SESSION['successMessage'][4] = 'Category removed';
+							}
+							catch(PDOException $e) {
+								echo $e->getMessage();
+								exit;
+							}
+					}
+
+					elseif (isset($_POST['add-payment-expense'])) {
+						$result = Validation::validatePayment($connection, $_POST['add-payment-expense']);
+						$errorsExpenseOrIncomePart = $result[1];
+						$payment = $result[0];
+						if (empty($errorsExpenseOrIncomePart)) {
+							try {
+								$sql = "INSERT INTO payment_expense (payment, user_id)
+										VALUES (:payment, :user_id)";
+
+								$stmt = $connection->prepare($sql);
+								$stmt->bindValue(':payment', $payment, PDO::PARAM_STR);
+								$stmt->bindValue(':user_id', $_SESSION['userId'], PDO::PARAM_INT);
+								$stmt->execute();
+
+								$_SESSION['successMessage'][5] = 'Payment added';
+							}
+							catch(PDOException $e) {
+								echo $e->getMessage();
+								exit;
+							}
+						}
+					}
+
+					elseif (isset($_POST['remove-payment-expense'])) {
+		
+						try {
+							$sql = "DELETE FROM payment_expense
+									WHERE payment = :payment AND user_id = :user_id";
+
+							$stmt = $connection->prepare($sql);
+							$stmt->bindValue(':payment', $_POST['remove-payment-expense'], PDO::PARAM_STR);
+							$stmt->bindValue(':user_id', $_SESSION['userId'], PDO::PARAM_INT);
+							$stmt->execute();
+
+							$errorsExpenseOrIncomePart = [];
+							$_SESSION['successMessage'][6] = 'Payment removed';
+						}
+						catch(PDOException $e) {
+							echo $e->getMessage();
+							exit;
+						}
+					}
+
+					elseif (isset($_POST['remove-expense'])) {
+						$result = Validation::validateId($connection, $_POST['remove-expense'], $_SESSION['userId']);
+						$errorsExpenseOrIncomePart = $result[1];
+						$expenseEntry = $result[0];
+						if (empty($errorsExpenseOrIncomePart)) {
+							try {
+								$sql = "DELETE FROM expense
+										WHERE id = :id";
+
+								$stmt = $connection->prepare($sql);
+								$stmt->bindValue(':id', $expenseEntry, PDO::PARAM_INT);
+								$stmt->execute();
+
+								$_SESSION['successMessage'][7] = 'Expense entry removed';
+							}
+							catch(PDOException $e) {
+								echo $e->getMessage();
+								exit;
+							}
+						}
+					}
+
+					elseif (isset($_POST['edit-expense-id-comment'])) {
+						$result = Validation::validateId($connection, $_POST['edit-expense-id-comment'], $_SESSION['userId']);
+						$errorsExpenseOrIncomePart = $result[1];
+						$expenseEntry = $result[0];
+						if (empty($errorsExpenseOrIncomePart)) {
+							$result = Validation::validateComment($_POST['edit-expense-comment']);
+							$errorsExpenseOrIncomePart = $result[1];
+							$commentExpenseEntry = $result[0];
+							if (empty($errorsExpenseOrIncomePart)) {
+								try {
+									$sql = "UPDATE expense
+											SET comment = :comment
+											WHERE id = :id";
+
+									$stmt = $connection->prepare($sql);
+									$stmt->bindValue(':comment', $commentExpenseEntry, PDO::PARAM_STR);
+									$stmt->bindValue(':id', $expenseEntry, PDO::PARAM_INT);
+									$stmt->execute();
+
+									$_SESSION['successMessage'][8] = 'Comment updated';
+								}
+								catch(PDOException $e) {
+									echo $e->getMessage();
+									exit;
+								}
+							}
+						}
+					}
+
+					elseif (isset($_POST['edit-expense-id-category'])) {
+						$result = Validation::validateIdAndCategory($connection, $_POST['edit-expense-id-category'], $_SESSION['userId'], $_POST['edit-expense-category']);
+						$errorsExpenseOrIncomePart = $result[1];
+						$expenseEntry = $result[0];
+						if (empty($errorsExpenseOrIncomePart)) {
+							try {
+								$sql = "UPDATE expense
+										SET category = :category
+										WHERE id = :id";
+
+								$stmt = $connection->prepare($sql);
+								$stmt->bindValue(':category', $_POST['edit-expense-category'], PDO::PARAM_STR);
+								$stmt->bindValue(':id', $expenseEntry, PDO::PARAM_INT);
+								$stmt->execute();
+
+								$_SESSION['successMessage'][9] = 'Category updated';
+							}
+							catch(PDOException $e) {
+								echo $e->getMessage();
+								exit;
+							}	
+						}
+					}
+
+				}
 				$categories = Expense::getCategories($connection, $_SESSION['userId']);
 				$payments = Expense::getPayments($connection, $_SESSION['userId']);
 				$allExpenses = Expense::getAllExpenses($connection, $_SESSION['userId']);
 				break;
-			case "Income":
+				case "Income":
 				$database = new Database(DB_HOST,DB_NAME,DB_USER,DB_PASS);
 				$connection = $database->getConnectionToDatabase();
+
+				if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+					if (isset($_POST['add-category-income'])) {
+						$result = Validation::validateCategory($connection, $_POST['add-category-income'], 'income');
+						$errorsExpenseOrIncomePart = $result[1];
+						$category = $result[0];
+						if (empty($errorsExpenseOrIncomePart)) {
+							try {
+								$sql = "INSERT INTO category_income (category, user_id)
+										VALUES (:category, :user_id)";
+
+								$stmt = $connection->prepare($sql);
+								$stmt->bindValue(':category', $category, PDO::PARAM_STR);
+								$stmt->bindValue(':user_id', $_SESSION['userId'], PDO::PARAM_INT);
+								$stmt->execute();
+
+								$_SESSION['successMessage'][10] = 'Category added';
+							}
+							catch(PDOException $e) {
+								echo $e->getMessage();
+								exit;
+							}
+						}
+					}
+				
+				
+				}
+
 				$categories = Income::getCategories($connection, $_SESSION['userId']);
 				$allIncomes = Income::getAllIncomes($connection, $_SESSION['userId']);
 				break;
-		}
+				
+		
+		}	
 	}
 }
 else {
@@ -190,14 +390,14 @@ require 'includes/headMetaTitleLink.php';
 										<div class="col-6 py-1">
 											<?php if (!isset($_SESSION['successMessage'][0])): ?>
 											<input class="form-control form-control-sm fw-bold font-color-grey" type="text" name="name" id="name-change" title="Please fill out to change username" aria-label="username change" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
-											<?php elseif (isset($_SESSION['successMessage'][0])): ?>
-											<input class="form-control form-control-sm fw-bold font-color-grey" type="text" aria-label="username change" disabled />	
+											<?php else: ?>
+											<p class="text-center font-orange font-size-scaled-from-15px mb-0">Disabled</p>	
 											<?php endif; ?>
 										</div>
 										<div class="col-3 py-1">
 											<?php if (!isset($_SESSION['successMessage'][0])): ?>
 											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" id="nameChangeButton" type="submit" aria-label="Name change button">Change</button>	
-											<?php elseif (isset($_SESSION['successMessage'][0])): ?>
+											<?php else: ?>
 											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Name change button" disabled>Change</button>	
 											<?php endif; ?>
 										</div>
@@ -212,14 +412,14 @@ require 'includes/headMetaTitleLink.php';
 										<div class="col-6 py-1">
 											<?php if (!isset($_SESSION['successMessage'][1])): ?>
 											<input class="form-control form-control-sm fw-bold font-color-grey" type="email" name="email" id="email-change" title="Please fill out to change email" aria-label="email change" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
-											<?php elseif (isset($_SESSION['successMessage'][1])): ?>
-											<input class="form-control form-control-sm fw-bold font-color-grey" type="email" aria-label="email change" disabled />
+											<?php else: ?>
+											<p class="text-center font-orange font-size-scaled-from-15px mb-0">Disabled</p>
 											<?php endif; ?>
 										</div>
 										<div class="col-3 py-1">
 											<?php if (!isset($_SESSION['successMessage'][1])): ?>
 											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" id="emailChangeButton" type="submit" aria-label="Email change button">Change</button>	
-											<?php elseif (isset($_SESSION['successMessage'][1])): ?>
+											<?php else: ?>
 											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Email change button" disabled>Change</button>
 											<?php endif; ?>
 										</div>
@@ -234,26 +434,64 @@ require 'includes/headMetaTitleLink.php';
 										<div class="col-6 py-1">
 											<?php if (!isset($_SESSION['successMessage'][2])): ?>
 											<input class="form-control form-control-sm fw-bold font-color-grey" type="password" name="password" id="password-change" title="Please fill out to change password" aria-label="password change" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
-											<?php elseif (isset($_SESSION['successMessage'][2])): ?>
-											<input class="form-control form-control-sm fw-bold font-color-grey" type="password" aria-label="password change" disabled/>
+											<?php else: ?>
+											<p class="text-center font-orange font-size-scaled-from-15px mb-0">Disabled</p>
 											<?php endif; ?>
 										</div>
 										<div class="col-3 py-1">
 											<?php if (!isset($_SESSION['successMessage'][2])): ?>
 											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" id="passwordChangeButton" type="submit" aria-label="Password change button">Change</button>	
-											<?php elseif (isset($_SESSION['successMessage'][2])): ?>
+											<?php else: ?>
 											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Password change button" disabled>Change</button>
 											<?php endif; ?>
 										</div>
 									</div>
 								</form>
-								<?php if (!isset($_SESSION['successMessage'][2])): ?>
+								<?php if (isset($_POST['password']) && !empty($user->errors) && ($user->errors[0] === 'Password invalid' || $user->errors[0] === 'Provide new password')): ?>
 								<div class="position-relative">
 									<p class="form-text text-muted font-size-scaled-from-13px fst-italic position-absolute">Password must contain at least one uppercase letter, one lowercase letter, one number and one special character. Length at least 10 characters</p>
 								</div>
 								<?php endif; ?>
 								<?php elseif ($isAllowedCustomizePresent && $customizeQueryStringValue === "Expense"): ?>
-								<h2 class="font-color-black fw-bolder font-size-scaled-from-30px position-relative m-0 py-1">Expense<a class="position-absolute top-50 end-0 translate-middle-y font-size-scaled-from-15px link-registration-income-expense font-color-black py-1 pe-2 fst-italic" href="settings.php">Back</a></h2>
+								<h2 class="font-color-black fw-bolder font-size-scaled-from-30px position-relative m-0 py-1">Expense
+									<a class="position-absolute top-50 end-0 translate-middle-y font-size-scaled-from-15px link-registration-income-expense font-color-black py-1 pe-2 fst-italic" href="settings.php">Back</a>
+									<p class="position-absolute top-50 start-0 translate-middle-y font-size-scaled-from-15px font-orange py-1 ps-2" id="messageForExpense"><?php 
+											if (isset($_POST['add-category-expense']) || isset($_POST['remove-category-expense']) || isset($_POST['add-payment-expense']) || isset($_POST['remove-payment-expense']) || isset($_POST['remove-expense']) || isset($_POST['edit-expense-id-comment']) || isset($_POST['edit-expense-id-category'])) { 
+												if (!empty($errorsExpenseOrIncomePart) && !isset($_SESSION['successMessage'])) {
+													echo $errorsExpenseOrIncomePart[0];
+												}
+												elseif (!empty($errorsExpenseOrIncomePart) && isset($_SESSION['successMessage'])) {
+													echo $errorsExpenseOrIncomePart[0] . ". ";
+												}	
+												else {
+													if (isset($_POST['add-category-expense'])) {
+														echo $_SESSION['successMessage'][3] . ". ";
+													}
+													elseif (isset($_POST['remove-category-expense'])) {
+														echo $_SESSION['successMessage'][4] . ". ";
+													}
+													elseif (isset($_POST['add-payment-expense'])) {
+														echo $_SESSION['successMessage'][5] . ". ";
+													}
+													elseif (isset($_POST['remove-payment-expense'])) {
+														echo $_SESSION['successMessage'][6] . ". ";
+													}
+													elseif (isset($_POST['remove-expense'])) {
+														echo $_SESSION['successMessage'][7] . ". ";
+													}
+													elseif (isset($_POST['edit-expense-id-comment'])) {
+														echo $_SESSION['successMessage'][8] . ". ";
+													}
+													elseif (isset($_POST['edit-expense-id-category'])) {
+														echo $_SESSION['successMessage'][9] . ". ";
+													}
+
+												}
+											
+										?><a class="link-registration-income-expense font-light-orange fst-italic" href="settings.php?customize=Expense"><?php if (isset($_SESSION['successMessage'])) {echo "Reload";} ?></a>
+										<?php } ?>
+									</p>
+								</h2>
 								<div class="underline"></div>	
 							
 								<form class="lh-1 bg-medium-light-grey highlight-option" action="" method="post">	
@@ -262,10 +500,18 @@ require 'includes/headMetaTitleLink.php';
 											<label class="font-color-grey font-size-scaled-from-15px fw-bolder py-2 h-100" for="add-category-expense">Category</label>
 										</div>
 										<div class="col-6 py-1">
-											<input class="form-control form-control-sm fw-bold font-color-grey w-50 mx-auto" type="text" name="add-category-expense" id="add-category-expense" title="Please fill out to add category" aria-label="add category for expense" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
+											<?php if (!isset($_SESSION['successMessage'][3])): ?>
+											<input class="form-control form-control-sm fw-bold font-color-grey w-50 mx-auto text-center" type="text" name="add-category-expense" id="add-category-expense" title="Please fill out to add category" aria-label="add category for expense" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
+											<?php else: ?>
+											<p class="text-center font-orange font-size-scaled-from-15px mb-0">Disabled</p>
+											<?php endif; ?>
 										</div>
 										<div class="col-3 py-1">
+											<?php if (!isset($_SESSION['successMessage'][3])): ?>
 											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to add category for expense">Add to the list</button>	
+											<?php else: ?>
+											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to add category for expense" disabled>Add to the list</button>
+											<?php endif; ?>
 										</div>
 									</div>
 								</form> 
@@ -276,18 +522,20 @@ require 'includes/headMetaTitleLink.php';
 											<label class="font-color-grey font-size-scaled-from-15px fw-bolder py-2 h-100" for="remove-category-expense">Category</label>
 										</div>
 										<div class="col-6 py-1">	
-											<?php if (!empty($categories)): ?>
+											<?php if (!empty($categories) && !isset($_SESSION['successMessage'][4])): ?>
 											<select class="form-select form-select-sm w-auto d-inline-block fw-bold font-color-grey text-center" id="remove-category-expense" name="remove-category-expense" aria-label="Category options that can be removed">
 												<?php foreach ($categories as $category): ?>																				
 												<option value="<?= $category['category']; ?>"><?= $category['category']; ?></option>
 												<?php endforeach; ?>										
 											</select>
-											<?php else: ?>
+											<?php elseif (empty($categories)): ?>
 											<p class="text-center font-orange font-size-scaled-from-15px mb-0">No categories available</p>
+											<?php else: ?>
+											<p class="text-center font-orange font-size-scaled-from-15px mb-0">Disabled</p>
 											<?php endif; ?>
 										</div>
 										<div class="col-3 py-1">
-											<?php if (!empty($categories)): ?>
+											<?php if (!empty($categories) && !isset($_SESSION['successMessage'][4])): ?>
 											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to remove category for expense">Remove from the list</button>	
 											<?php else: ?>
 											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to remove category for expense" disabled>Remove from the list</button>	
@@ -302,10 +550,18 @@ require 'includes/headMetaTitleLink.php';
 											<label class="font-color-grey font-size-scaled-from-15px fw-bolder py-2 h-100" for="add-payment-expense">Payment</label>
 										</div>
 										<div class="col-6 py-1">
-											<input class="form-control form-control-sm fw-bold font-color-grey w-50 mx-auto" type="text" name="add-payment-expense" id="add-payment-expense" title="Please fill out to add payment method" aria-label="add payment option for expense" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
+											<?php if (!isset($_SESSION['successMessage'][5])): ?>
+											<input class="form-control form-control-sm fw-bold font-color-grey w-50 mx-auto text-center" type="text" name="add-payment-expense" id="add-payment-expense" title="Please fill out to add payment method" aria-label="add payment option for expense" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
+											<?php else: ?>
+											<p class="text-center font-orange font-size-scaled-from-15px mb-0">Disabled</p>
+											<?php endif; ?>
 										</div>
 										<div class="col-3 py-1">
+											<?php if (!isset($_SESSION['successMessage'][5])): ?>
 											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to add payment option for expense">Add to the list</button>	
+											<?php else: ?>
+											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to add payment option for expense" disabled>Add to the list</button>	
+											<?php endif; ?>
 										</div>
 									</div>
 								</form> 
@@ -316,18 +572,20 @@ require 'includes/headMetaTitleLink.php';
 											<label class="font-color-grey font-size-scaled-from-15px fw-bolder py-2 h-100" for="remove-payment-expense">Payment</label>
 										</div>
 										<div class="col-6 py-1">	
-											<?php if (!empty($payments)): ?>
+											<?php if (!empty($payments) && !isset($_SESSION['successMessage'][6])): ?>
 											<select class="form-select form-select-sm w-auto d-inline-block fw-bold font-color-grey text-center" id="remove-payment-expense" name="remove-payment-expense" aria-label="Payment options that can be removed">
 												<?php foreach ($payments as $payment): ?>
 												<option value="<?= $payment['payment']; ?>"><?= $payment['payment']; ?></option>
 												<?php endforeach; ?>									
 											</select>
-											<?php else: ?>
+											<?php elseif (empty($payments)): ?>
 											<p class="text-center font-orange font-size-scaled-from-15px mb-0">No payments method available</p>
+											<?php else: ?>
+											<p class="text-center font-orange font-size-scaled-from-15px mb-0">Disabled</p>	
 											<?php endif; ?>
 										</div>
 										<div class="col-3 py-1">
-											<?php if (!empty($payments)): ?>
+											<?php if (!empty($payments) && !isset($_SESSION['successMessage'][6])): ?>
 											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to remove payment option for expense">Remove from the list</button>	
 											<?php else: ?>
 											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to remove payment option for expense" disabled>Remove from the list</button>	
@@ -342,14 +600,16 @@ require 'includes/headMetaTitleLink.php';
 											<label class="font-color-grey font-size-scaled-from-15px fw-bolder py-2 h-100" for="remove-expense">ID</label>
 										</div>
 										<div class="col-6 py-1">
-											<?php if (!empty($allExpenses)): ?>
-											<input class="form-control form-control-sm fw-bold font-color-grey w-25 mx-auto" type="text" name="remove-expense" id="remove-expense" title="Please fill out to remove expense" aria-label="remove expense" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
-											<?php else: ?>
+											<?php if (!empty($allExpenses) && !isset($_SESSION['successMessage'][7])): ?>
+											<input class="form-control form-control-sm fw-bold font-color-grey w-25 mx-auto text-center" type="text" name="remove-expense" id="remove-expense" title="Please fill out to remove expense" aria-label="remove expense" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
+											<?php elseif (empty($allExpenses)): ?>
 											<p class="text-center font-orange font-size-scaled-from-15px mb-0">No expense registered</p>
+											<?php else: ?>
+											<p class="text-center font-orange font-size-scaled-from-15px mb-0">Disabled</p>	
 											<?php endif; ?>
 										</div>
 										<div class="col-3 py-1">
-											<?php if (!empty($allExpenses)): ?>
+											<?php if (!empty($allExpenses) && !isset($_SESSION['successMessage'][7])): ?>
 											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to remove expense">Remove expense</button>	
 											<?php else: ?>
 											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to remove expense" disabled>Remove expense</button>		
@@ -365,15 +625,17 @@ require 'includes/headMetaTitleLink.php';
 											<label class="font-color-grey font-size-scaled-from-15px fw-bolder d-block py-2 h-100" for="edit-expense-comment">Comment</label>
 										</div>
 										<div class="col-6 py-1">
-											<?php if (!empty($allExpenses)): ?>
-											<input class="form-control form-control-sm fw-bold font-color-grey w-25 mx-auto mb-2" type="text" name="edit-expense-id-comment" id="edit-expense-id-comment" title="Please fill out to edit expense" aria-label="ID of expense to be edited" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
-											<input class="form-control form-control-sm fw-bold font-color-grey" type="text" name="edit-expense-comment" id="edit-expense-comment" title="Please fill out to edit expense" aria-label="Update of comment for expense" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
-											<?php else: ?>
+											<?php if (!empty($allExpenses) && !isset($_SESSION['successMessage'][8])): ?>
+											<input class="form-control form-control-sm fw-bold font-color-grey w-25 mx-auto mb-2 text-center" type="text" name="edit-expense-id-comment" id="edit-expense-id-comment" title="Please fill out to edit expense" aria-label="ID of expense to be edited" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
+											<input class="form-control form-control-sm fw-bold font-color-grey text-center" type="text" name="edit-expense-comment" id="edit-expense-comment" title="Please fill out to edit expense" aria-label="Update of comment for expense" />
+											<?php elseif (empty($allExpenses)): ?>
 											<p class="text-center font-orange font-size-scaled-from-15px mb-0">No expense registered</p>
+											<?php else: ?>
+											<p class="text-center font-orange font-size-scaled-from-15px mb-0">Disabled</p>	
 											<?php endif; ?>
 										</div>
 										<div class="col-3 py-1 align-self-stretch">
-											<?php if (!empty($allExpenses)): ?>
+											<?php if (!empty($allExpenses) && !isset($_SESSION['successMessage'][8])): ?>
 											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to edit expense with the comment">Edit comment for expense</button>	
 											<?php else: ?>
 											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to edit expense with the comment" disabled>Edit comment for expense</button>	
@@ -389,8 +651,8 @@ require 'includes/headMetaTitleLink.php';
 											<label class="font-color-grey font-size-scaled-from-15px fw-bolder d-block py-2 h-100" for="edit-expense-category">Category</label>
 										</div>
 										<div class="col-6 py-1">
-											<?php if (!empty($categories) && !empty($allExpenses)): ?>
-											<input class="form-control form-control-sm fw-bold font-color-grey w-25 mx-auto mb-2" type="text" name="edit-expense-id-category" id="edit-expense-id-category" title="Please fill out to edit expense" aria-label="ID of expense to be edited" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
+											<?php if (!empty($categories) && !empty($allExpenses) && !isset($_SESSION['successMessage'][9])): ?>
+											<input class="form-control form-control-sm fw-bold font-color-grey w-25 mx-auto mb-2 text-center" type="text" name="edit-expense-id-category" id="edit-expense-id-category" title="Please fill out to edit expense" aria-label="ID of expense to be edited" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
 											<select class="form-select form-select-sm w-auto d-inline-block fw-bold font-color-grey text-center" id="edit-expense-category" name="edit-expense-category" aria-label="Category to be updated for expense">
 												<?php foreach ($categories as $category): ?>																				
 												<option value="<?= $category['category']; ?>"><?= $category['category']; ?></option>
@@ -398,12 +660,14 @@ require 'includes/headMetaTitleLink.php';
 											</select>
 											<?php elseif (empty($allExpenses)): ?>
 											<p class="text-center font-orange font-size-scaled-from-15px mb-0">No expense registered</p>
-											<?php else: ?>
+											<?php elseif (empty($categories)): ?>
 											<p class="text-center font-orange font-size-scaled-from-15px mb-0">No categories available</p>
+											<?php else: ?>
+											<p class="text-center font-orange font-size-scaled-from-15px mb-0">Disabled</p>
 											<?php endif; ?>
 										</div>
 										<div class="col-3 py-1 align-self-stretch">
-											<?php if (!empty($categories) && !empty($allExpenses)): ?>
+											<?php if (!empty($categories) && !empty($allExpenses) && !isset($_SESSION['successMessage'][9])): ?>
 											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to edit expense with the category">Edit category for expense</button>	
 											<?php else: ?>
 											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to edit expense with the category" disabled>Edit category for expense</button>	
@@ -411,9 +675,54 @@ require 'includes/headMetaTitleLink.php';
 										</div>
 									</div>
 								</form> 
+								
+								<?php if (isset($_POST['edit-expense-id-comment']) && !empty($errorsExpenseOrIncomePart) && ($errorsExpenseOrIncomePart[0] === "Comment invalid" || $errorsExpenseOrIncomePart[0] === "Up to 25 characters is allowed")): ?>
+								<div class="position-relative">
+									<p class="form-text text-muted font-size-scaled-from-13px mb-0 text-center fst-italic position-absolute w-100">Comment is optional. Only letters, numbers, space, forward slash, period and dash allowed in the comment</p>
+								</div>
+								<?php endif; ?>
+
 
 								<?php elseif ($isAllowedCustomizePresent && $customizeQueryStringValue === "Income"): ?>
-								<h2 class="font-color-black fw-bolder font-size-scaled-from-30px position-relative m-0 py-1">Income<a class="position-absolute top-50 end-0 translate-middle-y font-size-scaled-from-15px link-registration-income-expense font-color-black py-1 pe-2 fst-italic" href="settings.php">Back</a></h2>
+								<h2 class="font-color-black fw-bolder font-size-scaled-from-30px position-relative m-0 py-1">Income
+									<a class="position-absolute top-50 end-0 translate-middle-y font-size-scaled-from-15px link-registration-income-expense font-color-black py-1 pe-2 fst-italic" href="settings.php">Back</a>
+									<p class="position-absolute top-50 start-0 translate-middle-y font-size-scaled-from-15px font-orange py-1 ps-2" id="messageForExpense"><?php 
+											if (isset($_POST['add-category-expense']) || isset($_POST['remove-category-expense']) || isset($_POST['add-payment-expense']) || isset($_POST['remove-payment-expense']) || isset($_POST['remove-expense']) || isset($_POST['edit-expense-id-comment']) || isset($_POST['edit-expense-id-category'])) { 
+												if (!empty($errorsExpenseOrIncomePart) && !isset($_SESSION['successMessage'])) {
+													echo $errorsExpenseOrIncomePart[0];
+												}
+												elseif (!empty($errorsExpenseOrIncomePart) && isset($_SESSION['successMessage'])) {
+													echo $errorsExpenseOrIncomePart[0] . ". ";
+												}	
+												else {
+													if (isset($_POST['add-category-expense'])) {
+														echo $_SESSION['successMessage'][3] . ". ";
+													}
+													elseif (isset($_POST['remove-category-expense'])) {
+														echo $_SESSION['successMessage'][4] . ". ";
+													}
+													elseif (isset($_POST['add-payment-expense'])) {
+														echo $_SESSION['successMessage'][5] . ". ";
+													}
+													elseif (isset($_POST['remove-payment-expense'])) {
+														echo $_SESSION['successMessage'][6] . ". ";
+													}
+													elseif (isset($_POST['remove-expense'])) {
+														echo $_SESSION['successMessage'][7] . ". ";
+													}
+													elseif (isset($_POST['edit-expense-id-comment'])) {
+														echo $_SESSION['successMessage'][8] . ". ";
+													}
+													elseif (isset($_POST['edit-expense-id-category'])) {
+														echo $_SESSION['successMessage'][9] . ". ";
+													}
+
+												}
+											
+										?><a class="link-registration-income-expense font-light-orange fst-italic" href="settings.php?customize=Expense"><?php if (isset($_SESSION['successMessage'])) {echo "Reload";} ?></a>
+										<?php } ?>
+									</p>
+								</h2>
 								<div class="underline"></div>	
 
 								<form class="lh-1 bg-medium-light-grey highlight-option" action="" method="post">	
