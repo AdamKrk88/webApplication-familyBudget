@@ -20,7 +20,7 @@ require 'includes/headMetaTitleLink.php';
 <body onresize="resizeFontsForPieChart()">	
 	<header>	
 		<nav class="navbar navbar-expand-lg navbar-light-yellow">
-			<a class="navbar-brand" href="index.html"><img class="me-1 ms-1 d-inline-block align-middle" src="images/gold-ingots.png" alt="Gold bar" /><span class="text-uppercase font-weight-bold align-middle"> Budget Manager</span></a>
+			<a class="navbar-brand" href="menu.php"><img class="me-1 ms-1 d-inline-block align-middle" src="images/gold-ingots.png" alt="Gold bar" /><span class="text-uppercase font-weight-bold font-size-scaled-from-30px-navbar align-middle"> Budget Manager</span></a>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainmenu" aria-controls="mainmenu" aria-expanded="false" aria-label="Button to open main menu options">
 				<span class="navbar-toggler-icon">
 					<i class="icon-menu"></i>
@@ -208,7 +208,7 @@ require 'includes/headMetaTitleLink.php';
 			<footer class="col-12 text-center position-absolute bottom-0 end-0">
 				<a class="footer-link font-color-black" href="https://www.flaticon.com/free-icons/money" title="money icons" target="_blank">Money icons created by Freepik - Flaticon</a>.  
 				<a class="footer-link font-color-black d-block d-sm-inline-block" href="https://pl.freepik.com/search?format=search&query=marmur&type=photo" target="_blank">Marmur image created by rawpixel.com - pl.freepik.com</a>
-				<span class="font-color-black d-block">All rights reserved &copy; 2022. Thank you for your visit </span>    
+				<span class="font-color-black d-block">All rights reserved &copy; 2023. Thank you for your visit </span>    
 			</footer>
 		</div>
 	</div>
@@ -261,23 +261,36 @@ require 'includes/headMetaTitleLink.php';
 
 	if (checkIfDataForPieChartExist()) {
 		screenWidthPieChartHeight = createPieChart(true);
+		numberOfExpenseCategories = <?= $categoryTotalAmountValueLength; ?>;
+	//	alert(pieChart.options['plugins']['legend']['display']);
+		if (numberOfExpenseCategories > 9) {
+			pieChart.options['plugins']['legend']['display'] = false;
+			pieChart.update();
+		}
 
 		if (window.outerWidth >= 1200) {
 			Chart.defaults.font.size = 13;
-		
 		}
 		
 		if (window.outerWidth >= 768 && window.outerWidth < 1200) {
 			Chart.defaults.font.size = 12;
-		
+			if (numberOfExpenseCategories > 9 && window.outerWidth < 1000) {
+				$('#myChartDiv').css('height',2*screenWidthPieChartHeight[1]/3);
+			//	pieChart.update();
+			}
 		}
 
 		if (window.outerWidth < 768) {
 			Chart.defaults.font.size = 11;
-			pieChart.options['plugins']['legend']['display'] = false;
+			
+			if (numberOfExpenseCategories <= 9) {
+				pieChart.options['plugins']['legend']['display'] = false;
+			}
+			
 			$('#myChartDiv').css('height',screenWidthPieChartHeight[1]/2);
 			pieChart.update();
 		}
+	
 	}
 
 
@@ -332,18 +345,37 @@ require 'includes/headMetaTitleLink.php';
 	}
 
 	function recoverPieChartHeight() {
+		//pieChart.data['labels'].length
+
+		if (pieChart.data['labels'].length > 9) {
+			pieChart.options['plugins']['legend']['display'] = false;
+		}
+		else if (pieChart.data['labels'].length <= 9 && window.outerWidth >= 768) {
+			pieChart.options['plugins']['legend']['display'] = true;
+		}
+		
 		if (window.outerWidth >= 1200) {
 			$('#myChartDiv').css('height',screenWidthPieChartHeight[1]);		
 		}
 			
 		if (window.outerWidth >= 768 && window.outerWidth < 1200) {
-			$('#myChartDiv').css('height',screenWidthPieChartHeight[1]);
+			if (pieChart.data['labels'].length > 9 && window.outerWidth < 1000) {
+				$('#myChartDiv').css('height',2*screenWidthPieChartHeight[1]/3);
+			}
+			else if (pieChart.data['labels'].length > 9 && window.outerWidth >= 1000) {
+				$('#myChartDiv').css('height',screenWidthPieChartHeight[1]);
+			}
+			else {
+				$('#myChartDiv').css('height',screenWidthPieChartHeight[1]);
+			}
 		}
 
 		if (window.outerWidth < 768) {	
 			$('#myChartDiv').css('height',screenWidthPieChartHeight[1]/2);
 			pieChart.options['plugins']['legend']['display'] = false;	
 		}
+
+		pieChart.update();
 	}
 	
 	function displayCategories(isCallOnload) {
@@ -767,6 +799,17 @@ require 'includes/headMetaTitleLink.php';
 				var json = JSON.parse(dataToUpdatePieChart);
 			//	alert(json);
 			//	alert(pieChart);
+		//	alert(pieChart.options['plugins']['legend']['display']);
+				
+		/*
+				if (json['incomeCategories'].length > 9) {
+					pieChart.options['plugins']['legend']['display'] = false;
+				}
+				else if (json['incomeCategories'].length <= 9) {
+					pieChart.options['plugins']['legend']['display'] = true;
+				}   
+
+				*/
 				pieChart.data['labels'] = json['incomeCategories'];
 				pieChart.data['datasets'][0]['backgroundColor'] = json['backgroundColorForPieChart'];
 				pieChart.data['datasets'][0]['data'] = json['percentagePerCategory'];
@@ -1164,8 +1207,9 @@ require 'includes/headMetaTitleLink.php';
 		if (pieChart !== undefined && pieChart !== null) {
 			if (window.outerWidth >= 1200) {
 				Chart.defaults.font.size = 13;
-				pieChart.options['plugins']['legend']['display'] = true;
-			
+				if (pieChart.data['labels'].length <= 9) {
+					pieChart.options['plugins']['legend']['display'] = true;
+				}
 				if (Array.isArray(pieChart.data['labels']) && pieChart.data['labels'].length) {	
 					$('#myChartDiv').css('height',screenWidthPieChartHeight[1]);
 				}
@@ -1174,9 +1218,16 @@ require 'includes/headMetaTitleLink.php';
 			
 			if (window.outerWidth >= 768 && window.outerWidth < 1200) {
 				Chart.defaults.font.size = 12;
-				pieChart.options['plugins']['legend']['display'] = true;
-			
-				if (Array.isArray(pieChart.data['labels']) && pieChart.data['labels'].length) {	
+				if (pieChart.data['labels'].length <= 9) {
+					pieChart.options['plugins']['legend']['display'] = true;
+				}
+				if (pieChart.data['labels'].length > 9 && window.outerWidth < 1000) {
+					$('#myChartDiv').css('height',2*screenWidthPieChartHeight[1]/3);
+				}
+				if (Array.isArray(pieChart.data['labels']) && pieChart.data['labels'].length <= 9) {	
+					$('#myChartDiv').css('height',screenWidthPieChartHeight[1]);
+				}
+				if (pieChart.data['labels'].length > 9 && window.outerWidth >= 1000) {	
 					$('#myChartDiv').css('height',screenWidthPieChartHeight[1]);
 				}
 		

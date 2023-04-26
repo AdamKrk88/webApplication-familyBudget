@@ -6,7 +6,8 @@ session_start();
 if (!isset($_POST['name']) && !isset($_POST['email']) && !isset($_POST['password']) 
 	&& !isset($_POST['add-category-expense']) && !isset($_POST['remove-category-expense']) && !isset($_POST['add-payment-expense'])
 	&& !isset($_POST['remove-payment-expense']) && !isset($_POST['remove-expense']) && !isset($_POST['edit-expense-id-comment'])
-	&& !isset($_POST['edit-expense-id-category'])) {
+	&& !isset($_POST['edit-expense-id-category']) && !isset($_POST['add-category-income']) && !isset($_POST['remove-category-income'])
+	&& !isset($_POST['remove-income']) && !isset($_POST['edit-income-id-comment']) && !isset($_POST['edit-income-id-category'])) {
 	$_SESSION['successMessage'] = [];
 	unset($_SESSION['successMessage']);
 }
@@ -189,7 +190,7 @@ if ($customizeQueryStringValue) {
 					}
 
 					elseif (isset($_POST['remove-expense'])) {
-						$result = Validation::validateId($connection, $_POST['remove-expense'], $_SESSION['userId']);
+						$result = Validation::validateId($connection, $_POST['remove-expense'], $_SESSION['userId'], 'expense');
 						$errorsExpenseOrIncomePart = $result[1];
 						$expenseEntry = $result[0];
 						if (empty($errorsExpenseOrIncomePart)) {
@@ -211,7 +212,7 @@ if ($customizeQueryStringValue) {
 					}
 
 					elseif (isset($_POST['edit-expense-id-comment'])) {
-						$result = Validation::validateId($connection, $_POST['edit-expense-id-comment'], $_SESSION['userId']);
+						$result = Validation::validateId($connection, $_POST['edit-expense-id-comment'], $_SESSION['userId'], 'expense');
 						$errorsExpenseOrIncomePart = $result[1];
 						$expenseEntry = $result[0];
 						if (empty($errorsExpenseOrIncomePart)) {
@@ -240,7 +241,7 @@ if ($customizeQueryStringValue) {
 					}
 
 					elseif (isset($_POST['edit-expense-id-category'])) {
-						$result = Validation::validateIdAndCategory($connection, $_POST['edit-expense-id-category'], $_SESSION['userId'], $_POST['edit-expense-category']);
+						$result = Validation::validateIdAndCategory($connection, $_POST['edit-expense-id-category'], $_SESSION['userId'], $_POST['edit-expense-category'], "expense");
 						$errorsExpenseOrIncomePart = $result[1];
 						$expenseEntry = $result[0];
 						if (empty($errorsExpenseOrIncomePart)) {
@@ -295,7 +296,102 @@ if ($customizeQueryStringValue) {
 							}
 						}
 					}
+
+					elseif (isset($_POST['remove-category-income'])) {
+		
+						try {
+							$sql = "DELETE FROM category_income
+									WHERE category = :category AND user_id = :user_id";
+
+							$stmt = $connection->prepare($sql);
+							$stmt->bindValue(':category', $_POST['remove-category-income'], PDO::PARAM_STR);
+							$stmt->bindValue(':user_id', $_SESSION['userId'], PDO::PARAM_INT);
+							$stmt->execute();
+
+							$errorsExpenseOrIncomePart = [];
+							$_SESSION['successMessage'][11] = 'Category removed';
+						}
+						catch(PDOException $e) {
+							echo $e->getMessage();
+							exit;
+						}
+				}
+
+				elseif (isset($_POST['remove-income'])) {
+					$result = Validation::validateId($connection, $_POST['remove-income'], $_SESSION['userId'], "income");
+					$errorsExpenseOrIncomePart = $result[1];
+					$incomeEntry = $result[0];
+					if (empty($errorsExpenseOrIncomePart)) {
+						try {
+							$sql = "DELETE FROM income
+									WHERE id = :id";
+
+							$stmt = $connection->prepare($sql);
+							$stmt->bindValue(':id', $incomeEntry, PDO::PARAM_INT);
+							$stmt->execute();
+
+							$_SESSION['successMessage'][12] = 'Income entry removed';
+						}
+						catch(PDOException $e) {
+							echo $e->getMessage();
+							exit;
+						}
+					}
+				}
+
+				elseif (isset($_POST['edit-income-id-comment'])) {
+					$result = Validation::validateId($connection, $_POST['edit-income-id-comment'], $_SESSION['userId'], 'income');
+					$errorsExpenseOrIncomePart = $result[1];
+					$incomeEntry = $result[0];
+					if (empty($errorsExpenseOrIncomePart)) {
+						$result = Validation::validateComment($_POST['edit-income-comment']);
+						$errorsExpenseOrIncomePart = $result[1];
+						$commentIncomeEntry = $result[0];
+						if (empty($errorsExpenseOrIncomePart)) {
+							try {
+								$sql = "UPDATE income
+										SET comment = :comment
+										WHERE id = :id";
+
+								$stmt = $connection->prepare($sql);
+								$stmt->bindValue(':comment', $commentIncomeEntry, PDO::PARAM_STR);
+								$stmt->bindValue(':id', $incomeEntry, PDO::PARAM_INT);
+								$stmt->execute();
+
+								$_SESSION['successMessage'][13] = 'Comment updated';
+							}
+							catch(PDOException $e) {
+								echo $e->getMessage();
+								exit;
+							}
+						}
+					}
+				}
 				
+				elseif (isset($_POST['edit-income-id-category'])) {
+					$result = Validation::validateIdAndCategory($connection, $_POST['edit-income-id-category'], $_SESSION['userId'], $_POST['edit-income-category'], "income");
+					$errorsExpenseOrIncomePart = $result[1];
+					$incomeEntry = $result[0];
+					if (empty($errorsExpenseOrIncomePart)) {
+						try {
+							$sql = "UPDATE income
+									SET category = :category
+									WHERE id = :id";
+
+							$stmt = $connection->prepare($sql);
+							$stmt->bindValue(':category', $_POST['edit-income-category'], PDO::PARAM_STR);
+							$stmt->bindValue(':id', $incomeEntry, PDO::PARAM_INT);
+							$stmt->execute();
+
+							$_SESSION['successMessage'][14] = 'Category updated';
+						}
+						catch(PDOException $e) {
+							echo $e->getMessage();
+							exit;
+						}	
+					}
+				}
+
 				
 				}
 
@@ -319,7 +415,7 @@ require 'includes/headMetaTitleLink.php';
 <body>	
 	<header>	
 		<nav class="navbar navbar-expand-lg navbar-light-yellow">
-			<a class="navbar-brand" href="index.html"><img class="me-1 ms-1 d-inline-block align-middle" src="images/gold-ingots.png" alt="Gold bar" /><span class="text-uppercase font-weight-bold align-middle"> Budget Manager</span></a>
+			<a class="navbar-brand" href="menu.php"><img class="me-1 ms-1 d-inline-block align-middle" src="images/gold-ingots.png" alt="Gold bar" /><span class="text-uppercase font-weight-bold font-size-scaled-from-30px-navbar align-middle"> Budget Manager</span></a>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainmenu" aria-controls="mainmenu" aria-expanded="false" aria-label="Button to open main menu options">
 				<span class="navbar-toggler-icon">
 					<i class="icon-menu"></i>
@@ -396,7 +492,7 @@ require 'includes/headMetaTitleLink.php';
 										</div>
 										<div class="col-3 py-1">
 											<?php if (!isset($_SESSION['successMessage'][0])): ?>
-											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" id="nameChangeButton" type="submit" aria-label="Name change button">Change</button>	
+											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" id="name-change-button" type="submit" aria-label="Name change button">Change</button>	
 											<?php else: ?>
 											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Name change button" disabled>Change</button>	
 											<?php endif; ?>
@@ -418,7 +514,7 @@ require 'includes/headMetaTitleLink.php';
 										</div>
 										<div class="col-3 py-1">
 											<?php if (!isset($_SESSION['successMessage'][1])): ?>
-											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" id="emailChangeButton" type="submit" aria-label="Email change button">Change</button>	
+											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" id="email-change-button" type="submit" aria-label="Email change button">Change</button>	
 											<?php else: ?>
 											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Email change button" disabled>Change</button>
 											<?php endif; ?>
@@ -440,7 +536,7 @@ require 'includes/headMetaTitleLink.php';
 										</div>
 										<div class="col-3 py-1">
 											<?php if (!isset($_SESSION['successMessage'][2])): ?>
-											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" id="passwordChangeButton" type="submit" aria-label="Password change button">Change</button>	
+											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" id="password-change-button" type="submit" aria-label="Password change button">Change</button>	
 											<?php else: ?>
 											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Password change button" disabled>Change</button>
 											<?php endif; ?>
@@ -508,7 +604,7 @@ require 'includes/headMetaTitleLink.php';
 										</div>
 										<div class="col-3 py-1">
 											<?php if (!isset($_SESSION['successMessage'][3])): ?>
-											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to add category for expense">Add to the list</button>	
+											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" id="add-category-expense-button" type="submit" aria-label="Button to add category for expense">Add to the list</button>	
 											<?php else: ?>
 											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to add category for expense" disabled>Add to the list</button>
 											<?php endif; ?>
@@ -536,7 +632,7 @@ require 'includes/headMetaTitleLink.php';
 										</div>
 										<div class="col-3 py-1">
 											<?php if (!empty($categories) && !isset($_SESSION['successMessage'][4])): ?>
-											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to remove category for expense">Remove from the list</button>	
+											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" id="remove-category-expense-button" type="submit" aria-label="Button to remove category for expense">Remove from the list</button>	
 											<?php else: ?>
 											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to remove category for expense" disabled>Remove from the list</button>	
 											<?php endif; ?>
@@ -558,7 +654,7 @@ require 'includes/headMetaTitleLink.php';
 										</div>
 										<div class="col-3 py-1">
 											<?php if (!isset($_SESSION['successMessage'][5])): ?>
-											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to add payment option for expense">Add to the list</button>	
+											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" id="add-payment-expense-button" type="submit" aria-label="Button to add payment option for expense">Add to the list</button>	
 											<?php else: ?>
 											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to add payment option for expense" disabled>Add to the list</button>	
 											<?php endif; ?>
@@ -586,7 +682,7 @@ require 'includes/headMetaTitleLink.php';
 										</div>
 										<div class="col-3 py-1">
 											<?php if (!empty($payments) && !isset($_SESSION['successMessage'][6])): ?>
-											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to remove payment option for expense">Remove from the list</button>	
+											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" id="remove-payment-expense-button" type="submit" aria-label="Button to remove payment option for expense">Remove from the list</button>	
 											<?php else: ?>
 											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to remove payment option for expense" disabled>Remove from the list</button>	
 											<?php endif; ?>
@@ -610,7 +706,7 @@ require 'includes/headMetaTitleLink.php';
 										</div>
 										<div class="col-3 py-1">
 											<?php if (!empty($allExpenses) && !isset($_SESSION['successMessage'][7])): ?>
-											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to remove expense">Remove expense</button>	
+											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" id="remove-expense-button" type="submit" aria-label="Button to remove expense">Remove expense</button>	
 											<?php else: ?>
 											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to remove expense" disabled>Remove expense</button>		
 											<?php endif; ?>
@@ -636,7 +732,7 @@ require 'includes/headMetaTitleLink.php';
 										</div>
 										<div class="col-3 py-1 align-self-stretch">
 											<?php if (!empty($allExpenses) && !isset($_SESSION['successMessage'][8])): ?>
-											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to edit expense with the comment">Edit comment for expense</button>	
+											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" id="edit-comment-expense-button" type="submit" aria-label="Button to edit expense with the comment">Edit comment for expense</button>	
 											<?php else: ?>
 											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to edit expense with the comment" disabled>Edit comment for expense</button>	
 											<?php endif; ?>
@@ -668,7 +764,7 @@ require 'includes/headMetaTitleLink.php';
 										</div>
 										<div class="col-3 py-1 align-self-stretch">
 											<?php if (!empty($categories) && !empty($allExpenses) && !isset($_SESSION['successMessage'][9])): ?>
-											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to edit expense with the category">Edit category for expense</button>	
+											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" id="edit-category-expense-button" type="submit" aria-label="Button to edit expense with the category">Edit category for expense</button>	
 											<?php else: ?>
 											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to edit expense with the category" disabled>Edit category for expense</button>	
 											<?php endif; ?>
@@ -686,8 +782,8 @@ require 'includes/headMetaTitleLink.php';
 								<?php elseif ($isAllowedCustomizePresent && $customizeQueryStringValue === "Income"): ?>
 								<h2 class="font-color-black fw-bolder font-size-scaled-from-30px position-relative m-0 py-1">Income
 									<a class="position-absolute top-50 end-0 translate-middle-y font-size-scaled-from-15px link-registration-income-expense font-color-black py-1 pe-2 fst-italic" href="settings.php">Back</a>
-									<p class="position-absolute top-50 start-0 translate-middle-y font-size-scaled-from-15px font-orange py-1 ps-2" id="messageForExpense"><?php 
-											if (isset($_POST['add-category-expense']) || isset($_POST['remove-category-expense']) || isset($_POST['add-payment-expense']) || isset($_POST['remove-payment-expense']) || isset($_POST['remove-expense']) || isset($_POST['edit-expense-id-comment']) || isset($_POST['edit-expense-id-category'])) { 
+									<p class="position-absolute top-50 start-0 translate-middle-y font-size-scaled-from-15px font-orange py-1 ps-2" id="messageForIncome"><?php 
+											if (isset($_POST['add-category-income']) || isset($_POST['remove-category-income']) || isset($_POST['remove-income']) || isset($_POST['edit-income-id-comment']) || isset($_POST['edit-income-id-category'])) { 
 												if (!empty($errorsExpenseOrIncomePart) && !isset($_SESSION['successMessage'])) {
 													echo $errorsExpenseOrIncomePart[0];
 												}
@@ -695,31 +791,24 @@ require 'includes/headMetaTitleLink.php';
 													echo $errorsExpenseOrIncomePart[0] . ". ";
 												}	
 												else {
-													if (isset($_POST['add-category-expense'])) {
-														echo $_SESSION['successMessage'][3] . ". ";
+													if (isset($_POST['add-category-income'])) {
+														echo $_SESSION['successMessage'][10] . ". ";
 													}
-													elseif (isset($_POST['remove-category-expense'])) {
-														echo $_SESSION['successMessage'][4] . ". ";
+													elseif (isset($_POST['remove-category-income'])) {
+														echo $_SESSION['successMessage'][11] . ". ";
 													}
-													elseif (isset($_POST['add-payment-expense'])) {
-														echo $_SESSION['successMessage'][5] . ". ";
+													elseif (isset($_POST['remove-income'])) {
+														echo $_SESSION['successMessage'][12] . ". ";
 													}
-													elseif (isset($_POST['remove-payment-expense'])) {
-														echo $_SESSION['successMessage'][6] . ". ";
+													elseif (isset($_POST['edit-income-id-comment'])) {
+														echo $_SESSION['successMessage'][13] . ". ";
 													}
-													elseif (isset($_POST['remove-expense'])) {
-														echo $_SESSION['successMessage'][7] . ". ";
+													elseif (isset($_POST['edit-income-id-category'])) {
+														echo $_SESSION['successMessage'][14] . ". ";
 													}
-													elseif (isset($_POST['edit-expense-id-comment'])) {
-														echo $_SESSION['successMessage'][8] . ". ";
-													}
-													elseif (isset($_POST['edit-expense-id-category'])) {
-														echo $_SESSION['successMessage'][9] . ". ";
-													}
-
 												}
 											
-										?><a class="link-registration-income-expense font-light-orange fst-italic" href="settings.php?customize=Expense"><?php if (isset($_SESSION['successMessage'])) {echo "Reload";} ?></a>
+										?><a class="link-registration-income-expense font-light-orange fst-italic" href="settings.php?customize=Income"><?php if (isset($_SESSION['successMessage'])) {echo "Reload";} ?></a>
 										<?php } ?>
 									</p>
 								</h2>
@@ -731,10 +820,18 @@ require 'includes/headMetaTitleLink.php';
 											<label class="font-color-grey font-size-scaled-from-15px fw-bolder py-2 h-100" for="add-category-income">Category</label>
 										</div>
 										<div class="col-6 py-1">
-											<input class="form-control form-control-sm fw-bold font-color-grey w-50 mx-auto" type="text" name="add-category-income" id="add-category-income" title="Please fill out to add category" aria-label="add category for income" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
+											<?php if (!isset($_SESSION['successMessage'][10])): ?>
+											<input class="form-control form-control-sm fw-bold font-color-grey w-50 mx-auto text-center" type="text" name="add-category-income" id="add-category-income" title="Please fill out to add category" aria-label="add category for income" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
+											<?php else: ?>
+											<p class="text-center font-orange font-size-scaled-from-15px mb-0">Disabled</p>
+											<?php endif; ?>
 										</div>
 										<div class="col-3 py-1">
-											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to add category for income">Add to the list</button>	
+											<?php if (!isset($_SESSION['successMessage'][10])): ?>
+											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" id="add-category-income-button" type="submit" aria-label="Button to add category for income">Add to the list</button>	
+											<?php else: ?>
+											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to add category for income" disabled>Add to the list</button>	
+											<?php endif; ?>
 										</div>
 									</div>
 								</form> 
@@ -745,19 +842,21 @@ require 'includes/headMetaTitleLink.php';
 											<label class="font-color-grey font-size-scaled-from-15px fw-bolder py-2 h-100" for="remove-category-income">Category</label>
 										</div>
 										<div class="col-6 py-1">
-											<?php if (!empty($categories)): ?>
+											<?php if (!empty($categories) && !isset($_SESSION['successMessage'][11])): ?>
 											<select class="form-select form-select-sm w-auto d-inline-block fw-bold font-color-grey text-center" id="remove-category-income" name="remove-category-income" aria-label="Category options that can be removed">
 												<?php foreach ($categories as $category): ?>																				
 												<option value="<?= $category['category']; ?>"><?= $category['category']; ?></option>
 												<?php endforeach; ?>										
 											</select>
-											<?php else: ?>
+											<?php elseif (empty($categories)): ?>
 											<p class="text-center font-orange font-size-scaled-from-15px mb-0">No categories available</p>
+											<?php else: ?>
+											<p class="text-center font-orange font-size-scaled-from-15px mb-0">Disabled</p>
 											<?php endif; ?>
 										</div>
 										<div class="col-3 py-1">
-											<?php if (!empty($categories)): ?>
-											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to remove category for income">Remove from the list</button>	
+											<?php if (!empty($categories) && !isset($_SESSION['successMessage'][11])): ?>
+											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" id="remove-category-income-button" type="submit" aria-label="Button to remove category for income">Remove from the list</button>	
 											<?php else: ?>
 											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to remove category for income" disabled>Remove from the list</button>		
 											<?php endif; ?>
@@ -771,15 +870,17 @@ require 'includes/headMetaTitleLink.php';
 											<label class="font-color-grey font-size-scaled-from-15px fw-bolder py-2 h-100" for="remove-income">ID</label>
 										</div>
 										<div class="col-6 py-1">
-											<?php if (!empty($allIncomes)): ?>
-											<input class="form-control form-control-sm fw-bold font-color-grey w-25 mx-auto" type="text" name="remove-income" id="remove-income" title="Please fill out to remove income" aria-label="remove income" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
-											<?php else: ?>
+											<?php if (!empty($allIncomes) && !isset($_SESSION['successMessage'][12])): ?>
+											<input class="form-control form-control-sm fw-bold font-color-grey w-25 mx-auto text-center" type="text" name="remove-income" id="remove-income" title="Please fill out to remove income" aria-label="remove income" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
+											<?php elseif (empty($allIncomes)): ?>
 											<p class="text-center font-orange font-size-scaled-from-15px mb-0">No income registered</p>
+											<?php else: ?>
+											<p class="text-center font-orange font-size-scaled-from-15px mb-0">Disabled</p>
 											<?php endif; ?>
 										</div>
 										<div class="col-3 py-1">
-											<?php if (!empty($allIncomes)): ?>
-											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to remove income">Remove income</button>	
+											<?php if (!empty($allIncomes) && !isset($_SESSION['successMessage'][12])): ?>
+											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" id="remove-income-button" type="submit" aria-label="Button to remove income">Remove income</button>	
 											<?php else: ?>
 											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to remove income" disabled>Remove income</button>		
 											<?php endif; ?>
@@ -794,16 +895,18 @@ require 'includes/headMetaTitleLink.php';
 											<label class="font-color-grey font-size-scaled-from-15px fw-bolder d-block py-2 h-100" for="edit-income-comment">Comment</label>
 										</div>
 										<div class="col-6 py-1">
-											<?php if (!empty($allIncomes)): ?>
-											<input class="form-control form-control-sm fw-bold font-color-grey w-25 mx-auto mb-2" type="text" name="edit-income-id-comment" id="edit-income-id-comment" title="Please fill out to edit income" aria-label="ID of income to be edited" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
-											<input class="form-control form-control-sm fw-bold font-color-grey" type="text" name="edit-income-comment" id="edit-income-comment" title="Please fill out to edit income" aria-label="Update of comment for income" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
-											<?php else: ?>
+											<?php if (!empty($allIncomes) && !isset($_SESSION['successMessage'][13])): ?>
+											<input class="form-control form-control-sm fw-bold font-color-grey w-25 mx-auto mb-2 text-center" type="text" name="edit-income-id-comment" id="edit-income-id-comment" title="Please fill out to edit income" aria-label="ID of income to be edited" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
+											<input class="form-control form-control-sm fw-bold font-color-grey text-center" type="text" name="edit-income-comment" id="edit-income-comment" title="Please fill out to edit income" aria-label="Update of comment for income" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
+											<?php elseif(empty($allIncomes)): ?>
 											<p class="text-center font-orange font-size-scaled-from-15px mb-0">No income registered</p>
+											<?php else: ?>
+											<p class="text-center font-orange font-size-scaled-from-15px mb-0">Disabled</p>	
 											<?php endif; ?>
 										</div>
 										<div class="col-3 py-1 align-self-stretch">
-											<?php if (!empty($allIncomes)): ?>
-											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to edit income with the comment">Edit comment for income</button>	
+											<?php if (!empty($allIncomes) && !isset($_SESSION['successMessage'][13])): ?>
+											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" id="edit-comment-income-button" type="submit" aria-label="Button to edit income with the comment">Edit comment for income</button>	
 											<?php else: ?>
 											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to edit income with the comment" disabled>Edit comment for income</button>
 											<?php endif; ?>
@@ -818,8 +921,8 @@ require 'includes/headMetaTitleLink.php';
 											<label class="font-color-grey font-size-scaled-from-15px fw-bolder d-block py-2 h-100" for="edit-income-category">Category</label>
 										</div>
 										<div class="col-6 py-1">
-											<?php if (!empty($categories) && !empty($allIncomes)): ?>
-											<input class="form-control form-control-sm fw-bold font-color-grey w-25 mx-auto mb-2" type="text" name="edit-income-id-category" id="edit-income-id-category" title="Please fill out to edit income" aria-label="ID of income to be edited" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
+											<?php if (!empty($categories) && !empty($allIncomes) && !isset($_SESSION['successMessage'][14])): ?>
+											<input class="form-control form-control-sm fw-bold font-color-grey w-25 mx-auto mb-2 text-center" type="text" name="edit-income-id-category" id="edit-income-id-category" title="Please fill out to edit income" aria-label="ID of income to be edited" required oninvalid="this.setCustomValidity('Please fill out this field')" oninput="this.setCustomValidity('')" />
 											<select class="form-select form-select-sm w-auto d-inline-block fw-bold font-color-grey text-center" id="edit-income-category" name="edit-income-category" aria-label="Category to be updated for income">
 												<?php foreach ($categories as $category): ?>																				
 												<option value="<?= $category['category']; ?>"><?= $category['category']; ?></option>
@@ -827,13 +930,15 @@ require 'includes/headMetaTitleLink.php';
 											</select>
 											<?php elseif (empty($allIncomes)): ?>
 											<p class="text-center font-orange font-size-scaled-from-15px mb-0">No income registered</p>
-											<?php else: ?>
+											<?php elseif (empty($categories)): ?>
 											<p class="text-center font-orange font-size-scaled-from-15px mb-0">No categories available</p>
+											<?php else: ?>
+											<p class="text-center font-orange font-size-scaled-from-15px mb-0">Disabled</p>		
 											<?php endif; ?>
 										</div>
 										<div class="col-3 py-1 align-self-stretch">
-											<?php if (!empty($categories) && !empty($allIncomes)): ?>
-											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to edit income with the category">Edit category for income</button>	
+											<?php if (!empty($categories) && !empty($allIncomes) && !isset($_SESSION['successMessage'][14])): ?>
+											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" id="edit-category-income-button" type="submit" aria-label="Button to edit income with the category">Edit category for income</button>	
 											<?php else: ?>
 											<button class="btn button-grey-color fw-bold font-size-scaled-from-15px lh-1 px-2 h-100 w-95" type="submit" aria-label="Button to edit income with the category" disabled>Edit category for income</button>
 											<?php endif; ?>
@@ -841,6 +946,12 @@ require 'includes/headMetaTitleLink.php';
 									</div>
 								</form> 
 							
+								<?php if (isset($_POST['edit-income-id-comment']) && !empty($errorsExpenseOrIncomePart) && ($errorsExpenseOrIncomePart[0] === "Comment invalid" || $errorsExpenseOrIncomePart[0] === "Up to 25 characters is allowed")): ?>
+								<div class="position-relative">
+									<p class="form-text text-muted font-size-scaled-from-13px mb-0 text-center fst-italic position-absolute w-100">Comment is optional. Only letters, numbers, space, forward slash, period and dash allowed in the comment</p>
+								</div>
+								<?php endif; ?>
+
 								<?php endif; ?>
 							</div>
 						</div>
@@ -855,7 +966,7 @@ require 'includes/headMetaTitleLink.php';
 			<footer class="col-12 text-center position-absolute bottom-0 end-0">
 				<a class="footer-link font-color-black" href="https://www.flaticon.com/free-icons/money" title="money icons" target="_blank">Money icons created by Freepik - Flaticon</a>.  
 				<a class="footer-link font-color-black d-block d-sm-inline-block" href="https://pl.freepik.com/search?format=search&query=marmur&type=photo" target="_blank">Marmur image created by rawpixel.com - pl.freepik.com</a>
-				<span class="font-color-black d-block">All rights reserved &copy; 2022. Thank you for your visit </span>    
+				<span class="font-color-black d-block">All rights reserved &copy; 2023. Thank you for your visit </span>    
 			</footer>
 		</div>
 	</div>
@@ -866,26 +977,80 @@ require 'includes/headMetaTitleLink.php';
 
 	<script>
 	
-	function isElementEmpty(element) {
-      return !$.trim(element.html());
+	function isElementContainNoCharacters(element) {
+		return !element.html();
   	}
 
 	$(document).ready(function(){
-		$("#nameChangeButton").click(function() {
-			if (!isElementEmpty($("#messageForUser"))) {
-			$("#messageForUser").html('');
+		$("#name-change-button").click(function() {
+			if (isElementContainNoCharacters($("#name-change")) && !isElementContainNoCharacters($("#messageForUser"))) {
+				$("#messageForUser").html("<a class=\"link-registration-income-expense font-light-orange fst-italic\" href=\"settings.php?customize=User\">" + "<?php if (isset($_SESSION['successMessage'])) {echo "Reload";} ?>" + "</a>");
 			}
 		});
 		
-		$("#emailChangeButton").click(function() {
-			if (!isElementEmpty($("#messageForUser"))) {
-			$("#messageForUser").html('');
+		$("#email-change-button").click(function() {
+			if (isElementContainNoCharacters($("#email-change")) && !isElementContainNoCharacters($("#messageForUser"))) {
+				$("#messageForUser").html("<a class=\"link-registration-income-expense font-light-orange fst-italic\" href=\"settings.php?customize=User\">" + "<?php if (isset($_SESSION['successMessage'])) {echo "Reload";} ?>" + "</a>");
 			}
 		});
 
-		$("#passwordChangeButton").click(function() {
-			if (!isElementEmpty($("#messageForUser"))) {
-			$("#messageForUser").html('');
+		$("#password-change-button").click(function() {
+			if (isElementContainNoCharacters($("#password-change")) && !isElementContainNoCharacters($("#messageForUser"))) {
+				$("#messageForUser").html("<a class=\"link-registration-income-expense font-light-orange fst-italic\" href=\"settings.php?customize=User\">" + "<?php if (isset($_SESSION['successMessage'])) {echo "Reload";} ?>" + "</a>");
+			}
+		});
+
+		$("#add-category-expense-button").click(function() {
+			if (isElementContainNoCharacters($("#add-category-expense")) && !isElementContainNoCharacters($("#messageForExpense"))) {
+			$("#messageForExpense").html("<a class=\"link-registration-income-expense font-light-orange fst-italic\" href=\"settings.php?customize=Expense\">" + "<?php if (isset($_SESSION['successMessage'])) {echo "Reload";} ?>" + "</a>");
+			}
+		});
+
+		$("#add-payment-expense-button").click(function() {
+			if (isElementContainNoCharacters($("#add-payment-expense")) && !isElementContainNoCharacters($("#messageForExpense"))) {
+			$("#messageForExpense").html("<a class=\"link-registration-income-expense font-light-orange fst-italic\" href=\"settings.php?customize=Expense\">" + "<?php if (isset($_SESSION['successMessage'])) {echo "Reload";} ?>" + "</a>");
+			}
+		});
+
+		$("#remove-expense-button").click(function() {
+			if (isElementContainNoCharacters($("#remove-expense")) && !isElementContainNoCharacters($("#messageForExpense"))) {
+			$("#messageForExpense").html("<a class=\"link-registration-income-expense font-light-orange fst-italic\" href=\"settings.php?customize=Expense\">" + "<?php if (isset($_SESSION['successMessage'])) {echo "Reload";} ?>" + "</a>");
+			}
+		});
+
+		$("#edit-comment-expense-button").click(function() {
+			if (isElementContainNoCharacters($("#edit-expense-id-comment")) && !isElementContainNoCharacters($("#messageForExpense"))) {
+			$("#messageForExpense").html("<a class=\"link-registration-income-expense font-light-orange fst-italic\" href=\"settings.php?customize=Expense\">" + "<?php if (isset($_SESSION['successMessage'])) {echo "Reload";} ?>" + "</a>");
+			}
+		});
+
+		$("#edit-category-expense-button").click(function() {
+			if (isElementContainNoCharacters($("#edit-expense-id-category")) && !isElementContainNoCharacters($("#messageForExpense"))) {
+			$("#messageForExpense").html("<a class=\"link-registration-income-expense font-light-orange fst-italic\" href=\"settings.php?customize=Expense\">" + "<?php if (isset($_SESSION['successMessage'])) {echo "Reload";} ?>" + "</a>");
+			}
+		});
+
+		$("#add-category-income-button").click(function() {
+			if (isElementContainNoCharacters($("#add-category-income")) && !isElementContainNoCharacters($("#messageForIncome"))) {
+			$("#messageForIncome").html("<a class=\"link-registration-income-expense font-light-orange fst-italic\" href=\"settings.php?customize=Income\">" + "<?php if (isset($_SESSION['successMessage'])) {echo "Reload";} ?>" + "</a>");
+			}
+		});
+
+		$("#remove-income-button").click(function() {
+			if (isElementContainNoCharacters($("#remove-income")) && !isElementContainNoCharacters($("#messageForIncome"))) {
+			$("#messageForIncome").html("<a class=\"link-registration-income-expense font-light-orange fst-italic\" href=\"settings.php?customize=Income\">" + "<?php if (isset($_SESSION['successMessage'])) {echo "Reload";} ?>" + "</a>");
+			}
+		});
+
+		$("#edit-comment-income-button").click(function() {
+			if (isElementContainNoCharacters($("#edit-income-id-comment")) && !isElementContainNoCharacters($("#messageForIncome"))) {
+			$("#messageForIncome").html("<a class=\"link-registration-income-expense font-light-orange fst-italic\" href=\"settings.php?customize=Income\">" + "<?php if (isset($_SESSION['successMessage'])) {echo "Reload";} ?>" + "</a>");
+			}
+		});
+
+		$("#edit-category-income-button").click(function() {
+			if (isElementContainNoCharacters($("#edit-income-id-category")) && !isElementContainNoCharacters($("#messageForIncome"))) {
+			$("#messageForIncome").html("<a class=\"link-registration-income-expense font-light-orange fst-italic\" href=\"settings.php?customize=Income\">" + "<?php if (isset($_SESSION['successMessage'])) {echo "Reload";} ?>" + "</a>");
 			}
 		});
 	

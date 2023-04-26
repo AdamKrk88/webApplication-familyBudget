@@ -59,4 +59,8 @@ class Date {
         } 
     }
 
+    public static function provideCurrentDate() {
+        return date('Y-m-d');
+    }
+
 }

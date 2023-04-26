@@ -36,31 +36,35 @@
      */
     public $errors = [];
  
-   /* public function test_input($data) {
+    public function test_input($data) {
         $data = trim($data);
         $data = stripslashes($data);
         $data = htmlspecialchars($data);
         return $data;
       }
-*/
+
 
 
 
     public function validateRegistration() {
+        $this->name = Validation::test_input($this->name);
+        $this->email = Validation::test_input($this->email);
+        $this->password = trim($this->password);
+        
         if ($this->name == '') {
             $this->errors[] = 'Name is required';
         }
         elseif ($this->name != '') {
-            $this->name = Validation::test_input($this->name);
-            if (!preg_match("/^[a-zA-Z-' ]*$/",$this->name)) {
-            $this->errors[] = "Only letters and white space allowed";
+         //   $this->name = Validation::test_input($this->name);
+            if (!preg_match("/^([a-zA-Z]+)* ?[a-zA-Z]+$/",$this->name)) {
+            $this->errors[] = "Only letters and one white space allowed";
         }
         }
         if ($this->email == '') {
             $this->errors[] = 'Email is required';
         }
         elseif ($this->email != '') {
-            $this->email = Validation::test_input($this->email);
+         //   $this->email = Validation::test_input($this->email);
             $this->email = filter_var($this->email, FILTER_SANITIZE_EMAIL);
             if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
             $this->errors[] = "Invalid email format";
@@ -89,6 +93,9 @@
     }
 
     public function validateLogin($nameOrEmail) {
+        $nameOrEmail = Validation::test_input($nameOrEmail);
+        $this->password = trim($this->password);
+        
         if ($nameOrEmail == '') {
             $this->errors[] = 'Name or email is required';
         }
@@ -133,29 +140,31 @@
     }
 
     public function checkIfUserExistInDatabase($dbConnection) {
-        $sql = "SELECT name 
+        $sql = "SELECT name, email 
                 FROM user
-                WHERE name = :name";
+                WHERE name = :name OR email = :email";
         $stmt = $dbConnection->prepare($sql);
         $stmt->bindValue(':name', $this->name, PDO::PARAM_STR);
+        $stmt->bindValue(':email', $this->email, PDO::PARAM_STR);
         $stmt->execute();
         $userFromDatabase = $stmt->fetch(PDO::FETCH_ASSOC);
         if (isset($userFromDatabase) && empty($userFromDatabase)) {
             return false;
         }
         
-        $this->errors[] = "Provided username exist - please use another one";
+        $this->errors[] = "Provided user exist - please use another one. Unique name and unique email required";
         return true;
      //   var_dump(isset($userFromDatabase));
     //    exit;
     }
 
     public function validateName() {
+        $this->name = Validation::test_input($this->name);
         if ($this->name == '') {
             $this->errors[] = 'Provide new username';
         }
-        elseif ($this->name != '') {
-            $this->name = Validation::test_input($this->name);
+        elseif ($this->name != '' || strlen($this->name) != 0) {
+        //    $this->name = Validation::test_input($this->name);
             if (!preg_match("/^[a-zA-Z-' ]*$/",$this->name)) {
             $this->errors[] = "Only letters and white space allowed";
             }
@@ -171,11 +180,12 @@
     }
 
     public function validateEmail() {
+        $this->email = Validation::test_input($this->email);
         if ($this->email == '') {
             $this->errors[] = 'Provide new email';
         }
         elseif ($this->email != '') {
-            $this->email = Validation::test_input($this->email);
+       //     $this->email = Validation::test_input($this->email);
             $this->email = filter_var($this->email, FILTER_SANITIZE_EMAIL);
             if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
             $this->errors[] = "Invalid email format";
@@ -189,6 +199,7 @@
     }
 
     public function validatePassword() {
+        $this->password = trim($this->password);
         if ($this->password == '') {
             $this->errors[] = 'Provide new password';
         }

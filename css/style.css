@@ -679,6 +679,11 @@ label#labelTextNextToList
 	font-size: 30px;
 }
 
+.font-size-scaled-from-30px-navbar
+{
+	font-size: 30px;
+}
+
 @media (max-width: 1199px)
 {
 	.font-size-scaled-from-15px
@@ -734,6 +739,11 @@ label#labelTextNextToList
 	{
 		font-size: 13px;
 	}
+
+	.font-size-scaled-from-30px-navbar
+	{
+		font-size: 27px;
+	}
 	
 	footer
 	{
@@ -776,6 +786,11 @@ label#labelTextNextToList
 	.font-size-scaled-from-13px
 	{
 		font-size: 11px;
+	}
+
+	.font-size-scaled-from-30px-navbar
+	{
+		font-size: 25px;
 	}
 	
 	.form-control-sm,

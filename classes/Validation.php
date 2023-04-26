@@ -58,9 +58,9 @@ class Validation {
   //    exit;
   }
 
-  public static function checkIfExpenseIdExistInDatabase($dbConnection, $id, $user_id) {
+  public static function checkIfExpenseIncomeIdExistInDatabase($dbConnection, $id, $user_id, $expenseOrIncome) {
     $sql = "SELECT id 
-            FROM expense
+            FROM $expenseOrIncome
             WHERE id = :id AND user_id = :user_id";
     $stmt = $dbConnection->prepare($sql);
     $stmt->bindValue(':id', $id, PDO::PARAM_INT);
@@ -78,9 +78,9 @@ class Validation {
 }
 
 
-    public static function checkIfNumberOfCategoriesIsAboveThreshold($dbConnection) {
+    public static function checkIfNumberOfCategoriesIsAboveThreshold($dbConnection, $expenseOrIncome) {
       $sql = "SELECT COUNT(*) as amount_categories 
-              FROM category_expense";
+              FROM category_{$expenseOrIncome}";
       $stmt = $dbConnection->prepare($sql);
       $stmt->execute();
 
@@ -116,11 +116,12 @@ class Validation {
 
       public static function validateCategory($dbConnection, $category, $expenseOrIncome) {
         $errors = [];
+        $category = Validation::test_input($category);
         if ($category == '') {
           $errors[] = 'Provide category to add';
         }
         elseif ($category != '') {
-          $category = Validation::test_input($category);
+       //   $category = Validation::test_input($category);
           if (!preg_match("/^([a-zA-Z]+)* ?[a-zA-Z]+$/",$category)) {
             $errors[] = "Only letters and one white space allowed";
           }
@@ -133,7 +134,7 @@ class Validation {
             if (self::checkIfCategoryExistInDatabase($dbConnection, $category, $expenseOrIncome)) {
               $errors[] = "Error. Category exists";
             }
-            elseif (self::checkIfNumberOfCategoriesIsAboveThreshold($dbConnection)) {
+            elseif (self::checkIfNumberOfCategoriesIsAboveThreshold($dbConnection, $expenseOrIncome)) {
               $errors[] = "Error. Maximum number of categories: 18";
             }
           }
@@ -145,11 +146,12 @@ class Validation {
 
       public static function validatePayment($dbConnection, $payment) {
         $errors = [];
+        $payment = Validation::test_input($payment);
         if ($payment == '') {
           $errors[] = 'Provide payment option to add';
         }
         elseif ($payment != '') {
-          $payment = Validation::test_input($payment);
+     //     $payment = Validation::test_input($payment);
           if (!preg_match("/^([a-zA-Z]+)* ?[a-zA-Z]+$/",$payment)) {
             $errors[] = "Only letters and one white space allowed";
           }
@@ -172,19 +174,20 @@ class Validation {
       return $result;
       }
 
-      public static function validateId($dbConnection, $id, $user_id) {
+      public static function validateId($dbConnection, $id, $user_id, $expenseOrIncome) {
         $errors = [];
+        $id = Validation::test_input($id);
         if ($id == '') {
-          $errors[] = 'Provide id for expense to be removed';
+          $errors[] = "Provide id for $expenseOrIncome to be removed";
         }
         elseif ($id != '') {
-          $id = Validation::test_input($id);
+    //      $id = Validation::test_input($id);
           if (!preg_match("/^([0-9]+)*[0-9]+$/",$id)) {
             $errors[] = "Only number allowed";
           }
           else {
-            if (!self::checkIfExpenseIdExistInDatabase($dbConnection, $id, $user_id)) {
-              $errors[] = "Error. No expense with this id";
+            if (!self::checkIfExpenseIncomeIdExistInDatabase($dbConnection, $id, $user_id, $expenseOrIncome)) {
+              $errors[] = "Error. No $expenseOrIncome with this id";
             }
           }
       }
@@ -193,14 +196,14 @@ class Validation {
       return $result;
       }
 
-      public static function validateIdAndCategory($dbConnection, $id, $user_id, $categoryProvided) {
-        $resultForIdValidation = self::validateId($dbConnection, $id, $user_id);
+      public static function validateIdAndCategory($dbConnection, $id, $user_id, $categoryProvided, $expenseOrIncome) {
+        $resultForIdValidation = self::validateId($dbConnection, $id, $user_id, $expenseOrIncome);
         $idValidated = $resultForIdValidation[0];
         $errors = $resultForIdValidation[1];
         if (empty($errors)) {
 
           $sql = "SELECT category 
-                  FROM expense
+                  FROM $expenseOrIncome
                   WHERE id = :id";
           $stmt = $dbConnection->prepare($sql);
           $stmt->bindValue(':id', $idValidated, PDO::PARAM_INT);
@@ -218,12 +221,13 @@ class Validation {
 
       public static function validateComment($comment) {
         $errors = [];
+        $comment = Validation::test_input($comment);
         
         if ($comment == '') {
           $comment = NULL;
         }
         elseif ($comment != '') {
-          $comment = Validation::test_input($comment);
+     //     $comment = Validation::test_input($comment);
           if (!preg_match("/^[a-z0-9\040\.\-\/]+$/i",$comment)) {
             $errors[] = "Comment invalid";
           }
