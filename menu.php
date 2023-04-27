@@ -10,7 +10,7 @@ require 'includes/headMetaTitleLink.php';
 <body>	
 	<header>	
 		<nav class="navbar navbar-expand-lg navbar-light-yellow">
-			<a class="navbar-brand" href="#"><img class="me-1 ms-1 d-inline-block align-middle" src="images/gold-ingots.png" alt="Gold bar" /><span class="text-uppercase font-weight-bold font-size-scaled-from-30px-navbar align-middle"> Budget Manager</span></a>
+			<a class="navbar-brand" href=""><img class="me-1 ms-1 d-inline-block align-middle" src="images/gold-ingots.png" alt="Gold bar" /><span class="text-uppercase font-weight-bold font-size-scaled-from-30px-navbar align-middle"> Budget Manager</span></a>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainmenu" aria-controls="mainmenu" aria-expanded="false" aria-label="Button to open main menu options">
 				<span class="navbar-toggler-icon">
 					<i class="icon-menu"></i>
@@ -22,7 +22,7 @@ require 'includes/headMetaTitleLink.php';
 					<li class="nav-item text-center"><a class="nav-link" href="addexpense.php">Add expense</a></li>
 					<li class="nav-item text-center"><a class="nav-link" href="balancereview.php">Review balance</a></li>
 					<li class="nav-item text-center"><a class="nav-link" href="settings.php">Settings</a></li>
-					<li class="nav-item text-center"><a class="nav-link" href="includes/logout.php">Log out</a></li>
+					<li class="nav-item text-center"><a class="nav-link" href="logout.php">Log out</a></li>
 				</ul>
 			</div>
 		</nav>		

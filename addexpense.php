@@ -1,7 +1,7 @@
 <?php
 session_start();
 require 'includes/autoloader.php';
-//Authorization::checkAuthorization();
+Authorization::checkAuthorization();
 
 $database = new Database(DB_HOST,DB_NAME,DB_USER,DB_PASS);
 $connection = $database->getConnectionToDatabase();
@@ -30,7 +30,7 @@ require 'includes/headMetaTitleLink.php';
 					<li class="nav-item text-center"><a class="nav-link active" href="#" aria-current="page">Add expense</a></li>
 					<li class="nav-item text-center"><a class="nav-link" href="balancereview.php">Review balance</a></li>
 					<li class="nav-item text-center"><a class="nav-link" href="settings.php">Settings</a></li>
-					<li class="nav-item text-center"><a class="nav-link" href="includes/logout.php">Log out</a></li>
+					<li class="nav-item text-center"><a class="nav-link" href="logout.php">Log out</a></li>
 				</ul>
 			</div>
 		</nav>		
@@ -196,7 +196,9 @@ require 'includes/headMetaTitleLink.php';
 								$('#expenseRegisterConfirmation > p').html(json);
 							}
 						}});
-					});
+					}).fail(function() {
+						alert("Something went wrong. Error");
+						});
 			}  
 		});   
 	});
