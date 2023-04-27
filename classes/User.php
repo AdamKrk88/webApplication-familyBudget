@@ -55,19 +55,17 @@
             $this->errors[] = 'Name is required';
         }
         elseif ($this->name != '') {
-         //   $this->name = Validation::test_input($this->name);
             if (!preg_match("/^([a-zA-Z]+)* ?[a-zA-Z]+$/",$this->name)) {
-            $this->errors[] = "Only letters and one white space allowed";
-        }
+                $this->errors[] = "Only letters and one white space allowed";
+            }
         }
         if ($this->email == '') {
             $this->errors[] = 'Email is required';
         }
         elseif ($this->email != '') {
-         //   $this->email = Validation::test_input($this->email);
             $this->email = filter_var($this->email, FILTER_SANITIZE_EMAIL);
             if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
-            $this->errors[] = "Invalid email format";
+                $this->errors[] = "Invalid email format";
             }
         }
 
@@ -119,7 +117,6 @@
         $stmt->bindValue(':name', $nameOrEmail, PDO::PARAM_STR);
         $stmt->bindValue(':email', $nameOrEmail, PDO::PARAM_STR);
         $stmt->execute();
-    //    $stmt->setFetchMode(PDO::FETCH_CLASS,'User');
         if ($userDataInArray = $stmt->fetch(PDO::FETCH_ASSOC)) {
             if(password_verify($this->password,$userDataInArray["password"])) {
                 return $userDataInArray;
@@ -154,8 +151,6 @@
         
         $this->errors[] = "Provided user exist - please use another one. Unique name and unique email required";
         return true;
-     //   var_dump(isset($userFromDatabase));
-    //    exit;
     }
 
     public function validateName() {
@@ -164,9 +159,8 @@
             $this->errors[] = 'Provide new username';
         }
         elseif ($this->name != '' || strlen($this->name) != 0) {
-        //    $this->name = Validation::test_input($this->name);
             if (!preg_match("/^[a-zA-Z-' ]*$/",$this->name)) {
-            $this->errors[] = "Only letters and white space allowed";
+                $this->errors[] = "Only letters and white space allowed";
             }
             elseif (strlen($this->name) > 15) {
                 $this->errors[] = "Up to 15 characters is allowed";
@@ -185,10 +179,9 @@
             $this->errors[] = 'Provide new email';
         }
         elseif ($this->email != '') {
-       //     $this->email = Validation::test_input($this->email);
             $this->email = filter_var($this->email, FILTER_SANITIZE_EMAIL);
             if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
-            $this->errors[] = "Invalid email format";
+                $this->errors[] = "Invalid email format";
             }
         }
         if (empty($this->errors)) {

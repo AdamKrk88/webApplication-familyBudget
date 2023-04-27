@@ -18,7 +18,7 @@ if ($customizeQueryStringValue) {
 	$allowedCustomizeOptions = ["User", "Expense", "Income"];
 	$isAllowedCustomizePresent = in_array($customizeQueryStringValue, $allowedCustomizeOptions, TRUE);
 	if ($isAllowedCustomizePresent) {
-	//	$successMessage = ["Name changed", "Email changed", "Password changed"];
+	
 		switch ($customizeQueryStringValue) {
 			case "User":
 				if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -44,8 +44,7 @@ if ($customizeQueryStringValue) {
 								echo $e->getMessage();
 								exit;
 							}
-							//var_dump(strlen($_POST['name']));
-							//username change
+							
 						}
 					}
 
@@ -92,15 +91,12 @@ if ($customizeQueryStringValue) {
 						}
 					}
 
-					//	$_SESSION['userId']
+					
 				}
 				break;
 			case "Expense":
 				$database = new Database(DB_HOST,DB_NAME,DB_USER,DB_PASS);
 				$connection = $database->getConnectionToDatabase();
-			//	$categories = Expense::getCategories($connection, $_SESSION['userId']);
-			//	$payments = Expense::getPayments($connection, $_SESSION['userId']);
-			//	$allExpenses = Expense::getAllExpenses($connection, $_SESSION['userId']);
 
 				if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 					if (isset($_POST['add-category-expense'])) {
@@ -407,7 +403,6 @@ else {
 	$isAllowedCustomizePresent = false;
 }
 
-//var_dump($isAllowedCustomizePresent);
 require 'includes/headCharsetLang.php';  
 require 'includes/headMetaTitleLink.php';
 ?>
@@ -1053,7 +1048,6 @@ require 'includes/headMetaTitleLink.php';
 			$("#messageForIncome").html("<a class=\"link-registration-income-expense font-light-orange fst-italic\" href=\"settings.php?customize=Income\">" + "<?php if (isset($_SESSION['successMessage'])) {echo "Reload";} ?>" + "</a>");
 			}
 		});
-	
 	});   
 
 	</script>

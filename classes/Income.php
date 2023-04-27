@@ -132,15 +132,11 @@ class Income {
 
         $stmt = $dbConnection->prepare($sql);
         $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
-  //      $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-  //      $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
         $stmt->execute();
        
         $incomeTable = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $incomeTableForGivenPeriod = [];
-
-    //    foreach($expenseTable as $singleExpense) {
-     //   if (call_user_func("$class::$method","{$singleExpense['date']}"))    
+   
         if (!$startDateFromModal && !$endDateFromModal) {
             for ($i = 0; $i < count($incomeTable); $i++) {
                 if (call_user_func("$class::$method",$incomeTable[$i]['date'])) {
@@ -148,11 +144,9 @@ class Income {
                                                         'id' => $incomeTable[$i]['id'], 
                                                         'date' => $incomeTable[$i]['date'],
                                                         'category' => $incomeTable[$i]['category'],
-                                                    //  'payment' => $incomeTable[$i]['payment'],
                                                         'comment' => $incomeTable[$i]['comment'],
                                                         'amount' => NumberFormatter::formatNumber($incomeTable[$i]['amount']));             
                 }
-    //       }
             }
         }
         else {
@@ -162,7 +156,6 @@ class Income {
                                                         'id' => $incomeTable[$i]['id'], 
                                                         'date' => $incomeTable[$i]['date'],
                                                         'category' => $incomeTable[$i]['category'],
-                                                 //       'payment' => $incomeTable[$i]['payment'],
                                                         'comment' => $incomeTable[$i]['comment'],
                                                         'amount' => NumberFormatter::formatNumber($incomeTable[$i]['amount']));             
                 }
@@ -171,6 +164,5 @@ class Income {
 
         return  $incomeTableForGivenPeriod;
     }
-
 
 }

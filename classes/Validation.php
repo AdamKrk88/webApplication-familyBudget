@@ -2,7 +2,6 @@
 
 class Validation {
 
-
     public static function test_input($data) {
         $data = trim($data);
       //  $data = stripslashes($data);
@@ -33,12 +32,8 @@ class Validation {
             return false;
         }
         
-     //   $this->errors[] = "Provided username exist - please use another one";
         return true;
-     //   var_dump(isset($userFromDatabase));
-    //    exit;
     }
-
 
     public static function checkIfPaymentExistInDatabase($dbConnection, $payment) {
       $sql = "SELECT payment 
@@ -52,10 +47,7 @@ class Validation {
           return false;
       }
       
-   //   $this->errors[] = "Provided username exist - please use another one";
       return true;
-   //   var_dump(isset($userFromDatabase));
-  //    exit;
   }
 
   public static function checkIfExpenseIncomeIdExistInDatabase($dbConnection, $id, $user_id, $expenseOrIncome) {
@@ -71,12 +63,8 @@ class Validation {
         return false;
     }
     
- //   $this->errors[] = "Provided username exist - please use another one";
     return true;
- //   var_dump(isset($userFromDatabase));
-//    exit;
-}
-
+  }
 
     public static function checkIfNumberOfCategoriesIsAboveThreshold($dbConnection, $expenseOrIncome) {
       $sql = "SELECT COUNT(*) as amount_categories 
@@ -112,8 +100,6 @@ class Validation {
       }
     }
 
-
-
       public static function validateCategory($dbConnection, $category, $expenseOrIncome) {
         $errors = [];
         $category = Validation::test_input($category);
@@ -121,7 +107,6 @@ class Validation {
           $errors[] = 'Provide category to add';
         }
         elseif ($category != '') {
-       //   $category = Validation::test_input($category);
           if (!preg_match("/^([a-zA-Z]+)* ?[a-zA-Z]+$/",$category)) {
             $errors[] = "Only letters and one white space allowed";
           }
@@ -151,7 +136,6 @@ class Validation {
           $errors[] = 'Provide payment option to add';
         }
         elseif ($payment != '') {
-     //     $payment = Validation::test_input($payment);
           if (!preg_match("/^([a-zA-Z]+)* ?[a-zA-Z]+$/",$payment)) {
             $errors[] = "Only letters and one white space allowed";
           }
@@ -181,7 +165,6 @@ class Validation {
           $errors[] = "Provide id for $expenseOrIncome to be removed";
         }
         elseif ($id != '') {
-    //      $id = Validation::test_input($id);
           if (!preg_match("/^([0-9]+)*[0-9]+$/",$id)) {
             $errors[] = "Only number allowed";
           }
@@ -227,7 +210,6 @@ class Validation {
           $comment = NULL;
         }
         elseif ($comment != '') {
-     //     $comment = Validation::test_input($comment);
           if (!preg_match("/^[a-z0-9\040\.\-\/]+$/i",$comment)) {
             $errors[] = "Comment invalid";
           }

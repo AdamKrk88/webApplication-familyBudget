@@ -2,7 +2,6 @@
 require 'includes/autoloader.php';
 session_start();
 //Authorization::checkAuthorization();
-//echo Date::isPreviousMonthDate();
 
 $database = new Database(DB_HOST,DB_NAME,DB_USER,DB_PASS);
 $connection = $database->getConnectionToDatabase();
@@ -202,7 +201,7 @@ require 'includes/headMetaTitleLink.php';
 			
 		</article>
 	</main>
-<!--	<div id='tester'></div>    -->
+
 	<div class="container position-relative">
 		<div class="row">
 			<footer class="col-12 text-center position-absolute bottom-0 end-0">
@@ -213,37 +212,15 @@ require 'includes/headMetaTitleLink.php';
 		</div>
 	</div>
 
-	
 
-<!--	<script src="https://code.jquery.com/jquery-3.6.1.slim.min.js" integrity="sha256-w8CvhFs7iHNVUtnSP0YKEg00p9Ih13rlL9zGqvLdePA=" crossorigin="anonymous"></script> -->
 	<script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
 	
 	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js" integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous"></script>   
-<!--	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.2.1/chart.min.js"></script>   -->
+
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.2.1/chart.umd.min.js"></script>   
 
-<!--	<script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>   -->
-<!--	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.js"></script>  -->
-	
-
-
-	<!--
-										<div class="position-absolute top-0 start-50 translate-middle-x">
-											<canvas id="myChart"></canvas>
-										</div>
-	-->
-	
-<!--	<script type="text/javascript" src="js/PieChart.js"></script>   
-
 	<script>
-	$(function() {
-		$('#source').pieChart('#target', 'Pie Chart Title');
-	});
-	</script>
--->
-
-<script>
 
 	var optionValuePrevious = 1;
 	var startDateValue ="0";
@@ -255,14 +232,12 @@ require 'includes/headMetaTitleLink.php';
 	var screenResized = false;
 	var pieChart;
 	var dataToDisplayList = [];
-
 	
-
 
 	if (checkIfDataForPieChartExist()) {
 		screenWidthPieChartHeight = createPieChart(true);
 		numberOfExpenseCategories = <?= $categoryTotalAmountValueLength; ?>;
-	//	alert(pieChart.options['plugins']['legend']['display']);
+	
 		if (numberOfExpenseCategories > 9) {
 			pieChart.options['plugins']['legend']['display'] = false;
 			pieChart.update();
@@ -276,7 +251,6 @@ require 'includes/headMetaTitleLink.php';
 			Chart.defaults.font.size = 12;
 			if (numberOfExpenseCategories > 9 && window.outerWidth < 1000) {
 				$('#myChartDiv').css('height',2*screenWidthPieChartHeight[1]/3);
-			//	pieChart.update();
 			}
 		}
 
@@ -290,9 +264,7 @@ require 'includes/headMetaTitleLink.php';
 			$('#myChartDiv').css('height',screenWidthPieChartHeight[1]/2);
 			pieChart.update();
 		}
-	
 	}
-
 
 	function createPieChart(isCallOnload) {
 		if($('#myChart').length === 0) {
@@ -332,9 +304,6 @@ require 'includes/headMetaTitleLink.php';
 		return provideScreenWidthAndPieChartHeight();
 	}
 
-//	const screenWidthPieChartHeight = provideScreenWidthAndPieChartHeight();
-//	setPieChartHeightToZeroIfNoData();
-
 	function checkIfDataForPieChartExist() {
 		var categoryTotalAmountValue = <?= json_encode($categoryTotalAmountValue); ?>;
 		if (Array.isArray(categoryTotalAmountValue) && categoryTotalAmountValue.length) {
@@ -345,8 +314,6 @@ require 'includes/headMetaTitleLink.php';
 	}
 
 	function recoverPieChartHeight() {
-		//pieChart.data['labels'].length
-
 		if (pieChart.data['labels'].length > 9) {
 			pieChart.options['plugins']['legend']['display'] = false;
 		}
@@ -384,7 +351,6 @@ require 'includes/headMetaTitleLink.php';
 		if (isCallOnload) {
 			var numberOfCategories = parseInt("<?= $categoryTotalAmountValueLength; ?>");
 			var categoryTotalAmountValue = <?= json_encode($categoryTotalAmountValue); ?>;
-		//	alert(categoryTotalAmountValue[0][0]);
 
 			for (let i = 0; i < numberOfCategories; i++) {
 				categories[i] = categoryTotalAmountValue[i][0];
@@ -396,15 +362,12 @@ require 'includes/headMetaTitleLink.php';
 			return categories;
 		}
 	}
-
-	   
+ 
 	function displayBackgroundColor(isCallOnload) {
 		var colors = [];
 		
 		if (isCallOnload) {
 			var numberOfCategories = parseInt("<?= $categoryTotalAmountValueLength; ?>");
-
-		//	alert(categoryTotalAmountValue[0][0]);
 
 			for (let i = 0; i < numberOfCategories; i++) {
 				switch(i) {
@@ -481,13 +444,11 @@ require 'includes/headMetaTitleLink.php';
 			var categoryTotalAmountValue = <?= json_encode($categoryTotalAmountValue); ?>;
 			var percentagePerCategory = 0;
 			
-		//	alert(categoryTotalAmountValue[0][0]);
-		//	alert(totalExpense);
 			for (let i = 0; i < numberOfCategories; i++) {
 				percentagePerCategory = (parseFloat(categoryTotalAmountValue[i][1]) / totalExpense) * 100;
 				percentages[i] = percentagePerCategory.toFixed(2);
 			}
-		//	alert(percentages);
+
 			return percentages;
 		}
 		else {
@@ -495,97 +456,9 @@ require 'includes/headMetaTitleLink.php';
 		}
 	}
 
-//	displayPercentagesForCategories();
-		
-		// Pie chart
-
-//	var ctx = $("#myChart").get(0);
-
-/* Piechart  *****************************
-
-	var pieChart = new Chart($("#myChart"), {
-        type: 'pie',
-		options: {
-    //        legend: { display: true },
-     //       indexAxis: 'x',
-		
-			plugins: {
-        //		datalabels: {
-          //  		formatter: (value) => {
-           //     let sum = 0;
-            //   let dataArr = ctx.chart.data.datasets;
-            //    dataArr.map(data => {
-            //        sum += data;
-            //    });
-              //  let percentage = dataArr + "%";
-              //  return percentage;
-		//			}
-				//}	
-           // }
-
-				tooltip: {
-					enabled: true,
-           		//	intersect: false,
-           		//	mode: 'nearest',
-		
-					callbacks: {
-						label: (item) => item.parsed + '%'
-				/*		labelColor: function(context) {
-                        return {
-                            borderColor: 'rgb(0, 0, 255)',
-                            backgroundColor: 'rgb(255, 0, 0)',
-                            borderWidth: 2,
-                            borderDash: [2, 2],
-                            borderRadius: 2,
-                        };
-                    },
-                    labelTextColor: function(context) {
-                        return '#543453';
-                    }
-*/
-
-/*
-					label: ((tooltipItem) => {
-					
-					
-							return  tooltipItem.parsed + '%';
-						
-    		
-						})
-*/
-					/*	
-						label: function(tooltipItem, data) {
-						//	alert('rerer');
-			return data['labels'][tooltipItem['index']] + ': ' + data['datasets'][0]['data'][tooltipItem['index']] + '%';
-						
-    		
-						}
-					*/
-
-/*					}
-				}
-			}
-        	
-		},
-		data: {
-            labels: displayCategories(),
-            datasets: [
-                {
-            //      label: "Technology Learned by Students",
-                    backgroundColor: displayBackgroundColor(),	
-                    data: displayPercentagesForCategories(),
-                }
-            ]
-        }			
-        });
-
- ************************* */
-		//backgroundColor: ["#FFC0CB", "#0000FF",
-		//"#00FFFF", "#FFA500", "#FF7F50","#FF0000"],	
-
 	
 	String.prototype.left = function(n) {
-    return this.substring(0, n);
+    	return this.substring(0, n);
 	}
 	
 	function getCurrentOption() {
@@ -596,11 +469,8 @@ require 'includes/headMetaTitleLink.php';
 	}
 
 	function getFirstClickOption(that) {
-		
 		if (counterForClickEventRelease % 2 == 1) {
-			
-		firstOptionClicked = $(that).val();
-	//	alert(firstOptionClicked);
+			firstOptionClicked = $(that).val();
 		}
 	}
 
@@ -609,7 +479,7 @@ require 'includes/headMetaTitleLink.php';
 	}
 
 	function isElementEmpty(element) {
-      return !$.trim(element.html())
+    	return !$.trim(element.html())
   	}
 
 	function isElementHasDisabledAttributeOn(attribute) {
@@ -631,19 +501,15 @@ require 'includes/headMetaTitleLink.php';
 				'endDateFromModal': endDateFromModal
 			},
 			success: function(incomeOrExpenseData) {
-			//	alert(incomeOrExpenseData);
+			
 				var json = JSON.parse(incomeOrExpenseData);
 				var numberOfIncomeOrExpenseCategories = Object.keys(json).length;
-			//	alert(Object.keys(json).length);
 				var checkIfPaddingIsAdded = false;
-			//	alert('I am here');
+			
 				if (!isFromDropDownList && !isFromChartListSwitcher) {
 					if (fileName == "incomesPresentation") {
 						$('#presented-table-name').html('Incomes <span class="position-absolute top-50 end-0 translate-middle-y font-size-scaled-from-13px py-1 pe-2" id="date-for-your-choice"></span><a class="position-absolute top-50 start-0 translate-middle-y font-size-scaled-from-15px link-registration-income-expense font-color-black py-1 ps-2" href="" id="chart-list-switcher"><em>Chart / List Switcher</em></a>');
-					//	alert(startDateFromModal);
-					//	alert(endDateFromModal);
-					//alert(typeof(startDateFromModal));
-				//	$('#date-for-your-choice').html('tralal');
+					
 						if (startDateFromModal != '0' && endDateFromModal != '0' && (startDateFromModal == endDateFromModal)) {
 							$('#date-for-your-choice').html('one day  ' + startDateFromModal);
 						}
@@ -658,8 +524,7 @@ require 'includes/headMetaTitleLink.php';
 					}
 					else if (fileName == "expensesPresentation") {
 						$('#presented-table-name').html('Expenses <span class="position-absolute top-50 end-0 translate-middle-y font-size-scaled-from-13px py-1 pe-2" id="date-for-your-choice"></span><a class="position-absolute top-50 start-0 translate-middle-y font-size-scaled-from-15px link-registration-income-expense font-color-black py-1 ps-2" href="" id="chart-list-switcher"><em>Chart / List Switcher</em></a>');
-					//	alert(startDateFromModal);
-					//	alert(endDateFromModal);
+				
 						if (startDateFromModal != '0' && endDateFromModal != '0' && (startDateFromModal == endDateFromModal)) {
 							$('#date-for-your-choice').html('one day  ' + startDateFromModal);
 						}
@@ -708,11 +573,9 @@ require 'includes/headMetaTitleLink.php';
 				}
 
 				if (Array.isArray(json) && json.length) {
-				//	$('#noDataComment').html('').removeClass('py-2');
 					$('#noDataComment').html('');
 					if (pieChart === undefined) {
 						screenWidthPieChartHeight = createPieChart(false);
-					//	alert(pieChart);
 					}
 
 					for (let i = 0; i < 18; i++) {
@@ -720,7 +583,7 @@ require 'includes/headMetaTitleLink.php';
 							$('#th' + i).html(json[i][0]);
 							$('#td' + i).html(json[i][1]); 
 							checkIfPaddingIsAdded = $('#th' + i).hasClass("p-0");
-						//	alert(checkIfPaddingIsAdded);
+						
 							if (checkIfPaddingIsAdded) {
 								$('#th' + i).removeClass('p-0');
 								$('#td' + i).removeClass('p-0');
@@ -738,7 +601,6 @@ require 'includes/headMetaTitleLink.php';
 					}
 				}
 				else {
-				//	$('#noDataComment').html('Nothing to show').addClass('py-2');
 					$('#noDataComment').html('Nothing to show');
 					for (let i = 0; i < 18; i++) {
 						$('#th' + i).html("");
@@ -749,7 +611,6 @@ require 'includes/headMetaTitleLink.php';
 								$('#td' + i).addClass('p-0');
 							}
 					}
-
 				}
 			}
 		});
@@ -777,13 +638,11 @@ require 'includes/headMetaTitleLink.php';
 				else {
 					$('#balance-comment').html('Balance is equal to zero');
 				}
-				//alert(typeof(json));
 			}
 		});
 	}
 
 	function updatePieChart(pieChart, expenseOrIncome, timePeriodSelectedByUser, isModal, startDateFromModal = "0", endDateFromModal = "0") {
-
 		$.ajax({
 			async: false,
 			url: "/includes/pieChartUpdate.php",   
@@ -797,19 +656,7 @@ require 'includes/headMetaTitleLink.php';
 			},
 			success: function(dataToUpdatePieChart) {
 				var json = JSON.parse(dataToUpdatePieChart);
-			//	alert(json);
-			//	alert(pieChart);
-		//	alert(pieChart.options['plugins']['legend']['display']);
-				
-		/*
-				if (json['incomeCategories'].length > 9) {
-					pieChart.options['plugins']['legend']['display'] = false;
-				}
-				else if (json['incomeCategories'].length <= 9) {
-					pieChart.options['plugins']['legend']['display'] = true;
-				}   
-
-				*/
+			
 				pieChart.data['labels'] = json['incomeCategories'];
 				pieChart.data['datasets'][0]['backgroundColor'] = json['backgroundColorForPieChart'];
 				pieChart.data['datasets'][0]['data'] = json['percentagePerCategory'];
@@ -821,9 +668,7 @@ require 'includes/headMetaTitleLink.php';
 				}
 				else {
 					recoverPieChartHeight();
-				}
-				
-		//data['datasets'][0]['data'][tooltipItem['index']]
+				}		
 			}
 		});
 	}	
@@ -858,9 +703,6 @@ require 'includes/headMetaTitleLink.php';
 			}
 		}
 	}
-
-//below you can copy
-
 
 	function addZeroToDayOrMonthIfNecessaryAndConvertToString(number) {
 		if (number < 10) {
@@ -897,7 +739,7 @@ require 'includes/headMetaTitleLink.php';
 	}	
 	
 	function checkDateInModal() {	
-		startDateValue =$("#startDate").val();  //tutaj
+		startDateValue =$("#startDate").val();  
 		endDateValue = $("#endDate").val();
 		if (startDateValue != "" && endDateValue != "") {
 			var startDate = new Date($("#startDate").val());
@@ -909,10 +751,7 @@ require 'includes/headMetaTitleLink.php';
 			var backgroundColorForStartDateInput = $("#startDate").css("background-color");
 		}
 	
-
-
-
-		if (startDateValue == "" || endDateValue == "") { //tutaj
+		if (startDateValue == "" || endDateValue == "") { 
 			$("#errorMessage").addClass("font-red").removeClass("font-green").html("Provide dates");
 			return false;
 		}
@@ -945,23 +784,14 @@ require 'includes/headMetaTitleLink.php';
 			return false;
 		}
 		
-/*
-		if (!$("#errorMessage").text() =="") {
-			return false;
-		}
-*/
-
 		if (endDateAsInteger >= startDateAsInteger && backgroundColorForEndDateInput == "rgb(255, 255, 255)" && backgroundColorForStartDateInput == "rgb(255, 255, 255)") {
-		//	setTimeout(() => {alert('Hi')}, 3000);
 			$("#errorMessage").addClass("font-green").removeClass("font-red").html("Correct");	
-
-	}
+		}
 		
 		else if (endDateAsInteger >= startDateAsInteger && (backgroundColorForEndDateInput == "rgb(255, 128, 128)" || backgroundColorForStartDateInput == "rgb(255, 128, 128)")) {
 			$("#startDate").removeAttr("style");
 			$("#endDate").removeAttr("style");
-			$("#errorMessage").addClass("font-green").removeClass("font-red").html("Now it is correct");
-		//	$("#errorMessage").html("Now it is correct. Wait 3 sec");		
+			$("#errorMessage").addClass("font-green").removeClass("font-red").html("Now it is correct");	
 		}
 
 		return true;
@@ -982,7 +812,6 @@ require 'includes/headMetaTitleLink.php';
 				if($.inArray(arrayOfUserIncomesOrExpenses[i]['category'], categories) === -1) {
 					categories.push(arrayOfUserIncomesOrExpenses[i]['category']);
 				}
-
 			}
 		}
 
@@ -1002,10 +831,8 @@ require 'includes/headMetaTitleLink.php';
 				'endDateFromModal': endDateFromModal
 			}, 
 			success: function(dataToUpdateFirstPage) {
-			//	alert(dataToUpdateFirstPage);
-			//	alert(dataToUpdateFirstPage);
 				var json = JSON.parse(dataToUpdateFirstPage);
-			//	alert(json);
+			
 				if (Array.isArray(json) && json.length) {
 					dataToDisplayList = json;
 					var numberOfCategories = provideNumberOfCategories(json);
@@ -1028,8 +855,6 @@ require 'includes/headMetaTitleLink.php';
 					if (expenseOrIncome == "Expense") {
 						if (!$('#payment-list').length) {
 							$('#category-list').after('<th scope="col" class="p-0 fw-bolder" style="width:16%" id="payment-list"></th>');
-						//	$('#id-list').css('width', '10%');
-						//	$('#date-list').css('width', '15%');
 							$('#category-list').css('width', '16%');
 							$('#comment-list').css('width', '30%');
 							$('#amount-list').css('width', '13%');
@@ -1061,13 +886,10 @@ require 'includes/headMetaTitleLink.php';
 							
 							for (let i = 0; i < 7; i++) {
 								$("#td-payment-" + i).remove();
-							
 							}
 							
 							$('#payment-list').remove();
 
-					//		$('#id-list').css('width', '10%');
-					//		$('#date-list').css('width', '15%');
 							$('#category-list').css('width', '19%');
 							$('#comment-list').css('width', '40%');
 							$('#amount-list').css('width', '16%');
@@ -1076,7 +898,6 @@ require 'includes/headMetaTitleLink.php';
 						$('#id-list').html(tableHeader[0].toUpperCase());
 						$('#date-list').html(capitalizeFirstLetter(tableHeader[1]));
 						$('#category-list').html(capitalizeFirstLetter(tableHeader[2]));
-				
 						$('#comment-list').html(capitalizeFirstLetter(tableHeader[3]));
 						$('#amount-list').html(capitalizeFirstLetter(tableHeader[4]));
 
@@ -1084,7 +905,6 @@ require 'includes/headMetaTitleLink.php';
 							$("#th-id-" + i).removeClass('p-0').html(json[i]['id']);
 							$("#td-date-" + i).removeClass('p-0').html(json[i]['date']);
 							$("#td-category-" + i).removeClass('p-0').html(json[i]['category']);
-						
 							$("#td-comment-" + i).removeClass('p-0').html(json[i]['comment']);
 							$("#td-amount-" + i).removeClass('p-0').html(json[i]['amount']);
 						}	
@@ -1093,16 +913,12 @@ require 'includes/headMetaTitleLink.php';
 					if (json.length > 7) {
 						$('#next-link').html('Next');
 					}
-
 				}
 			}
 		});
 	}
 	
-	
 	function updateInformationForNextPageInTheList(itemPositionOnTheList, numberOfItemsToBeUpdated, isExpenseList) {
-	//	var numberOfItemsToClear = 7 - numberOfItemsToBeUpdated;
-		
 		if (isExpenseList) {
 			for (let i = 0, j = itemPositionOnTheList; i < numberOfItemsToBeUpdated; i++) {
 				$("#th-id-" + i).html(dataToDisplayList[j]['id']);
@@ -1147,8 +963,6 @@ require 'includes/headMetaTitleLink.php';
 	}
 
 	function updateInformationForPreviousPageInTheList(itemPositionOnTheList, numberOfItemsToBeRestored, isExpenseList) {
-	//	var numberOfItemsToClear = 7 - numberOfItemsToBeUpdated;
-
 		if (numberOfItemsToBeRestored > 0 && isExpenseList) {
 			for (let i = 7 - numberOfItemsToBeRestored; i < 7; i++) {
 				$("#th-id-" + i).removeClass('p-0');
@@ -1168,7 +982,6 @@ require 'includes/headMetaTitleLink.php';
 				$("#td-amount-" + i).removeClass('p-0');
 			}
 		}
-
 
 		if (isExpenseList) {
 			for (let i = 0, j = itemPositionOnTheList; i < 7; i++) {
@@ -1193,17 +1006,7 @@ require 'includes/headMetaTitleLink.php';
 		}
 	}
 
-/*
-	<th scope="col" class="p-0" id="id-list"></th>
-	<th scope="col" class="p-0" id="date-list"></th>
-	<th scope="col" class="p-0" id="category-list"></th>
-	<th scope="col" class="p-0" id="payment-list"></th>
-	<th scope="col" class="p-0" id="comment-list"></th>
-	<th scope="col" class="p-0" id="amount-list"></th>
-*/
-
 	function resizeFontsForPieChart() {
-		
 		if (pieChart !== undefined && pieChart !== null) {
 			if (window.outerWidth >= 1200) {
 				Chart.defaults.font.size = 13;
@@ -1213,7 +1016,6 @@ require 'includes/headMetaTitleLink.php';
 				if (Array.isArray(pieChart.data['labels']) && pieChart.data['labels'].length) {	
 					$('#myChartDiv').css('height',screenWidthPieChartHeight[1]);
 				}
-			
 			}
 			
 			if (window.outerWidth >= 768 && window.outerWidth < 1200) {
@@ -1230,17 +1032,14 @@ require 'includes/headMetaTitleLink.php';
 				if (pieChart.data['labels'].length > 9 && window.outerWidth >= 1000) {	
 					$('#myChartDiv').css('height',screenWidthPieChartHeight[1]);
 				}
-		
 			}
 
 			if (window.outerWidth < 768) {
 				Chart.defaults.font.size = 11;
 				pieChart.options['plugins']['legend']['display'] = false;
-				
 				if (Array.isArray(pieChart.data['labels']) && pieChart.data['labels'].length) {	
 					$('#myChartDiv').css('height',screenWidthPieChartHeight[1]/2);
 				}
-			
 			}
 
 			pieChart.update();
@@ -1251,133 +1050,10 @@ require 'includes/headMetaTitleLink.php';
 			return [$(window).width(), $('#myChartDiv').height()];
 	}
 
-
-/*
-
-pieChart.data['labels'] = json['incomeCategories'];
-				pieChart.data['datasets'][0]['backgroundColor'] = json['backgroundColorForPieChart'];
-				pieChart.data['datasets'][0]['data'] = json['per
-
-*/
-
-
-
-
-/*
-		$("#switcher-expenseLink-presentedInformation").on("click","#linkToPresentExpenses", function(e) {
-			e.preventDefault();
-			switchIncomeExpenseSummary('expensesPresentation');
-		}); 
-
-		$("#switcher-incomeLink-presentedInformation").on("click", "#linkToPresentIncomes", function(e) {
-			e.preventDefault();
-			switchIncomeExpenseSummary('incomesPresentation');
-		});  
-
-*/
-
-/*
-		$("div p#switcher-expenseLink-presentedInformation > a#linkToPresentExpenses").on("click", function(e) {
-			e.preventDefault();
-			switchIncomeExpenseSummary('expensesPresentation');
-		}); 
-
-		$("div p#switcher-incomeLink-presentedInformation > a#linkToPresentIncomes").on("click", function(e) {
-			e.preventDefault();
-			switchIncomeExpenseSummary('incomesPresentation');
-		});  
-*/
-		/*
-		$('#linkToPresentIncomes').click(function(e) {
-		//	e.preventDefault();
-			switchIncomeExpenseSummary('incomesPresentation',e);
-		});  
-
-		$('#linkToPresentExpenses').click(function(e) {
-			//e.preventDefault();
-			switchIncomeExpenseSummary('expensesPresentation',e);
-		}); 
-*/
-		
 	
 	
 	$(document).ready(function(){
-	//	getOnePage();
-		/*
-		if (checkIfDataForPieChartExist()) {
-		//	const screenWidthPieChartHeight = createPieChart();
-			if (window.outerWidth >= 1200) {
-				Chart.defaults.font.size = 13;
-			//	pieChart.options['plugins']['legend']['display'] = true;
-			}
-			
-			if (window.outerWidth >= 768 && window.outerWidth < 1200) {
-				Chart.defaults.font.size = 12;
-			//	pieChart.options['plugins']['legend']['display'] = true;
-			}
-			
-	
-			if (window.outerWidth == 768) {
-				$("#submitModalButton").removeAttr("disabled");
-			} 
-	
-			if (window.outerWidth < 768) {
-				Chart.defaults.font.size = 11;
-				pieChart.options['plugins']['legend']['display'] = false;
-				$('#myChartDiv').css('height',screenWidthPieChartHeight[1]/2);
-			//	pieChart.options['aspectRatio'] = 1;
-			//	alert(pieChart.options['aspectRatio']);
-				pieChart.update();
-			}
 
-	}
-*/
-
-/*
-		var pieChart = new Chart($("#myChart"), {
-        type: 'pie',
-		options: {
-			responsive: true,
-			maintainAspectRatio: false,
-			plugins: {
-				tooltip: {
-					enabled: true,
-					callbacks: {
-						label: (item) => item.parsed + '%'
-					}
-				}
-			}       	
-		},
-		data: {
-            labels: displayCategories(),
-            datasets: [
-                {
-                    backgroundColor: displayBackgroundColor(),	
-                    data: displayPercentagesForCategories(),
-                }
-            ]
-        }			
-        });
-*/
-	//	Chart.defaults.font.size = 10;
-
-	//	updatePieChart(pieChart);
-		
-
-
-/*		$('#linkToPresentIncomes').click(function(e) {
-		//	e.preventDefault();
-			switchIncomeExpenseSummary('incomesPresentation',e);
-		});  
-
-		$('#linkToPresentExpenses').click(function(e) {
-			//e.preventDefault();
-			switchIncomeExpenseSummary('expensesPresentation',e);
-		}); 
-*/
-	//	$('#periodForBalanceSummary').click(getCurrentOption);
-	
-	//	$('#boxToProvidePeriodForBalanceSummary').unbind('change');
 		$('#periodForBalanceSummary').change(function() { 
 			var optionValueNew = getSelectedOptionFromDropDownList(this);
 			var typeOfDataReviewed = $('#presented-table-name').text().left(8).trim();
@@ -1395,8 +1071,7 @@ pieChart.data['labels'] = json['incomeCategories'];
 			if (!isElementEmpty($('#previous-link'))) {
 				$('#previous-link').html('');
 			}
-		//	alert(typeOfDataReviewed);
-		//	if (optionValueNew == "1" || optionValueNew == "2" || optionValueNew == "3") {
+		
 			startDateValue ="0";
 			endDateValue = "0";
 		
@@ -1404,7 +1079,7 @@ pieChart.data['labels'] = json['incomeCategories'];
 				switchIncomeExpenseSummary('expensesPresentation', 'isCurrentMonthDate', true, false, false);
 				getTotalBalance('isCurrentMonthDate', false);
 				updatePieChart(pieChart, 'Expense', 'isCurrentMonthDate', false);
-				// (timePeriodSelectedByUser, isModal, startDateFromModal ='0', endDateFromModal = '0')
+				
 			}
 			else if (optionValueNew == "2" && typeOfDataReviewed== "Expenses") {
 				switchIncomeExpenseSummary('expensesPresentation', 'isPreviousMonthDate', true, false, false);
@@ -1431,79 +1106,50 @@ pieChart.data['labels'] = json['incomeCategories'];
 				getTotalBalance('isCurrentYearDate', false);
 				updatePieChart(pieChart, 'Income', 'isCurrentYearDate', false);
 			}
-	//		}
-			//var optionValueNew = $(this).children("option:selected").val(); 
-		//	alert(typeOfDataReviewed);
-	//		if(optionValueNew == "4"){ 
-				//$('#boxToProvidePeriodForBalanceSummary').unbind('change');
-				
-		//		$('#boxToProvidePeriodForBalanceSummary').modal("show"); 
-			//	var startDateFromModal = $('#startDate').val();
-			//	var endDateFromModal = $('#endDate').val();
-		//	}
 		});
 
 		$('#periodForBalanceSummary').click(function() {
-		//	getCurrentOption();
-			//alert('tralala');	
 			var currentOptionSelected = $(this).val();
-		//	alert(currentOptionSelected);	
+			
 			counterForClickEventRelease++;
 			getFirstClickOption(this);
-		//	alert('tralala');   //firstOptionClicked
 		
 			if (currentOptionSelected == "4" && counterForClickEventRelease > 1) {
 				$('#boxToProvidePeriodForBalanceSummary').modal("show");
-				
 				const disabledAttributeForButtonsInModal = [$("#closeModalSymbol").attr("disabled"), $("#closeModalButton").attr("disabled"), $("#submitModalButton").attr("disabled"), $("#startDate").attr("disabled"), $("#endDate").attr("disabled")];
-		//		$("#closeModalButton").attr("disabled", true);
-		//		$("#submitModalButton").attr("disabled", true);
+		
 				for (let i = 0; i < disabledAttributeForButtonsInModal.length; i++ ) {
 					if (isElementHasDisabledAttributeOn(disabledAttributeForButtonsInModal[i])) {
-							switch (i) {
-								case 0:
-									$("#closeModalSymbol").removeAttr("disabled");
-									break;
-								case 1:
-									$("#closeModalButton").removeAttr("disabled");
-									break;
-								case 2:
-									$("#submitModalButton").removeAttr("disabled");
-									break;
-								case 3:
-									$("#startDate").removeAttr("disabled");
-									break;
-								case 4:
-									$("#endDate").removeAttr("disabled");
-							}
+						switch (i) {
+							case 0:
+								$("#closeModalSymbol").removeAttr("disabled");
+								break;
+							case 1:
+								$("#closeModalButton").removeAttr("disabled");
+								break;
+							case 2:
+								$("#submitModalButton").removeAttr("disabled");
+								break;
+							case 3:
+								$("#startDate").removeAttr("disabled");
+								break;
+							case 4:
+								$("#endDate").removeAttr("disabled");
+						}
 					}
 				}
 
 				counterForClickEventRelease = 0;
-				
-		//		alert(typeof($("#closeModalSymbol").attr("disabled")));
-		//		$("#closeModalButton").attr("disabled", true);
-		//		$("#submitModalButton").attr("disabled", true);
-
 			}
 		});
 		
 		$("#closeModalSymbol").click(function() {
-		//	if ($('#periodForBalanceSummary').children("option:selected").val() != '4') {
-	//		if () {
 			$('#periodForBalanceSummary').val(firstOptionClicked);
-	//		}
-		//	}
 		});
 		
 		$("#closeModalButton").click(function() {
-		//	if ($('#periodForBalanceSummary').children("option:selected").val() != '4') {
-	//		if () {
-			$('#periodForBalanceSummary').val(firstOptionClicked);   //optionValuePrevious
-	//		}
-		//	}
+			$('#periodForBalanceSummary').val(firstOptionClicked);  
 		});
-
 
 		$("#switcher-expenseLink-presentedInformation").on("click","#linkToPresentExpenses", function(e) {
 			e.preventDefault();
@@ -1523,7 +1169,6 @@ pieChart.data['labels'] = json['incomeCategories'];
 				$('#previous-link').html('');
 			}
 
-		//	alert(selectedOptionFromDropDownList);
 			if (selectedOptionFromDropDownList == "1") {
 				switchIncomeExpenseSummary('expensesPresentation', 'isCurrentMonthDate', false, false, false);
 				updatePieChart(pieChart, 'Expense', 'isCurrentMonthDate', false);
@@ -1537,8 +1182,6 @@ pieChart.data['labels'] = json['incomeCategories'];
 				updatePieChart(pieChart, 'Expense', 'isCurrentYearDate', false);
 			}
 			else if (selectedOptionFromDropDownList == "4") {
-		//		startDateValue =$("#startDate").val();   //tutaj
-		//		endDateValue = $("#endDate").val();
 				switchIncomeExpenseSummary('expensesPresentation', 'isTimePeriodProvidedByUser', false, false, true, startDateValue, endDateValue);
 				updatePieChart(pieChart, 'Expense', 'isTimePeriodProvidedByUser', true, startDateValue, endDateValue);
 			}
@@ -1565,7 +1208,6 @@ pieChart.data['labels'] = json['incomeCategories'];
 			if (selectedOptionFromDropDownList == "1") {
 				switchIncomeExpenseSummary('incomesPresentation', 'isCurrentMonthDate', false, false, false);
 				updatePieChart(pieChart, 'Income', 'isCurrentMonthDate', false);
-			//	updatePieChart(pieChart, expenseOrIncome, timePeriodSelectedByUser, isModal, startDateFromModal = "0", endDateFromModal = "0")	
 			}
 			else if (selectedOptionFromDropDownList == "2") {
 				switchIncomeExpenseSummary('incomesPresentation', 'isPreviousMonthDate', false, false, false);
@@ -1576,8 +1218,6 @@ pieChart.data['labels'] = json['incomeCategories'];
 				updatePieChart(pieChart, 'Income', 'isCurrentYearDate', false);
 			}
 			else if (selectedOptionFromDropDownList == "4") {
-			//	startDateValue =$("#startDate").val();   //tutaj
-			//	endDateValue = $("#endDate").val();
 				switchIncomeExpenseSummary('incomesPresentation', 'isTimePeriodProvidedByUser', false, false, true, startDateValue, endDateValue);
 				updatePieChart(pieChart, 'Income', 'isTimePeriodProvidedByUser', true, startDateValue, endDateValue);
 			}
@@ -1658,13 +1298,9 @@ pieChart.data['labels'] = json['incomeCategories'];
 				else if (selectedOptionFromDropDownList == "4" && typeOfDataReviewed== "Incomes") {
 					switchIncomeExpenseSummary('incomesPresentation', 'isTimePeriodProvidedByUser', false, true, true, startDateValue, endDateValue);
 					updatePieChart(pieChart, 'Income', 'isTimePeriodProvidedByUser', true, startDateValue, endDateValue);
-				}
-
-				//  switchIncomeExpenseSummary(fileName, timePeriodSelectedByUser, isFromDropDownList, isFromChartListSwitcher, isModal, startDateFromModal ='0', endDateFromModal = '0')
+				}	
 			}
-	//		window.location.replace("balancereview.php?page=1&flow=expense&type=list"); 
 		});
-
 
 		$('#next-link').click(function(e) {
 			e.preventDefault();
@@ -1676,7 +1312,6 @@ pieChart.data['labels'] = json['incomeCategories'];
 			var isExpenseList = ($('#presented-table-name').text().left(8).trim() === "Expenses") ? true : false;
 			var numberOfAllItems = dataToDisplayList.length;
 			
-			// updateInformationForNextPageInTheList(itemPositionOnTheList, numberOfItemsToBeUpdated, isExpenseList)
 			if (currentPageNumber + 1 < numberOfPages) {
 				updateInformationForNextPageInTheList(indexOfFirstIdOnTheNextPage, 7, isExpenseList);
 			}
@@ -1688,9 +1323,7 @@ pieChart.data['labels'] = json['incomeCategories'];
 
 			if (isElementEmpty($('#previous-link'))) {
 				$('#previous-link').html('Previous');
-			}
-			//alert(dataToDisplayList.find((o) => {return o['id'] === firstIdOnThePage})['id']);
-			//alert(dataToDisplayList.indexOf(dataToDisplayList.find(function(obj) {return obj['id'] === "10"})));
+			}	
 		});
 
 		$('#previous-link').click(function(e) {
@@ -1703,7 +1336,6 @@ pieChart.data['labels'] = json['incomeCategories'];
 			var isExpenseList = ($('#presented-table-name').text().left(8).trim() === "Expenses") ? true : false;
 			var numberOfAllItems = dataToDisplayList.length;
 
-			// updateInformationForPreviousPageInTheList(itemPositionOnTheList, numberOfItemsToBeRestored, isExpenseList)
 			if (currentPageNumber != numberOfPages) {
 				updateInformationForPreviousPageInTheList(indexOfFirstIdOnThePreviousdPage, 0, isExpenseList);
 			}
@@ -1718,146 +1350,53 @@ pieChart.data['labels'] = json['incomeCategories'];
 			}
 		});
 
+		$("#submitModalButton").click(function () {
+			if (checkDateInModal()) {
+				$("#closeModalSymbol").attr("disabled", true);
+				$("#closeModalButton").attr("disabled", true);
+				$("#submitModalButton").attr("disabled", true);
+				$("#startDate").attr("disabled", true);
+				$("#endDate").attr("disabled", true);
 
-/*
-		for (let i = 0; i < 18; i++) {
-			let thElement = $('#th' + i);
-			let tdElement = $('#td' + i); 
-
-			if (isElementEmpty(thElement) && isElementEmpty(tdElement)) {
-				thElement.addClass('p-0');
-				tdElement.addClass('p-0');
-			}
-		}
-*/
-/* Click <a class="font-light-stronger-orange link-registration-income-expense" href="#">here</a> */
-
-/*
-		$.ajax({
-			type: "POST",
-			url: "/includes/insertExpensePartOne.php",
-			data: $('#firstForm').serialize(),
-		}).done(function() {
-			$.ajax({
-				type: "POST",
-				url: "/includes/insertExpensePartTwo.php",
-				data: $('#secondForm').serialize(),
-				success: function(errorMessage) {
-					if(!errorMessage) {
-						$('#expenseRegisterConfirmation > p').html('Expense is registered successfully. Click <a href=\"addexpense.php\" class=\"font-light-orange link-registration-income-expense\">here</a> to insert next one');
-						$('#buttonToSubmitForm').prop('disabled', true);
+				var isPieChartDisplayed = isElementEmpty($('#id-list'));
+				var typeOfDataReviewed = $('#presented-table-name').text().left(8).trim();
+			
+				$('#boxToProvidePeriodForBalanceSummary').delay(2000).queue(function() { 
+					if (!isPieChartDisplayed) {
+						cleanList();
+						createPieChart(false);
 					}
-					else {
-						var json = JSON.parse(errorMessage);
-						$('#expenseRegisterConfirmation > p').html(json);
+
+					if (!isElementEmpty($('#next-link'))) {
+						$('#next-link').html('');
 					}
-				}});
-			});
-*/
 
+					if (!isElementEmpty($('#previous-link'))) {
+						$('#previous-link').html('');
+					}
 
-
-
-		
-
-
+					$(this).modal("hide");
 	
-//here was script tag closing and open ones
-
-	
-	$("#submitModalButton").click(function () {
-		if (checkDateInModal()) {
-		//	startDateValue =$("#startDate").val();   //tutaj
-		//	endDateValue = $("#endDate").val();
-		//	alert(startDateValue);
-			$("#closeModalSymbol").attr("disabled", true);
-			$("#closeModalButton").attr("disabled", true);
-			$("#submitModalButton").attr("disabled", true);
-			$("#startDate").attr("disabled", true);
-			$("#endDate").attr("disabled", true);
-
-			var isPieChartDisplayed = isElementEmpty($('#id-list'));
-
-	/*		if (!isPieChartDisplayed) {
-				cleanList();
-				createPieChart(false);
-			}  */
-
-			var typeOfDataReviewed = $('#presented-table-name').text().left(8).trim();
-			//$('#boxToProvidePeriodForBalanceSummary').modal("hide"); 
-
-			$('#boxToProvidePeriodForBalanceSummary').delay(2000).queue(function() { 
-				if (!isPieChartDisplayed) {
-					cleanList();
-					createPieChart(false);
-				}
-
-				if (!isElementEmpty($('#next-link'))) {
-					$('#next-link').html('');
-				}
-
-				if (!isElementEmpty($('#previous-link'))) {
-					$('#previous-link').html('');
-				}
-
-  				$(this).modal("hide");
-  
-  				if (typeOfDataReviewed == "Expenses") {
-					switchIncomeExpenseSummary('expensesPresentation', 'isTimePeriodProvidedByUser', true, false, true, startDateValue, endDateValue); 
-					getTotalBalance('isTimePeriodProvidedByUser', true, startDateValue, endDateValue);
-					updatePieChart(pieChart, 'Expense', 'isTimePeriodProvidedByUser', true, startDateValue, endDateValue);
-					// (timePeriodSelectedByUser, isModal, startDateFromModal ='0', endDateFromModal = '0')
-				}
-				else if (typeOfDataReviewed == "Incomes") {
-					switchIncomeExpenseSummary('incomesPresentation', 'isTimePeriodProvidedByUser', true, false, true, startDateValue, endDateValue);
-					getTotalBalance('isTimePeriodProvidedByUser', true, startDateValue, endDateValue);
-					updatePieChart(pieChart, 'Income', 'isTimePeriodProvidedByUser', true, startDateValue, endDateValue);
-				}
-  				
-				$(this).dequeue(); 
-			});
-/*
-			if (typeOfDataReviewed == "Expenses") {
-				switchIncomeExpenseSummary('expensesPresentation', 'isTimePeriodProvidedByUser', true, true, startDateValue, endDateValue);   //tutaj
+					if (typeOfDataReviewed == "Expenses") {
+						switchIncomeExpenseSummary('expensesPresentation', 'isTimePeriodProvidedByUser', true, false, true, startDateValue, endDateValue); 
+						getTotalBalance('isTimePeriodProvidedByUser', true, startDateValue, endDateValue);
+						updatePieChart(pieChart, 'Expense', 'isTimePeriodProvidedByUser', true, startDateValue, endDateValue);
+					}
+					else if (typeOfDataReviewed == "Incomes") {
+						switchIncomeExpenseSummary('incomesPresentation', 'isTimePeriodProvidedByUser', true, false, true, startDateValue, endDateValue);
+						getTotalBalance('isTimePeriodProvidedByUser', true, startDateValue, endDateValue);
+						updatePieChart(pieChart, 'Income', 'isTimePeriodProvidedByUser', true, startDateValue, endDateValue);
+					}
+					
+					$(this).dequeue(); 
+				});
 			}
-			else if (typeOfDataReviewed == "Incomes") {
-				switchIncomeExpenseSummary('incomesPresentation', 'isTimePeriodProvidedByUser', true, true, startDateValue, endDateValue);
-			}
-			*/
-		}
-	});
+		});
 
 	$("#boxToProvidePeriodForBalanceSummary").on("hidden.bs.modal",clearModalBoxToDefault);
-/*
-	function resizeFontsForPieChart() {
-		if (window.outerWidth >= 1200) {
-			Chart.defaults.font.size = 13;
-		}
-			
-		if (window.outerWidth >= 768 && window.outerWidth < 1200) {
-			Chart.defaults.font.size = 12;
-		}
-
-		if (window.outerWidth < 768) {
-			Chart.defaults.font.size = 11;
-		}
-
-		pieChart.update();
-
-	}
-*/
-
 
 	});
-
-
-
-
 	</script>
-<!--	
-	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js" integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous"></script>   
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.2.1/chart.min.js"></script> 
--->
+
 </body>
 </html>

@@ -13,9 +13,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	
 	if ($user->validateRegistration() && !$user->checkIfUserExistInDatabase($connection)) {
 		$user->password = password_hash($user->password, PASSWORD_DEFAULT);
-	//	$database = new Database(DB_HOST,DB_NAME,DB_USER,DB_PASS);
-	//	$connection = $database->getConnectionToDatabase();
-	//	$user->checkIfUserExistInDatabase($connection);
 		$user->insertUserIntoDatabase($connection);
 		session_regenerate_id(true);
 		$_SESSION['is_redirect_after_registration'] = true;

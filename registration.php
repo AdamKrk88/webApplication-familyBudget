@@ -1,24 +1,5 @@
 <?php
-/*
-require 'includes/autoloader.php';
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	$user = new User();
-	$user->name = $_POST['name'];
-    $user->email = $_POST['email'];
-    $user->password = $_POST['password'];
-
-	if ($user->validateRegistration()) {
-	$user->password = password_hash($user->password, PASSWORD_DEFAULT);
-		$connection = new Database(DB_HOST,DB_NAME,DB_USER,DB_PASS);
-		$user->insertUserIntoDatabase($connection);
-		Url::redirect('index.html'); 
-	}
-
-	
-
-}
-*/
 require 'includes/headCharsetLang.php';  
 require 'includes/headMetaTitleLink.php';
 require 'includes/headerLoginRegister.php'; ?>
