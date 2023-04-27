@@ -97,6 +97,21 @@ class Income {
         return $categoryTotalAmountValue;
     }
 
+    public static function getAllIncomes($dbConnection, $user_id) {
+        $sql = "SELECT income.amount, income.date, income.category
+                FROM income
+                WHERE user_id = :user_id";
+
+        $stmt = $dbConnection->prepare($sql);
+        $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $categoryAndAmountsArray = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        return $categoryAndAmountsArray;
+    }
+
+
     public static function getTotalIncome($dbConnection, $user_id, $class, $method, $startDateFromModal = '0', $endDateFromModal = '0') {
         $categoryAmountForIncomeSection = self::getCategoryAndRelatedAmount($dbConnection, $user_id, $class, $method, $startDateFromModal, $endDateFromModal);
         $totalIncome = 0;
@@ -117,15 +132,11 @@ class Income {
 
         $stmt = $dbConnection->prepare($sql);
         $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
-  //      $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-  //      $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
         $stmt->execute();
        
         $incomeTable = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $incomeTableForGivenPeriod = [];
-
-    //    foreach($expenseTable as $singleExpense) {
-     //   if (call_user_func("$class::$method","{$singleExpense['date']}"))    
+   
         if (!$startDateFromModal && !$endDateFromModal) {
             for ($i = 0; $i < count($incomeTable); $i++) {
                 if (call_user_func("$class::$method",$incomeTable[$i]['date'])) {
@@ -133,11 +144,9 @@ class Income {
                                                         'id' => $incomeTable[$i]['id'], 
                                                         'date' => $incomeTable[$i]['date'],
                                                         'category' => $incomeTable[$i]['category'],
-                                                    //  'payment' => $incomeTable[$i]['payment'],
                                                         'comment' => $incomeTable[$i]['comment'],
                                                         'amount' => NumberFormatter::formatNumber($incomeTable[$i]['amount']));             
                 }
-    //       }
             }
         }
         else {
@@ -147,7 +156,6 @@ class Income {
                                                         'id' => $incomeTable[$i]['id'], 
                                                         'date' => $incomeTable[$i]['date'],
                                                         'category' => $incomeTable[$i]['category'],
-                                                 //       'payment' => $incomeTable[$i]['payment'],
                                                         'comment' => $incomeTable[$i]['comment'],
                                                         'amount' => NumberFormatter::formatNumber($incomeTable[$i]['amount']));             
                 }
@@ -156,6 +164,5 @@ class Income {
 
         return  $incomeTableForGivenPeriod;
     }
-
 
 }

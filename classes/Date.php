@@ -17,12 +17,6 @@ class Date {
     }
 
     public static function isPreviousMonthDate($dateFromDatabase) {
-    /*
-        $firstDayOfPreviousMonth = date('Y-m-01', strtotime('-1 month'));
-        $date = new DateTime($firstDayOfPreviousMonth);
-        $lastDayOfPreviousMonth = $date->format('Y-m-t'); 
-    */
-
         $firstDayOfPreviousMonthAsObject = new DateTime("first day of last month");
         $lastDayOfPreviousMonthAsObject = new DateTime("last day of last month");
         $firstDayOfPreviousMonth = $firstDayOfPreviousMonthAsObject->format('Y-m-d');
@@ -57,6 +51,10 @@ class Date {
         else {
             return false;
         } 
+    }
+
+    public static function provideCurrentDate() {
+        return date('Y-m-d');
     }
 
 }

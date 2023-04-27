@@ -112,6 +112,21 @@ body
 	color: #000000;
 }
 
+.flex-even {
+	flex: 1;
+}
+
+.settings-option-style:not(:last-child)
+{
+	border-right: 2px solid #bfbfbf;
+}
+
+.settings-option-style:hover
+{
+	background-color: #fffdf9;
+	color: #ff6600;
+}
+
 .bg-light-grey
 {
 	background-color: #f2f2f2;
@@ -120,6 +135,16 @@ body
 .bg-dark-grey
 {
 	background-color: #bfbfbf;
+}
+
+.bg-medium-light-grey
+{
+	background-color: #e9e9e9;
+}
+
+.highlight-option:hover 
+{
+	background-color: #fafafa;
 }
 
 .font-color-black
@@ -170,6 +195,11 @@ body
 .w-85
 {
 	width: 85% !important;
+}
+
+.w-95
+{
+	width: 95% !important;
 }
 
 .w-40
@@ -649,6 +679,11 @@ label#labelTextNextToList
 	font-size: 30px;
 }
 
+.font-size-scaled-from-30px-navbar
+{
+	font-size: 30px;
+}
+
 @media (max-width: 1199px)
 {
 	.font-size-scaled-from-15px
@@ -704,6 +739,11 @@ label#labelTextNextToList
 	{
 		font-size: 13px;
 	}
+
+	.font-size-scaled-from-30px-navbar
+	{
+		font-size: 27px;
+	}
 	
 	footer
 	{
@@ -746,6 +786,11 @@ label#labelTextNextToList
 	.font-size-scaled-from-13px
 	{
 		font-size: 11px;
+	}
+
+	.font-size-scaled-from-30px-navbar
+	{
+		font-size: 25px;
 	}
 	
 	.form-control-sm,

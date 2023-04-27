@@ -6,6 +6,7 @@ session_start();
 $database = new Database(DB_HOST,DB_NAME,DB_USER,DB_PASS);
 $connection = $database->getConnectionToDatabase();
 $categories = Income::getCategories($connection, $_SESSION['userId']);
+$currentDate = Date::provideCurrentDate();
 
 require 'includes/headCharsetLang.php'; 
 require 'includes/noscriptTagInHead.php'; 
@@ -15,7 +16,7 @@ require 'includes/headMetaTitleLink.php';
 <body>
 	<header>	
 		<nav class="navbar navbar-expand-lg navbar-light-yellow">
-			<a class="navbar-brand" id="logoForPage" href="menu.php"><img class="me-1 ms-1 d-inline-block align-middle" src="images/gold-ingots.png" alt="Gold bar" /><span class="text-uppercase font-weight-bold align-middle"> Budget Manager</span></a>
+			<a class="navbar-brand" id="logoForPage" href="menu.php"><img class="me-1 ms-1 d-inline-block align-middle" src="images/gold-ingots.png" alt="Gold bar" /><span class="text-uppercase font-weight-bold font-size-scaled-from-30px-navbar align-middle"> Budget Manager</span></a>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainmenu" aria-controls="mainmenu" aria-expanded="false" aria-label="Button to open main menu options">
 				<span class="navbar-toggler-icon">
 					<i class="icon-menu"></i>
@@ -26,7 +27,7 @@ require 'includes/headMetaTitleLink.php';
 					<li class="nav-item text-center"><a class="nav-link active" href="#" aria-current="page">Add income</a></li>
 					<li class="nav-item text-center"><a class="nav-link" href="addexpense.php">Add expense</a></li>
 					<li class="nav-item text-center"><a class="nav-link" href="balancereview.php">Review balance</a></li>
-					<li class="nav-item text-center"><a class="nav-link" href="#">Settings</a></li>
+					<li class="nav-item text-center"><a class="nav-link" href="settings.php">Settings</a></li>
 					<li class="nav-item text-center"><a class="nav-link" href="includes/logout.php">Log out</a></li>
 				</ul>
 			</div>
@@ -56,7 +57,7 @@ require 'includes/headMetaTitleLink.php';
 									</div>
 									<div class="w-50 px-2">
 										<label class="form-label font-color-grey font-size-scaled-from-15px fw-bolder mb-1" for="date">Date</label>
-										<input class="form-control form-control-sm fw-bold font-color-grey text-center" type="date" name="date" id="date" min="2000-01-01" title="Please fill out this field" aria-label="Date of your income registration" />
+										<input class="form-control form-control-sm fw-bold font-color-grey text-center" type="date" name="date" id="date" title="Please fill out this field" aria-label="Date of your income registration" />
 									</div>
 								</form>   
 							</div>
@@ -103,12 +104,11 @@ require 'includes/headMetaTitleLink.php';
 			<footer class="col-12 text-center position-absolute bottom-0 end-0">
 				<a class="footer-link font-color-black" href="https://www.flaticon.com/free-icons/money" title="money icons" target="_blank">Money icons created by Freepik - Flaticon</a>.  
 				<a class="footer-link font-color-black d-block d-sm-inline-block" href="https://pl.freepik.com/search?format=search&query=marmur&type=photo" target="_blank">Marmur image created by rawpixel.com - pl.freepik.com</a>
-				<span class="font-color-black d-block">All rights reserved &copy; 2022. Thank you for your visit </span>    
+				<span class="font-color-black d-block">All rights reserved &copy; 2023. Thank you for your visit </span>    
 			</footer>
 		</div>
 	</div>
 	
-<!--	<script src="https://code.jquery.com/jquery-3.6.1.slim.min.js" integrity="sha256-w8CvhFs7iHNVUtnSP0YKEg00p9Ih13rlL9zGqvLdePA=" crossorigin="anonymous"></script>   -->
 	<script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
 	
 	<script>
@@ -119,8 +119,8 @@ require 'includes/headMetaTitleLink.php';
 		var isRequiredFieldsBlank;
 	
 		amountInput.attr('min','0.01');
-		dateInput.attr('min','2020-01-01');
-		dateInput.attr('max','2099-12-31');
+		dateInput.attr('min','2022-01-01');
+		dateInput.attr('max','<?= $currentDate; ?>');
 
 		if ($('#no-categories').length > 0) {
 			$('#buttonToSubmitForm').prop('disabled', true);

@@ -13,18 +13,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	
 	if ($user->validateRegistration() && !$user->checkIfUserExistInDatabase($connection)) {
 		$user->password = password_hash($user->password, PASSWORD_DEFAULT);
-	//	$database = new Database(DB_HOST,DB_NAME,DB_USER,DB_PASS);
-	//	$connection = $database->getConnectionToDatabase();
-	//	$user->checkIfUserExistInDatabase($connection);
 		$user->insertUserIntoDatabase($connection);
 		session_regenerate_id(true);
 		$_SESSION['is_redirect_after_registration'] = true;
 		Url::redirect('../index.php');
 	}
 }
+else {
+	Url::redirect('../registration.php');
+}
 
 
-require 'head.php';
+require 'headCharsetLang.php';  
+require 'headMetaTitleLink.php';
 require 'headerLoginRegister.php';
 ?>
 
@@ -36,7 +37,7 @@ require 'headerLoginRegister.php';
 					<article>		
 						<header> 
 							<div class="col-lg-10 col-md-10 col-sm-12 bg-light-grey p-2">	
-								<h2 class="font-color-black fw-bolder font-size-scaled-from-30px m-0">Register</h2>
+								<h2 class="font-color-black fw-bolder font-size-scaled-from-30px position-relative m-0">Register<a class="position-absolute top-50 end-0 translate-middle-y font-size-scaled-from-15px link-registration-income-expense font-color-black py-1 pe-2 fst-italic" href="../index.php">Back to Login</a></h2>
 							</div>
 						</header>
 						<div class="col-lg-10 col-md-10 col-sm-12 bg-light-grey px-2 pb-2">	
@@ -79,7 +80,7 @@ require 'headerLoginRegister.php';
 		<footer class="col-12 text-center position-absolute bottom-0 end-0">
 			<a class="footer-link font-color-black" href="https://www.flaticon.com/free-icons/money" title="money icons" target="_blank">Money icons created by Freepik - Flaticon</a>.  
 			<a class="footer-link font-color-black d-block d-sm-inline-block" href="https://pl.freepik.com/search?format=search&query=marmur&type=photo" target="_blank">Marmur image created by rawpixel.com - pl.freepik.com</a>
-			<span class="font-color-black d-block">All rights reserved &copy; 2022. Thank you for your visit </span>    
+			<span class="font-color-black d-block">All rights reserved &copy; 2023. Thank you for your visit </span>    
 		</footer>
 	</div>
 </div>

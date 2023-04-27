@@ -1,24 +1,5 @@
 <?php
-/*
-require 'includes/autoloader.php';
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	$user = new User();
-	$user->name = $_POST['name'];
-    $user->email = $_POST['email'];
-    $user->password = $_POST['password'];
-
-	if ($user->validateRegistration()) {
-	$user->password = password_hash($user->password, PASSWORD_DEFAULT);
-		$connection = new Database(DB_HOST,DB_NAME,DB_USER,DB_PASS);
-		$user->insertUserIntoDatabase($connection);
-		Url::redirect('index.html'); 
-	}
-
-	
-
-}
-*/
 require 'includes/headCharsetLang.php';  
 require 'includes/headMetaTitleLink.php';
 require 'includes/headerLoginRegister.php'; ?>
@@ -29,7 +10,7 @@ require 'includes/headerLoginRegister.php'; ?>
 				<article>		
 					<header>
 						<div class="col-lg-5 col-md-6 col-sm-7 bg-light-grey p-2 mx-auto">	
-							<h2 class="font-color-black fw-bolder font-size-scaled-from-30px m-0 ">Register</h2>
+							<h2 class="font-color-black fw-bolder font-size-scaled-from-30px position-relative m-0 ">Register<a class="position-absolute top-50 end-0 translate-middle-y font-size-scaled-from-15px link-registration-income-expense font-color-black py-1 pe-2 fst-italic" href="index.php">Back to Login</a></h2>
 						</div>
 					</header>
 					<div class="col-lg-5 col-md-6 col-sm-7 bg-light-grey px-2 pb-2 mx-auto">	
@@ -51,7 +32,7 @@ require 'includes/headerLoginRegister.php'; ?>
 			<footer class="col-12 text-center position-absolute bottom-0 end-0">
 				<a class="footer-link font-color-black" href="https://www.flaticon.com/free-icons/money" title="money icons" target="_blank">Money icons created by Freepik - Flaticon</a>.  
 				<a class="footer-link font-color-black d-block d-sm-inline-block" href="https://pl.freepik.com/search?format=search&query=marmur&type=photo" target="_blank">Marmur image created by rawpixel.com - pl.freepik.com</a>
-				<span class="font-color-black d-block">All rights reserved &copy; 2022. Thank you for your visit </span>    
+				<span class="font-color-black d-block">All rights reserved &copy; 2023. Thank you for your visit </span>    
 			</footer>
 		</div>
 	</div>
