@@ -1,7 +1,7 @@
 <?php
 require 'includes/autoloader.php';
 session_start();
-//Authorization::checkAuthorization();
+Authorization::checkAuthorization();
 
 if (!isset($_POST['name']) && !isset($_POST['email']) && !isset($_POST['password']) 
 	&& !isset($_POST['add-category-expense']) && !isset($_POST['remove-category-expense']) && !isset($_POST['add-payment-expense'])
@@ -403,7 +403,8 @@ else {
 	$isAllowedCustomizePresent = false;
 }
 
-require 'includes/headCharsetLang.php';  
+require 'includes/headCharsetLang.php'; 
+require 'includes/noscriptTagInHead.php';  
 require 'includes/headMetaTitleLink.php';
 ?>
 
@@ -422,7 +423,7 @@ require 'includes/headMetaTitleLink.php';
 					<li class="nav-item text-center"><a class="nav-link" href="addexpense.php">Add expense</a></li>
 					<li class="nav-item text-center"><a class="nav-link" href="balancereview.php">Review balance</a></li>
 					<li class="nav-item text-center"><a class="nav-link active" href="settings.php" aria-current="page">Settings</a></li>
-					<li class="nav-item text-center"><a class="nav-link" href="includes/logout.php">Log out</a></li>
+					<li class="nav-item text-center"><a class="nav-link" href="logout.php">Log out</a></li>
 				</ul>
 			</div>
 		</nav>		
@@ -973,7 +974,7 @@ require 'includes/headMetaTitleLink.php';
 	<script>
 	
 	function isElementContainNoCharacters(element) {
-		return !element.html();
+		return !element.val();
   	}
 
 	$(document).ready(function(){

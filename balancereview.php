@@ -1,7 +1,7 @@
 <?php
 require 'includes/autoloader.php';
 session_start();
-//Authorization::checkAuthorization();
+Authorization::checkAuthorization();
 
 $database = new Database(DB_HOST,DB_NAME,DB_USER,DB_PASS);
 $connection = $database->getConnectionToDatabase();
@@ -13,6 +13,7 @@ $numberOfCategoriesInFirstTable = floor(count($categoryTotalAmountValue) / 2) + 
 $numberOfCategoriesInSecondTable = floor(count($categoryTotalAmountValue) / 2);
 
 require 'includes/headCharsetLang.php';  
+require 'includes/noscriptTagInHead.php';
 require 'includes/headMetaTitleLink.php';
 ?>
 
@@ -31,7 +32,7 @@ require 'includes/headMetaTitleLink.php';
 					<li class="nav-item text-center"><a class="nav-link" href="addexpense.php">Add expense</a></li>
 					<li class="nav-item text-center"><a class="nav-link active" href="#" aria-current="page">Review balance</a></li>
 					<li class="nav-item text-center"><a class="nav-link" href="settings.php">Settings</a></li>
-					<li class="nav-item text-center"><a class="nav-link" href="includes/logout.php">Log out</a></li>
+					<li class="nav-item text-center"><a class="nav-link" href="logout.php">Log out</a></li>
 				</ul>
 			</div>
 		</nav>		
@@ -613,6 +614,8 @@ require 'includes/headMetaTitleLink.php';
 					}
 				}
 			}
+		}).fail(function(incomeOrExpenseData) {
+			alert("Something went wrong. Error");
 		});
 	}
 
@@ -639,6 +642,8 @@ require 'includes/headMetaTitleLink.php';
 					$('#balance-comment').html('Balance is equal to zero');
 				}
 			}
+		}).fail(function(balance) {
+			alert("Something went wrong. Error");
 		});
 	}
 
@@ -670,6 +675,8 @@ require 'includes/headMetaTitleLink.php';
 					recoverPieChartHeight();
 				}		
 			}
+		}).fail(function(dataToUpdatePieChart) {
+			alert("Something went wrong. Error");
 		});
 	}	
 
@@ -915,6 +922,8 @@ require 'includes/headMetaTitleLink.php';
 					}
 				}
 			}
+		}).fail(function(dataToUpdateFirstPage) {
+			alert("Something went wrong. Error");
 		});
 	}
 	

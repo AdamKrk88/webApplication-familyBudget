@@ -1,5 +1,7 @@
 <?php
 session_start();
-require 'autoloader.php';
+require 'includes/autoloader.php';
+Authorization::checkAuthorization();
+
 Authorization::destroySessionCompletely();
 Url::redirect('/');
