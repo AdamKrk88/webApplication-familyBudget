@@ -20,12 +20,13 @@ class Validation {
         return $error;       
       }
 
-      public static function checkIfCategoryExistInDatabase($dbConnection, $category, $expenseOrIncome) {
+      public static function checkIfCategoryExistInDatabase($dbConnection, $category, $expenseOrIncome, $user_id) {
         $sql = "SELECT category 
                 FROM category_$expenseOrIncome
-                WHERE category = :category";
+                WHERE category = :category AND user_id = :user_id";
         $stmt = $dbConnection->prepare($sql);
         $stmt->bindValue(':category', $category, PDO::PARAM_STR);
+        $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
         $stmt->execute();
         $categoryFromDatabase = $stmt->fetch(PDO::FETCH_ASSOC);
         if (isset($categoryFromDatabase) && empty($categoryFromDatabase)) {
@@ -35,12 +36,13 @@ class Validation {
         return true;
     }
 
-    public static function checkIfPaymentExistInDatabase($dbConnection, $payment) {
+    public static function checkIfPaymentExistInDatabase($dbConnection, $payment, $user_id) {
       $sql = "SELECT payment 
               FROM payment_expense
-              WHERE payment = :payment";
+              WHERE payment = :payment AND user_id = :user_id";
       $stmt = $dbConnection->prepare($sql);
       $stmt->bindValue(':payment', $payment, PDO::PARAM_STR);
+      $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
       $stmt->execute();
       $paymentFromDatabase = $stmt->fetch(PDO::FETCH_ASSOC);
       if (isset($paymentFromDatabase) && empty($paymentFromDatabase)) {
@@ -66,10 +68,12 @@ class Validation {
     return true;
   }
 
-    public static function checkIfNumberOfCategoriesIsAboveThreshold($dbConnection, $expenseOrIncome) {
+    public static function checkIfNumberOfCategoriesIsAboveThreshold($dbConnection, $expenseOrIncome, $user_id) {
       $sql = "SELECT COUNT(*) as amount_categories 
-              FROM category_{$expenseOrIncome}";
+              FROM category_{$expenseOrIncome}
+              WHERE user_id = :user_id";
       $stmt = $dbConnection->prepare($sql);
+      $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
       $stmt->execute();
 
       $numberOfCategoriesArray = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -83,10 +87,38 @@ class Validation {
       }
     }
 
-    public static function checkIfNumberOfPaymentOptionsIsAboveThreshold($dbConnection) {
-      $sql = "SELECT COUNT(*) as amount_payments 
-              FROM payment_expense";
+    public static function checkIfNumberOfCategoriesWithEntryAssignedIsAboveThreshold($dbConnection, $category, $expenseOrIncome, $user_id) {
+      $sql = "SELECT DISTINCT category 
+              FROM $expenseOrIncome
+              WHERE user_id = :user_id";
       $stmt = $dbConnection->prepare($sql);
+      $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
+      $stmt->execute();
+
+      $arrayOfCategories = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+      $categories = [];
+      foreach($arrayOfCategories as $oneCategory) {
+        $categories[] = $oneCategory['category'];
+      }
+      
+      if (in_array($category, $categories, TRUE)) {
+        return false;
+      }
+      elseif (count($categories) >= 18) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    }
+
+    public static function checkIfNumberOfPaymentOptionsIsAboveThreshold($dbConnection, $user_id) {
+      $sql = "SELECT COUNT(*) as amount_payments 
+              FROM payment_expense
+              WHERE user_id = :user_id";
+      $stmt = $dbConnection->prepare($sql);
+      $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
       $stmt->execute();
 
       $numberOfPaymentsArray = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -100,7 +132,7 @@ class Validation {
       }
     }
 
-      public static function validateCategory($dbConnection, $category, $expenseOrIncome) {
+      public static function validateCategory($dbConnection, $category, $expenseOrIncome, $user_id) {
         $errors = [];
         $category = Validation::test_input($category);
         if ($category == '') {
@@ -116,10 +148,13 @@ class Validation {
           else {
             $category = strtolower($category);
             $category = ucfirst($category);
-            if (self::checkIfCategoryExistInDatabase($dbConnection, $category, $expenseOrIncome)) {
+            if (self::checkIfCategoryExistInDatabase($dbConnection, $category, $expenseOrIncome, $user_id)) {
               $errors[] = "Error. Category exists";
             }
-            elseif (self::checkIfNumberOfCategoriesIsAboveThreshold($dbConnection, $expenseOrIncome)) {
+            elseif (self::checkIfNumberOfCategoriesIsAboveThreshold($dbConnection, $expenseOrIncome, $user_id)) {
+              $errors[] = "Error. Maximum number of categories: 18";
+            }
+            elseif (self::checkIfNumberOfCategoriesWithEntryAssignedIsAboveThreshold($dbConnection, $category, $expenseOrIncome, $user_id)) {
               $errors[] = "Error. Maximum number of categories: 18";
             }
           }
@@ -129,7 +164,7 @@ class Validation {
       return $result;
       }
 
-      public static function validatePayment($dbConnection, $payment) {
+      public static function validatePayment($dbConnection, $payment, $user_id) {
         $errors = [];
         $payment = Validation::test_input($payment);
         if ($payment == '') {
@@ -145,10 +180,10 @@ class Validation {
           else {
             $payment = strtolower($payment);
             $payment = ucfirst($payment);
-            if (self::checkIfPaymentExistInDatabase($dbConnection, $payment)) {
+            if (self::checkIfPaymentExistInDatabase($dbConnection, $payment, $user_id)) {
               $errors[] = "Error. Payment option exists";
             }
-            elseif (self::checkIfNumberOfPaymentOptionsIsAboveThreshold($dbConnection)) {
+            elseif (self::checkIfNumberOfPaymentOptionsIsAboveThreshold($dbConnection, $user_id)) {
               $errors[] = "Error. Maximum number of options: 5";
             }
           }

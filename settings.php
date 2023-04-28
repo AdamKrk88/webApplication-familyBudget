@@ -3,6 +3,7 @@ require 'includes/autoloader.php';
 session_start();
 Authorization::checkAuthorization();
 
+
 if (!isset($_POST['name']) && !isset($_POST['email']) && !isset($_POST['password']) 
 	&& !isset($_POST['add-category-expense']) && !isset($_POST['remove-category-expense']) && !isset($_POST['add-payment-expense'])
 	&& !isset($_POST['remove-payment-expense']) && !isset($_POST['remove-expense']) && !isset($_POST['edit-expense-id-comment'])
@@ -100,7 +101,7 @@ if ($customizeQueryStringValue) {
 
 				if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 					if (isset($_POST['add-category-expense'])) {
-						$result = Validation::validateCategory($connection, $_POST['add-category-expense'], 'expense');
+						$result = Validation::validateCategory($connection, $_POST['add-category-expense'], 'expense', $_SESSION['userId']);
 						$errorsExpenseOrIncomePart = $result[1];
 						$category = $result[0];
 						if (empty($errorsExpenseOrIncomePart)) {
@@ -143,7 +144,7 @@ if ($customizeQueryStringValue) {
 					}
 
 					elseif (isset($_POST['add-payment-expense'])) {
-						$result = Validation::validatePayment($connection, $_POST['add-payment-expense']);
+						$result = Validation::validatePayment($connection, $_POST['add-payment-expense'], $_SESSION['userId']);
 						$errorsExpenseOrIncomePart = $result[1];
 						$payment = $result[0];
 						if (empty($errorsExpenseOrIncomePart)) {
@@ -271,7 +272,7 @@ if ($customizeQueryStringValue) {
 
 				if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 					if (isset($_POST['add-category-income'])) {
-						$result = Validation::validateCategory($connection, $_POST['add-category-income'], 'income');
+						$result = Validation::validateCategory($connection, $_POST['add-category-income'], 'income', $_SESSION['userId']);
 						$errorsExpenseOrIncomePart = $result[1];
 						$category = $result[0];
 						if (empty($errorsExpenseOrIncomePart)) {
