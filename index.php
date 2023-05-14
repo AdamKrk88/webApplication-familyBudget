@@ -32,9 +32,9 @@ require 'includes/headMetaTitleLink.php';
 require 'includes/headerLoginRegister.php'; 
 ?>
 
-	<div class="container">
+	<div class="container web-content">
 		<div class="row">
-			<main>
+			<main class="content-wrapper">
 				<article>		
 					<header>     
 						<div class="col-lg-8 col-md-10 offset-lg-2 offset-md-1 mt-4-dot-5">
@@ -66,7 +66,7 @@ require 'includes/headerLoginRegister.php';
 					</div>
 				</article>
 			</main>
-			<footer class="col-12 text-center position-absolute bottom-0 end-0">
+			<footer class="col-12 text-center footer-budget">
 				<a class="footer-link font-color-black" href="https://www.flaticon.com/free-icons/money" title="money icons" target="_blank">Money icons created by Freepik - Flaticon</a>.  
 				<a class="footer-link font-color-black d-block d-sm-inline-block" href="https://pl.freepik.com/search?format=search&query=marmur&type=photo" target="_blank">Marmur image created by rawpixel.com - pl.freepik.com</a>
 				<span class="font-color-black d-block">All rights reserved &copy; 2023. Thank you for your visit </span>    
@@ -76,7 +76,10 @@ require 'includes/headerLoginRegister.php';
 	
 	<?php
 	if (isset($_SESSION['is_redirect_after_registration']) || isset($_SESSION['userLogged'])) {
-	Authorization::destroySessionCompletely();
+		$_SESSION['is_redirect_after_registration'] = "";
+		unset($_SESSION['is_redirect_after_registration']);
+		$_SESSION['userLogged'] = "";
+		unset($_SESSION['userLogged']);
 	}
 	?>
 

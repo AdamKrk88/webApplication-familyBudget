@@ -684,6 +684,28 @@ label#labelTextNextToList
 	font-size: 30px;
 }
 
+.web-content
+{
+	position: relative;	
+	min-height: calc(100vh - 74px) !important;
+}
+
+.initialHeightForContent 
+{
+	min-height: calc((100vh - 74px)*0.85);
+}
+
+.content-wrapper 
+{
+	padding-bottom: 47px;
+}
+
+.footer-budget {
+	position: absolute;
+	bottom: 0;	
+}
+
+
 @media (max-width: 1199px)
 {
 	.font-size-scaled-from-15px
@@ -698,8 +720,8 @@ label#labelTextNextToList
 		
 	.entry-color 
 	{
-    height: 7px;
-    width: 7px;
+    	height: 7px;
+ 		width: 7px;
 	}
 	
 		footer
@@ -732,7 +754,7 @@ label#labelTextNextToList
 	
 	.font-size-scaled-from-18px
 	{
-	font-size: 16px;
+		font-size: 16px;
 	}
 	
 	.font-size-scaled-from-15px
@@ -752,10 +774,10 @@ label#labelTextNextToList
 	
 	p
 	{
-	font-size: 16px;
+		font-size: 16px;
 	}
 	
-		.footer-position
+	.footer-position
 	{
 		margin-top: 0.7em;
 	}
@@ -775,7 +797,7 @@ label#labelTextNextToList
 	
 	.font-size-scaled-from-18px
 	{
-	font-size: 14px;
+		font-size: 14px;
 	}
 	
 	.font-size-scaled-from-15px
@@ -829,7 +851,7 @@ label#labelTextNextToList
 	
 	p
 	{
-	font-size: 14px;
+		font-size: 14px;
 	}
 }
 

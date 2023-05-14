@@ -56,9 +56,10 @@
         }
         elseif ($this->name != '') {
             if (!preg_match("/^([a-zA-Z]+)* ?[a-zA-Z]+$/",$this->name)) {
-                $this->errors[] = "Only letters and one white space allowed";
+                $this->errors[] = "Only letters and one space allowed in name. Please use standard English characters";
             }
         }
+        
         if ($this->email == '') {
             $this->errors[] = 'Email is required';
         }
@@ -150,6 +151,40 @@
         }
         
         $this->errors[] = "Provided user exist - please use another one. Unique name and unique email required";
+        return true;
+    }
+
+    public function checkIfNameExistInDatabase($dbConnection)
+    {
+        $sql = "SELECT name 
+                FROM user
+                WHERE name = :name";
+        $stmt = $dbConnection->prepare($sql);
+        $stmt->bindValue(':name', $this->name, PDO::PARAM_STR);
+        $stmt->execute();
+        $userFromDatabase = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (isset($userFromDatabase) && empty($userFromDatabase)) {
+            return false;
+        }
+
+        $this->errors[] = "Error. Provided name exists";
+        return true;
+    }
+
+    public function checkIfEmailExistInDatabase($dbConnection)
+    {
+        $sql = "SELECT email 
+                FROM user
+                WHERE email = :email";
+        $stmt = $dbConnection->prepare($sql);
+        $stmt->bindValue(':email', $this->email, PDO::PARAM_STR);
+        $stmt->execute();
+        $userFromDatabase = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (isset($userFromDatabase) && empty($userFromDatabase)) {
+            return false;
+        }
+
+        $this->errors[] = "Error. Provided email exists";
         return true;
     }
 

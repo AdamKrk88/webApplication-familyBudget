@@ -104,7 +104,7 @@ class Expense {
         }
 
         foreach($categoryKeyTotalAmountValue as $key => $value) {
-            $categoryTotalAmountValue[] = array($key, NumberFormatter::formatNumber($value));
+            $categoryTotalAmountValue[] = array($key, NumberFormatterBudget::formatNumberInBudget($value));
         }
 
         return $categoryTotalAmountValue;
@@ -132,7 +132,7 @@ class Expense {
             $totalExpense = round($totalExpense + (double)$expensePerCategory[1], 2);
         }
 
-        return NumberFormatter::formatNumber($totalExpense);
+        return NumberFormatterBudget::formatNumberInBudget($totalExpense);
 
     }
 
@@ -159,7 +159,7 @@ class Expense {
                                                         'category' => $expenseTable[$i]['category'],
                                                         'payment' => $expenseTable[$i]['payment'],
                                                         'comment' => $expenseTable[$i]['comment'],
-                                                        'amount' => NumberFormatter::formatNumber($expenseTable[$i]['amount']));             
+                                                        'amount' => NumberFormatterBudget::formatNumberInBudget($expenseTable[$i]['amount']));             
                 }
    
             }
@@ -173,7 +173,7 @@ class Expense {
                                                         'category' => $expenseTable[$i]['category'],
                                                         'payment' => $expenseTable[$i]['payment'],
                                                         'comment' => $expenseTable[$i]['comment'],
-                                                        'amount' => NumberFormatter::formatNumber($expenseTable[$i]['amount']));             
+                                                        'amount' => NumberFormatterBudget::formatNumberInBudget($expenseTable[$i]['amount']));             
                 }
             }
         }

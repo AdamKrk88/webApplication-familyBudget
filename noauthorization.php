@@ -7,9 +7,9 @@ require 'includes/headMetaTitleLink.php';
 require 'includes/headerLoginRegister.php'; ?>
 
 
-<div class="container position-relative height-no-navbar">
+<div class="container position-relative">
 	<main class="h-100">
-		<article class="h-100 d-flex align-items-center justify-content-center">
+		<article class="web-content d-flex align-items-center justify-content-center">
 			<div class="text-center">
 				<h1 class="fst-italic lh-lg font-size-scaled-from-45px fw-bolder font-color-black">No authorization to access the resource</h1>
 			</div>
