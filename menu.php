@@ -1,6 +1,6 @@
 <?php
-require 'includes/autoloader.php';
 session_start();
+require 'includes/autoloader.php';
 Authorization::checkAuthorization();
 
 require 'includes/headCharsetLang.php';  
@@ -29,16 +29,16 @@ require 'includes/headMetaTitleLink.php';
  	</header>
 
 	
-	<div class="container position-relative height-no-navbar">
-		<main class="h-85">
-			<article class="h-100 d-flex align-items-center justify-content-center">
+	<div class="container position-relative web-content">
+		<main class="content-wrapper">
+			<article class="initialHeightForContent d-flex align-items-center justify-content-center">
 				<div class="text-center p-1 w-75 bg-light-grey">
 					<h1 class="fst-italic lh-lg font-size-scaled-from-45px fw-bolder font-color-black">Monitor your incomes and expenses in one application. Be aware and save your money!</h1>
 				</div>
 			</article>
 		</main>
 		<div class="row">
-			<footer class="col-12 text-center position-absolute bottom-0 end-0">
+			<footer class="col-12 text-center footer-budget">
 				<a class="footer-link font-color-black" href="https://www.flaticon.com/free-icons/money" title="money icons" target="_blank">Money icons created by Freepik - Flaticon</a>.  
 				<a class="footer-link font-color-black d-block d-sm-inline-block" href="https://pl.freepik.com/search?format=search&query=marmur&type=photo" target="_blank">Marmur image created by rawpixel.com - pl.freepik.com</a>
 				<span class="font-color-black d-block">All rights reserved &copy; 2023. Thank you for your visit </span>    

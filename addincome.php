@@ -1,6 +1,6 @@
 <?php
-require 'includes/autoloader.php';
 session_start();
+require 'includes/autoloader.php';
 Authorization::checkAuthorization();
 
 $database = new Database(DB_HOST,DB_NAME,DB_USER,DB_PASS);
@@ -34,80 +34,75 @@ require 'includes/headMetaTitleLink.php';
 		</nav>		
  	</header>
 	
-	
-	<main>
-		<div class="container height-no-navbar">
-			<article class="h-100">
-				<div class ="row g-0 h-85 align-items-center justify-content-center">
-					<div class="col-lg-8  col-md-10 col-sm-12 bg-light-grey position-relative">  
-						<div class="row">
-							<div class="col-12 position-absolute top-0 start-50 p-0 text-center translate-middle" id="incomeRegisterConfirmation">
-								<p class="font-color-grey mb-5"></p>
-							</div>
-							<div class="col-md-6 align-self-center pt-1 pt-md-0 pt-md-2">
-								<header>
-									<h2 class="font-color-black fw-bolder font-size-scaled-from-30px me-0 my-0 ms-4 text-md-start text-center">Add income</h2>
-								</header>
-							</div>
-							<div class="col-md-6">
-								<form class="lh-1 d-flex" action="" method="post" id="firstForm">
-									<div class="w-50 px-2">
-										<label class="form-label font-color-grey font-size-scaled-from-15px fw-bolder mb-1" for="amount">Amount</label>
-										<input class="form-control form-control-sm fw-bold font-color-grey text-center ps-4" type="number" name="amount" id="amount" step="0.01" title="Please fill out this field" aria-label="Income expressed in the number as your benefit" />							
-									</div>
-									<div class="w-50 px-2">
-										<label class="form-label font-color-grey font-size-scaled-from-15px fw-bolder mb-1" for="date">Date</label>
-										<input class="form-control form-control-sm fw-bold font-color-grey text-center" type="date" name="date" id="date" title="Please fill out this field" aria-label="Date of your income registration" />
-									</div>
-								</form>   
-							</div>
-
-							<div class="col-sm-12 py-2" style="font-size: 1rem;">
-								<div class="underline"></div>
-								<form class="lh-1 d-flex flex-column pt-2" action="" method="post" id="secondForm">
-									<div class="text-center">
-										<?php if(!empty($categories)): ?>
-										<label  class="form-label font-color-grey font-size-scaled-from-15px fw-bolder mb-1 me-2" for="categoryOptions">Category</label>  
-										<select class="form-select form-select-sm w-auto d-inline-block fw-bold font-color-grey text-center" id="categoryOptions" name="category" aria-label="Category options for income">	
-											<?php foreach ($categories as $category): ?>																				
-											<option value="<?= $category['category']; ?>"><?= $category['category']; ?></option>
-											<?php endforeach; ?>										
-										</select>
-										<?php else: ?>
-										<p class="font-orange mb-0" id="no-categories">No categories available</p>
-										<?php endif; ?>
-									</div>
-									<div class="d-inline-flex p-2 align-items-center">
-										<label class="font-color-grey font-size-scaled-from-15px fw-bolder me-2 " for="comment">Comment (optional)</label>
-										<div class="flex-fill">
-											<input class="form-control form-control-sm fw-bold font-color-grey" type="text" name="comment" id="comment" title="Optional comment" aria-label="Optional comment" />
-										</div>
-									</div>
-								</form>
-								<div class="underline"></div>
-								<div class="d-flex flex-column">
-									<div class="btn-customized-group px-2" role="group">
-										<button class="w-50 btn button-grey-color fw-bold font-size-scaled-from-15px mt-2 me-1" id="buttonToSubmitForm" type="submit" aria-label="Add income">Add</button>
-										<a class="w-50 btn button-grey-color fw-bold font-size-scaled-from-15px mt-2 ms-1" href="menu.php">Cancel</a>
-									</div>
-								</div>								
-							</div>
+	<div class="container web-content">
+		<main class="content-wrapper">		
+			<div class ="row g-0 initialHeightForContent align-items-center justify-content-center">
+				<div class="col-lg-8  col-md-10 col-sm-12 bg-light-grey position-relative">  
+					<div class="row">
+						<div class="col-12 position-absolute top-0 start-50 p-0 text-center translate-middle" id="incomeRegisterConfirmation">
+							<p class="font-color-grey mb-5"></p>
 						</div>
-					</div>				
-				</div>	
-			</article>
-		</div>
-	</main>
-	
-	<div class="container position-relative">
+						<div class="col-md-6 align-self-center pt-1 pt-md-0 pt-md-2">
+							<header>
+								<h2 class="font-color-black fw-bolder font-size-scaled-from-30px me-0 my-0 ms-4 text-md-start text-center">Add income</h2>
+							</header>
+						</div>
+						<div class="col-md-6">
+							<form class="lh-1 d-flex" action="" method="post" id="firstForm">
+								<div class="w-50 px-2">
+									<label class="form-label font-color-grey font-size-scaled-from-15px fw-bolder mb-1" for="amount">Amount</label>
+									<input class="form-control form-control-sm fw-bold font-color-grey text-center ps-4" type="number" name="amount" id="amount" step="0.01" title="Please fill out this field" aria-label="Income expressed in the number as your benefit" />							
+								</div>
+								<div class="w-50 px-2">
+									<label class="form-label font-color-grey font-size-scaled-from-15px fw-bolder mb-1" for="date">Date</label>
+									<input class="form-control form-control-sm fw-bold font-color-grey text-center" type="date" name="date" id="date" title="Please fill out this field" aria-label="Date of your income registration" />
+								</div>
+							</form>   
+						</div>
+
+						<div class="col-sm-12 py-2" style="font-size: 1rem;">
+							<div class="underline"></div>
+							<form class="lh-1 d-flex flex-column pt-2" action="" method="post" id="secondForm">
+								<div class="text-center">
+									<?php if(!empty($categories)): ?>
+									<label  class="form-label font-color-grey font-size-scaled-from-15px fw-bolder mb-1 me-2" for="categoryOptions">Category</label>  
+									<select class="form-select form-select-sm w-auto d-inline-block fw-bold font-color-grey text-center" id="categoryOptions" name="category" aria-label="Category options for income">	
+										<?php foreach ($categories as $category): ?>																				
+										<option value="<?= $category['category']; ?>"><?= $category['category']; ?></option>
+										<?php endforeach; ?>										
+									</select>
+									<?php else: ?>
+									<p class="font-orange mb-0" id="no-categories">No categories available</p>
+									<?php endif; ?>
+								</div>
+								<div class="d-inline-flex p-2 align-items-center">
+									<label class="font-color-grey font-size-scaled-from-15px fw-bolder me-2 " for="comment">Comment (optional)</label>
+									<div class="flex-fill">
+										<input class="form-control form-control-sm fw-bold font-color-grey" type="text" name="comment" id="comment" title="Optional comment" aria-label="Optional comment" />
+									</div>
+								</div>
+							</form>
+							<div class="underline"></div>
+							<div class="d-flex flex-column">
+								<div class="btn-customized-group px-2" role="group">
+									<button class="w-50 btn button-grey-color fw-bold font-size-scaled-from-15px mt-2 me-1" id="buttonToSubmitForm" type="submit" aria-label="Add income">Add</button>
+									<a class="w-50 btn button-grey-color fw-bold font-size-scaled-from-15px mt-2 ms-1" href="menu.php">Cancel</a>
+								</div>
+							</div>								
+						</div>
+					</div>
+				</div>				
+			</div>		
+		</main>
 		<div class="row">
-			<footer class="col-12 text-center position-absolute bottom-0 end-0">
+			<footer class="col-12 text-center footer-budget">
 				<a class="footer-link font-color-black" href="https://www.flaticon.com/free-icons/money" title="money icons" target="_blank">Money icons created by Freepik - Flaticon</a>.  
 				<a class="footer-link font-color-black d-block d-sm-inline-block" href="https://pl.freepik.com/search?format=search&query=marmur&type=photo" target="_blank">Marmur image created by rawpixel.com - pl.freepik.com</a>
 				<span class="font-color-black d-block">All rights reserved &copy; 2023. Thank you for your visit </span>    
 			</footer>
 		</div>
 	</div>
+	
 	
 	<script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
 	

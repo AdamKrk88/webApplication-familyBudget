@@ -1,6 +1,6 @@
 <?php
-require 'includes/autoloader.php';
 session_start();
+require 'includes/autoloader.php';
 Authorization::checkAuthorization();
 
 $database = new Database(DB_HOST,DB_NAME,DB_USER,DB_PASS);
@@ -38,12 +38,10 @@ require 'includes/headMetaTitleLink.php';
 		</nav>		
  	</header>
 	
-	<main>
-		<article>
-			
-			<div class="container-fluid height-no-navbar">
-				<div class="row">
-
+	<main>	
+		<div class="container-fluid web-content">
+			<div class="row">
+				<article class="content-wrapper">
 					<div class="col-md-10 col-12 offset-md-1 mt-2">
 						<div class="row g-0 bg-light-grey">
 							<div class="col-3">   
@@ -197,10 +195,9 @@ require 'includes/headMetaTitleLink.php';
 							</div>
 						</div>
 					</div>
-				</div>
+				</article>
 			</div>
-			
-		</article>
+		</div>
 	</main>
 
 	<div class="container position-relative">

@@ -1,6 +1,6 @@
 <?php
 
-class NumberFormatter {
+class NumberFormatterBudget {
     
     public static function checkIfNumberHasDecimalPart($number) {
         return is_numeric($number) && floor($number) != $number;
@@ -15,7 +15,7 @@ class NumberFormatter {
         }
     }
 
-    public static function formatNumber($number) {
+    public static function formatNumberInBudget($number) {
         if (self::checkIfNumberHasDecimalPart($number)) {
             return number_format($number, 2,'.','');
         }

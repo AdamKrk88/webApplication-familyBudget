@@ -1,6 +1,6 @@
 <?php
-require 'includes/autoloader.php';
 session_start();
+require 'includes/autoloader.php';
 Authorization::checkAuthorization();
 
 
@@ -29,7 +29,7 @@ if ($customizeQueryStringValue) {
 					
 					if (isset($_POST['name'])) {
 						$user->name = $_POST['name'];
-						if ($user->validateName()) {
+						if ($user->validateName() && !$user->checkIfNameExistInDatabase($connection)) {
 							try {
 								$sql = "UPDATE user
 										SET name = :name
@@ -51,7 +51,7 @@ if ($customizeQueryStringValue) {
 
 					elseif (isset($_POST['email'])) {
 						$user->email = $_POST['email'];
-						if ($user->validateEmail()) {
+						if ($user->validateEmail() && !$user->checkIfEmailExistInDatabase($connection)) {
 							try {
 								$sql = "UPDATE user
 										SET email = :email
@@ -429,12 +429,12 @@ require 'includes/headMetaTitleLink.php';
 			</div>
 		</nav>		
  	</header>
-
-    <main>
-        <article>
-            <div class="container height-no-navbar">
-				<div class ="row g-0 h-85 align-items-center justify-content-center">
-					<div class="col-lg-8 col-md-10 col-sm-12 bg-light-grey">
+ 
+	<div class="container web-content">
+		<main class="content-wrapper initialHeightForContent">
+			<div class ="row g-0 initialHeightForContent align-items-center">
+				<article>
+					<div class="col-lg-8 col-md-10 col-sm-12 bg-light-grey mx-auto">
 						<div class="row">
 							<div class="col-12 text-center">
 								<?php if (!$isAllowedCustomizePresent): ?>
@@ -953,20 +953,18 @@ require 'includes/headMetaTitleLink.php';
 							</div>
 						</div>
 					</div>
-				</div>
-            </div>
-        </article>
-    </main>
-
-    <div class="container position-relative">
+				</article>
+			</div>
+		</main>
 		<div class="row">
-			<footer class="col-12 text-center position-absolute bottom-0 end-0">
+			<footer class="col-12 text-center footer-budget">
 				<a class="footer-link font-color-black" href="https://www.flaticon.com/free-icons/money" title="money icons" target="_blank">Money icons created by Freepik - Flaticon</a>.  
 				<a class="footer-link font-color-black d-block d-sm-inline-block" href="https://pl.freepik.com/search?format=search&query=marmur&type=photo" target="_blank">Marmur image created by rawpixel.com - pl.freepik.com</a>
 				<span class="font-color-black d-block">All rights reserved &copy; 2023. Thank you for your visit </span>    
 			</footer>
 		</div>
 	</div>
+        
 
     <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
@@ -975,7 +973,7 @@ require 'includes/headMetaTitleLink.php';
 	<script>
 	
 	function isElementContainNoCharacters(element) {
-		return !element.val();
+		return !element.html().trim();
   	}
 
 	$(document).ready(function(){
